@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.alexm.skistats.ImportActivity">
+
+    <TextView
+        android:id="@+id/importTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:textSize="25dp"
+        android:text="Import GPX Data" />
+
+
+    <Button
+        android:id="@+id/btnImport"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/txtInput"
+        android:layout_alignStart="@+id/importTitle"
+        android:layout_marginBottom="13dp"
+        android:onClick="btnImportClick"
+        android:text="Import" />
+
+    <EditText
+        android:id="@+id/txtInput"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/txtView"
+        android:layout_marginBottom="33dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="File" />
+
+    <TextView
+        android:id="@+id/txtView"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="217dp"
+        android:text="" />
+
+    <Button
+        android:id="@+id/btnExport"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/btnImport"
+        android:layout_alignBottom="@+id/btnImport"
+        android:layout_alignEnd="@+id/importTitle"
+        android:onClick="btnExportClick"
+        android:text="Export" />
+
+</RelativeLayout>
