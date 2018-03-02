@@ -14,14 +14,14 @@
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight=".40"/>
+        android:layout_weight=".80"/>
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight=".60"
+        android:layout_weight=".20"
         android:background="#22bfb2"
-        android:text="Google Map Demo"
+        android:text="Ski Stats Map Test"
         android:textColor="#ffffff"
         android:gravity="center"/>
 </LinearLayout>

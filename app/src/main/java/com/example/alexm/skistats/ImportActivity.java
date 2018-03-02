@@ -32,7 +32,7 @@ public class ImportActivity extends AppCompatActivity {
     public EditText editText;
     public TextView textView;
     public Button save, load;
-    GPXParser mParser = new GPXParser();
+    public GPXParser mParser = new GPXParser();
 
     private List<File> gpsFiles = new ArrayList<File>();
     public String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "aa/test1";
