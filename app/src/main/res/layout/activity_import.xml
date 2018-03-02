@@ -22,7 +22,7 @@
         android:layout_above="@+id/txtInput"
         android:layout_alignStart="@+id/importTitle"
         android:layout_marginBottom="13dp"
-        android:onClick="btnImportClick"
+        android:onClick="btnTest"
         android:text="Import" />
 
     <EditText

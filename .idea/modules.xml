@@ -4,7 +4,6 @@
     <modules>
       <module fileurl="file://C:\Users\AlexM\Documents\GitHub\SkiStats\mcgill_alex_set08114_coursework\SkiStats.iml" filepath="C:\Users\AlexM\Documents\GitHub\SkiStats\mcgill_alex_set08114_coursework\SkiStats.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://C:\Users\AlexM\Documents\GitHub\SkiStats\mcgill_alex_set08114_coursework\app\app.iml" filepath="C:\Users\AlexM\Documents\GitHub\SkiStats\mcgill_alex_set08114_coursework\app\app.iml" />
       <module fileurl="file://$PROJECT_DIR$/mcgill_alex_set08114_coursework.iml" filepath="$PROJECT_DIR$/mcgill_alex_set08114_coursework.iml" />
     </modules>
   </component>
