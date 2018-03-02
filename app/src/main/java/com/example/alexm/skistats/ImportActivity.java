@@ -10,21 +10,23 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.w3c.dom.Text;
 
-import java.io.BufferedReader;
+import org.xmlpull.v1.XmlPullParserException;
+
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.InputStream;
+
+import io.ticofab.androidgpxparser.parser.GPXParser;
+import io.ticofab.androidgpxparser.parser.domain.Gpx;
+
 
 public class ImportActivity extends AppCompatActivity {
 
     public EditText editText;
     public TextView textView;
     public Button save, load;
+    GPXParser mParser = new GPXParser();
 
     public String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "aa/test1";
 
@@ -42,6 +44,31 @@ public class ImportActivity extends AppCompatActivity {
 
         File dir = new File(path);
         dir.mkdirs();
+    }
+
+
+    public void btnTest()
+    {
+        Gpx parsedGpx = null;
+
+        try
+        {
+            InputStream in = getAssets().open("test.gpx");
+            parsedGpx = mParser.parse(in);
+        }
+        catch(IOException | XmlPullParserException e)
+        {
+            e.printStackTrace();
+        }
+
+        if(parsedGpx == null)
+        {
+            Toast.makeText(getApplicationContext(), "GPX File Read Failed", Toast.LENGTH_SHORT).show();
+        }
+        else
+        {
+            // do something
+        }
     }
 
 
@@ -82,6 +109,5 @@ public class ImportActivity extends AppCompatActivity {
         }
 
         textView.setText(finalString);
-
     }
 }
