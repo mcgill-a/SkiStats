@@ -2,6 +2,7 @@ package com.example.alexm.skistats;
 
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -13,7 +14,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 public class SelectionActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
-
+    private String filename;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -22,6 +23,8 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+        getFileName();
+        Toast.makeText(getApplicationContext(), filename, Toast.LENGTH_SHORT).show();
     }
 
 
@@ -39,8 +42,13 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
         mMap = googleMap;
 
         // Add a marker in Sydney and move the camera
-        LatLng sydney = new LatLng(-34, 151);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+        LatLng sauze = new LatLng(45.0269, 6.8584);
+        mMap.addMarker(new MarkerOptions().position(sauze).title("Marker in Sauze d'Oulx"));
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(sauze));
+    }
+
+    public void getFileName()
+    {
+        filename = (String) getIntent().getStringExtra("filename");
     }
 }

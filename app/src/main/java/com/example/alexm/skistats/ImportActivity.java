@@ -16,6 +16,7 @@ import org.xmlpull.v1.XmlPullParserException;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 import io.ticofab.androidgpxparser.parser.GPXParser;
@@ -33,6 +34,7 @@ public class ImportActivity extends AppCompatActivity {
     public Button save, load;
     GPXParser mParser = new GPXParser();
 
+    private List<File> gpsFiles = new ArrayList<File>();
     public String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "aa/test1";
 
 
@@ -51,16 +53,33 @@ public class ImportActivity extends AppCompatActivity {
         dir.mkdirs();
     }
 
+    // temporary method, ghetto version that will do for now....
+    public void getAllGpsFiles(View view)
+    {
+        for (int i = 1; i < 5; i++)
+        {
+            File file = new File("gpsData/sauze/Day_" + i + "_2017-2018.gpx");
+            gpsFiles.add(file);
+        }
+    }
 
+    public void displayGpsList()
+    {
+        String finalString = "";
+        for (int i = 0; i < gpsFiles.size(); i++)
+        {
+            finalString += gpsFiles.get(i).getName() + "\n";
+        }
+        textView.setText(finalString);
+    }
 
-
-    public void btnTest(View view)
+    public void btnImport(View view)
     {
         Gpx parsedGpx = null;
 
         try
         {
-            InputStream in = getAssets().open("testData.gpx");
+            InputStream in = getAssets().open("gpsData/sauze/Day_2_2017-2018.gpx");
             parsedGpx = mParser.parse(in);
         }
         catch(IOException | XmlPullParserException e)

@@ -22,7 +22,7 @@
         android:layout_above="@+id/txtInput"
         android:layout_alignStart="@+id/importTitle"
         android:layout_marginBottom="13dp"
-        android:onClick="btnTest"
+        android:onClick="btnImport"
         android:text="Import" />
 
     <EditText
@@ -53,5 +53,15 @@
         android:layout_alignEnd="@+id/importTitle"
         android:onClick="btnExportClick"
         android:text="Export" />
+
+    <Button
+        android:id="@+id/button2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/txtInput"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="72dp"
+        android:onClick="getAllGpsFiles"
+        android:text="Get GPS Files" />
 
 </RelativeLayout>
