@@ -6,7 +6,8 @@
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="com.example.alexm.skistats.MainActivity"
-    tools:showIn="@layout/app_bar_main">
+    tools:showIn="@layout/app_bar_main"
+    android:background="@mipmap/bg_1_ski_hut">
 
 
     <TextView
@@ -14,8 +15,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="50dp"
         android:layout_centerHorizontal="true"
-        android:textSize="90px"
-        android:text="SkiStats" />
+        android:layout_marginTop="50dp"
+        android:text="@string/app_name"
+        android:textColor="@android:color/black"
+        android:textSize="110px"
+        tools:fontFamily="@font/maven_pro_medium" />
+
+
+
 </RelativeLayout>
