@@ -17,6 +17,10 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 
+import org.joda.time.DateTime;
+import org.joda.time.Seconds;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
@@ -105,13 +109,25 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
         double roundedTotalDistance = 0;
         double distance = 0;
         double maxDistance = 0;
+        int count = 0;
+
         TrackPoint current;
         TrackPoint next;
+
+        double averageSpeed = 0;
+        double speed = 0;
+        double maxSpeed = 0;
+        int time = 0;
         for (int i = 0; i + 1 < tPoints.size(); i++)
         {
+            count++;
             current = tPoints.get(i);
             next = tPoints.get(i+1);
             distance = calculateDistanceBetween(current, next);
+
+
+
+            // TOTAL DISTANCE
             if (distance > maxDistance)
             {
                 maxDistance = distance;
@@ -120,14 +136,44 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
             {
                 totalDistance += distance;
             }
+
+            //DateTime dt = new DateTime(current.getTime());
+            //DateTimeFormatter fmt = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
+            //Log.e(TAG, seconds.getSeconds());
+            // AVERAGE SPEED
+            //timeDifference = (current.getTime() - next.getTime());
+            //DateTime dtNext = new DateTime(next.getTime());
+            Seconds seconds = Seconds.secondsBetween(current.getTime(), next.getTime());
+
+            time = seconds.getSeconds();
+            if (time > 0 && distance < 0.043)
+            {
+                speed = distance / time;
+                if (speed > maxSpeed)
+                {
+                    maxSpeed = speed;
+                }
+                averageSpeed += speed;
+            }
+
         }
+        averageSpeed = averageSpeed / count;
         Log.e(TAG, "Max Individual Distance: " + maxDistance);
         Log.e(TAG, filename  + " Total Distance: " + totalDistance);
+        Log.e(TAG, "Max Individual Speed: " + maxSpeed);
+        Log.e(TAG, filename + " Average Speed:" + averageSpeed);
 
         roundedTotalDistance = (double)Math.round(totalDistance * 100d) / 100d;
         distanceTotalValue.setText(Double.toString(roundedTotalDistance) + " KM");
         Toast.makeText(getApplicationContext(), " Total Distance: " + roundedTotalDistance + " KM", Toast.LENGTH_LONG).show();
     }
+
+
+    /*
+
+
+
+     */
 
     public double calculateDistanceBetween(TrackPoint current, TrackPoint next)
     {
