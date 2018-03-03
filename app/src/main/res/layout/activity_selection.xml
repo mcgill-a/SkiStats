@@ -16,12 +16,6 @@
         android:layout_height="0dp"
         android:layout_weight="0.4"/>
 
-    <GridView
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="0.6"
-        android:background="#770f15"/>
-
 
 </LinearLayout>
 
@@ -33,4 +27,28 @@
            android:background="#22bfb2"
            android:gravity="center"
            android:text="Ski Stats Map Test"
-           android:textColor="#ffffff" /> -->
+           android:textColor="#ffffff" />
+
+    <TextView
+        android:id="@+id/distanceTotalTitle"
+        android:layout_width="126dp"
+        android:layout_height="0dp"
+        android:layout_gravity="center"
+        android:layout_weight="0.05"
+        android:text="TOTAL"
+        android:textAlignment="center"
+        android:textSize="20dp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/distanceTotalValue"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_gravity="center"
+        android:layout_weight="0.05"
+        android:text="41.5 KM"
+        android:textAlignment="center"
+        android:textSize="18dp"
+        android:textStyle="italic"/>
+
+           -->
