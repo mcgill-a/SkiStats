@@ -33,9 +33,12 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
 
     private GoogleMap mMap;
     private String filename;
-    private List<LatLng> latlongs = new ArrayList<>();
+    //private List<LatLng> latlongs = new ArrayList<>();
     private String TAG = "SkiStats.Log";
-    public GPXParser mParser = new GPXParser();
+    private GPXParser mParser = new GPXParser();
+
+    public List<TrackPoint> tPoints = new ArrayList<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,7 +52,7 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
 
         getData();
 
-
+        calculateTotalDistance();
     }
 
     public void getData() {
@@ -68,16 +71,13 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
             List<Track> tracks = parsedGpx.getTracks();
             for (int i = 0; i < tracks.size(); i++) {
                 Track track = tracks.get(i);
-                Log.e(TAG, "track " + i + ":");
+                //Log.e(TAG, "track " + i + ":");
                 List<TrackSegment> segments = track.getTrackSegments();
                 for (int j = 0; j < segments.size(); j++) {
                     TrackSegment segment = segments.get(i);
-                    Log.e(TAG, " segment " + j + ":");
+                    //Log.e(TAG, " segment " + j + ":");
                     for (TrackPoint trackPoint : segment.getTrackPoints()) {
-                        latlng = new LatLng(trackPoint.getLatitude(), trackPoint.getLongitude());
-                        latlongs.add(latlng);
-                        //Log.e(TAG, "   point: lat" + trackPoint.getLatitude() + ", lon " + trackPoint.getLongitude() + ", time " + trackPoint.getTime());
-                        //count++;
+                        tPoints.add(trackPoint);
                     }
                 }
             }
@@ -88,7 +88,93 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
         }
     }
 
+    public void calculateTotalDistance()
+    {
+        double totalDistance = 0;
+        double roundedTotalDistance = 0;
+        double distance = 0;
+        double maxDistance = 0;
+        TrackPoint current;
+        TrackPoint next;
+        for (int i = 0; i + 1 < tPoints.size(); i++)
+        {
+            current = tPoints.get(i);
+            next = tPoints.get(i+1);
+            distance = calculateDistanceBetween(current, next);
+            if (distance > maxDistance)
+            {
+                maxDistance = distance;
+            }
+            if (distance < 0.043) // Ignore bad inputs (96mph is world record speed (43m/s so 43m, (0.043km/s))
+            {
+                totalDistance += distance;
+            }
+        }
+        Log.e(TAG, "Max Individual Distance: " + maxDistance);
+        Log.e(TAG, filename  + " Total Distance: " + totalDistance);
 
+        roundedTotalDistance = (double)Math.round(totalDistance * 100d) / 100d;
+
+        Toast.makeText(getApplicationContext(), " Total Distance: " + roundedTotalDistance + " KM", Toast.LENGTH_LONG).show();
+    }
+
+    public double calculateDistanceBetween(TrackPoint current, TrackPoint next)
+    {
+        double distance = 0;
+        final int earthRadius = 6371;
+        double lat1 = current.getLatitude();
+        double lon1 = current.getLongitude();
+        double ele1 = current.getElevation();
+        double lat2 = next.getLatitude();
+        double lon2 = next.getLongitude();
+        double ele2 = next.getElevation();
+
+        double latDistance = Math.toRadians(lat2 - lat1);
+        double lonDistance = Math.toRadians(lon2 - lon1);
+        double a = Math.sin(latDistance / 2) * Math.sin(latDistance / 2) +
+                Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2)) *
+                Math.sin(lonDistance / 2) * Math.sin(lonDistance / 2);
+
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        distance = earthRadius * c * 1000;
+        double height = ele1 - ele2;
+        distance = Math.pow(distance, 2) + Math.pow(height, 2);
+        distance = Math.sqrt(distance);
+
+        return (distance / 1000);
+
+        /*if (height < 0)
+        {
+            // for only recording ski distance downhill return -1;
+        }
+        else
+        {
+            //return (distance / 1000);
+        } */
+
+    }
+
+    public void processMap(GoogleMap googleMap)
+    {
+        if (googleMap!= null && tPoints.size() != 0)
+        {
+            PolylineOptions poption = new PolylineOptions();
+            LatLng latlng;
+            for(int i = 0; i < tPoints.size(); i++)
+            {
+                latlng = new LatLng(tPoints.get(i).getLatitude(), tPoints.get(i).getLongitude());
+                poption.add(latlng);
+            }
+            poption.width(9).color(Color.BLUE).geodesic(true);
+
+            googleMap.addPolyline(poption);
+            LatLng firstLatLng = new LatLng(tPoints.get(0).getLatitude(), tPoints.get(0).getLongitude());
+            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(firstLatLng, 14));
+
+        }
+    }
+
+    /*
     public void processMap(GoogleMap googleMap)
     {
         if (googleMap!= null && latlongs.size() != 0)
@@ -107,6 +193,7 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
 
         }
     }
+    */
 
 
     /**
