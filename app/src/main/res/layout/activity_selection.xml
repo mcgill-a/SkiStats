@@ -16,6 +16,26 @@
         android:layout_height="0dp"
         android:layout_weight="0.4"/>
 
+    <TextView
+        android:id="@+id/distanceTotalTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_gravity="center"
+        android:layout_weight="0.05"
+        android:text="TOTAL"
+        android:textAlignment="center"
+        android:textSize="20dp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/distanceTotalValue"
+        android:layout_width="80dp"
+        android:layout_height="0dp"
+        android:layout_gravity="center"
+        android:layout_weight="0.05"
+        android:textAlignment="center"
+        android:textSize="18dp"
+        android:textStyle="italic"/>
 
 </LinearLayout>
 
@@ -31,7 +51,7 @@
 
     <TextView
         android:id="@+id/distanceTotalTitle"
-        android:layout_width="126dp"
+        android:layout_width="wrap_content"
         android:layout_height="0dp"
         android:layout_gravity="center"
         android:layout_weight="0.05"
@@ -42,7 +62,7 @@
 
     <TextView
         android:id="@+id/distanceTotalValue"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="0dp"
         android:layout_gravity="center"
         android:layout_weight="0.05"

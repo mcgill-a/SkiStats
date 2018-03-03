@@ -5,6 +5,7 @@ import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -37,6 +38,9 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
     private String TAG = "SkiStats.Log";
     private GPXParser mParser = new GPXParser();
 
+
+    private TextView distanceTotalValue;
+
     public List<TrackPoint> tPoints = new ArrayList<>();
 
     @Override
@@ -47,12 +51,19 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+        distanceTotalValue = (TextView)findViewById(R.id.distanceTotalValue);
+
+
         getFileName();
         Toast.makeText(getApplicationContext(), filename, Toast.LENGTH_SHORT).show();
 
         getData();
 
         calculateTotalDistance();
+
+        setTextVales();
+
     }
 
     public void getData() {
@@ -114,7 +125,7 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
         Log.e(TAG, filename  + " Total Distance: " + totalDistance);
 
         roundedTotalDistance = (double)Math.round(totalDistance * 100d) / 100d;
-
+        distanceTotalValue.setText(Double.toString(roundedTotalDistance) + " KM");
         Toast.makeText(getApplicationContext(), " Total Distance: " + roundedTotalDistance + " KM", Toast.LENGTH_LONG).show();
     }
 
@@ -174,27 +185,12 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
         }
     }
 
-    /*
-    public void processMap(GoogleMap googleMap)
+
+    public void setTextVales()
     {
-        if (googleMap!= null && latlongs.size() != 0)
-        {
-            PolylineOptions poption = new PolylineOptions();
 
-            for(int i = 0; i < latlongs.size(); i++)
-            {
-                poption.add(latlongs.get(i));
-            }
-            poption.width(8).color(Color.BLUE).geodesic(true);
-
-            googleMap.addPolyline(poption);
-
-            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latlongs.get(0), 14));
-
-        }
+        //distanceTotalValue.setText();
     }
-    */
-
 
     /**
      * Manipulates the map once available.
