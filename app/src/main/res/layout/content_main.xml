@@ -20,7 +20,7 @@
         android:text="@string/app_name"
         android:textColor="@android:color/black"
         android:textSize="80sp"
-        tools:fontFamily="@font/maven_pro_medium" />
+        tools:fontFamily="@font/acme" />
 
 
 
