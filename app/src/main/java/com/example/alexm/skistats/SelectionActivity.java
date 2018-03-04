@@ -162,7 +162,9 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
 
             time = seconds.getSeconds();
 
-            if (time > 120)
+            // If the time between the current track point and the next track point is more than x minutes,
+            // skip to the next one as the gps recording isn't useful
+            if (time > 60)
             {
                 pauseCount++;
                 continue;
@@ -192,7 +194,7 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
             }
             speed = distance / time;
             // filter out invalid results (for example - when gps was paused and then resumed at another location
-            if ((time > 0 && time < 60) && speed < 0.0277) // speed < 100km/h
+            if ((time > 0 && time < 60) && speed < 0.1) // speed < 100km/h 0.0277
             {
                 // TOTAL DISTANCE
                 if (distance > maxDistance)
@@ -243,12 +245,6 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
                     gradient = (rise / run) * 100;
                     averageGradient += gradient;
                 }
-
-                if(height < 0) {
-                    //totalSkiLiftDistance += distance;
-                    //totalSkiLiftTime += time;
-                }
-
 
                 // only get speed info when gps update time is less than 10s. reduces error
                 /*if (time < 10)
