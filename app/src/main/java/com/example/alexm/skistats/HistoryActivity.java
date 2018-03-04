@@ -27,16 +27,6 @@ public class HistoryActivity extends AppCompatActivity {
 
         getAllGpsFileNames();
 
-        // Instanciating an array list (you don't need to do this,
-        // you already have yours).
-
-        /*List<String> gpsHistoryArray = new ArrayList<String>();
-        gpsHistoryArray.add("04/02/2017 - Ski");
-        gpsHistoryArray.add("05/02/2017 - Ski");
-        gpsHistoryArray.add("06/02/2017 - Ski");
-        gpsHistoryArray.add("07/02/2017 - Ski");*/
-
-
         // This is the array adapter, it takes the context of the activity as a
         // first parameter, the type of list view as a second parameter and your
         // array as a third parameter.
