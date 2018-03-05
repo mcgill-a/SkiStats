@@ -14,14 +14,14 @@
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="fill_parent"
         android:layout_height="0dp"
-        android:layout_weight="35"/>
+        android:layout_weight="50"/>
 
     <LinearLayout
         android:id="@+id/distanceTitles"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:weightSum="5"
-        android:background="#a2e998">
+        android:background="#013830">
 
         <TextView
             android:id="@+id/distanceSkiTitle"
@@ -29,6 +29,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1.5"
             android:text="SKI"
+            android:textColor="#FFF"
             android:textAlignment="center"
             android:textSize="20dp"
             android:textStyle="bold" />
@@ -39,6 +40,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="2"
             android:text="TOTAL"
+            android:textColor="#FFF"
             android:textAlignment="center"
             android:textSize="20dp"
             android:textStyle="bold" />
@@ -49,6 +51,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1.5"
             android:text="SKI LIFT"
+            android:textColor="#FFF"
             android:textAlignment="center"
             android:textSize="20dp"
             android:textStyle="bold" />
@@ -60,7 +63,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:weightSum="5"
-        android:background="#a2e998">
+        android:background="#ddf4da">
 
         <TextView
             android:id="@+id/distanceSkiValue"
@@ -99,7 +102,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:weightSum="1"
-        android:background="#71cc64">
+        android:background="#ddf4da">
 
         <TextView
             android:id="@+id/DistanceTitle"
@@ -107,6 +110,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="DISTANCE"
+            android:textColor="#000"
             android:textAlignment="center"
             android:textSize="27dp"
             android:textStyle="bold"/>
@@ -118,14 +122,15 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:weightSum="5"
-        android:background="#a2e998">
+        android:background="#013830">
 
         <TextView
             android:id="@+id/speedMaxTitle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1.8"
+            android:layout_weight="1.5"
             android:text="MAX"
+            android:textColor="#FFF"
             android:textAlignment="center"
             android:textSize="20dp"
             android:textStyle="bold" />
@@ -134,7 +139,7 @@
             android:id="@+id/speedSpacerTitle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1.4"
+            android:layout_weight="2"
             android:textAlignment="center"
             android:textSize="20dp"
             android:textStyle="bold" />
@@ -143,8 +148,9 @@
             android:id="@+id/speedAverageTitle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1.8"
-            android:text="AVERAGE"
+            android:layout_weight="1.5"
+            android:text="AVG"
+            android:textColor="#FFF"
             android:textAlignment="center"
             android:textSize="20dp"
             android:textStyle="bold" />
@@ -157,56 +163,38 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:weightSum="5"
-        android:background="#a2e998">
+        android:background="#ddf4da">
 
         <TextView
             android:id="@+id/speedMaxValue"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1.8"
+            android:layout_weight="1.5"
             android:text="0 KM/H"
             android:textAlignment="center"
             android:textSize="17dp"
             android:textStyle="italic" />
 
         <TextView
-            android:id="@+id/speedSpacerValue"
+            android:id="@+id/speedTitle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1.4"
-            android:text=""
+            android:layout_weight="2"
+            android:text="SPEED"
+            android:textColor="#000"
             android:textAlignment="center"
-            android:textSize="17dp"
-            android:textStyle="italic" />
+            android:textSize="27dp"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/speedAverageValue"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1.8"
+            android:layout_weight="1.5"
             android:text="0 KM/H"
             android:textAlignment="center"
             android:textSize="17dp"
             android:textStyle="italic" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/speed"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:weightSum="1"
-        android:background="#71cc64">
-
-        <TextView
-            android:id="@+id/speedTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="SPEED"
-            android:textAlignment="center"
-            android:textSize="27dp"
-            android:textStyle="bold"/>
 
     </LinearLayout>
 
@@ -215,7 +203,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:weightSum="5"
-        android:background="#a2e998">
+        android:background="#013830">
 
         <TextView
             android:id="@+id/skiTimeTitle"
@@ -223,6 +211,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1.5"
             android:text="SKI"
+            android:textColor="#FFF"
             android:textAlignment="center"
             android:textSize="20dp"
             android:textStyle="bold" />
@@ -233,6 +222,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="2"
             android:text="TOTAL"
+            android:textColor="#FFF"
             android:textAlignment="center"
             android:textSize="20dp"
             android:textStyle="bold" />
@@ -243,6 +233,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1.5"
             android:text="SKI LIFT"
+            android:textColor="#FFF"
             android:textAlignment="center"
             android:textSize="20dp"
             android:textStyle="bold" />
@@ -254,7 +245,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:weightSum="5"
-        android:background="#a2e998">
+        android:background="#ddf4da">
 
         <TextView
             android:id="@+id/skiTimeValue"
@@ -285,6 +276,192 @@
             android:textAlignment="center"
             android:textSize="17dp"
             android:textStyle="italic" />
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/time"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="1"
+        android:background="#ddf4da">
+
+        <TextView
+            android:id="@+id/timeTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="TIME"
+            android:textColor="#000"
+            android:textAlignment="center"
+            android:textSize="27dp"
+            android:textStyle="bold"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/otherTitles"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="5"
+        android:background="#013830">
+
+        <TextView
+            android:id="@+id/gradientMaxTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.24"
+            android:text="MAX"
+            android:textColor="#FFF"
+            android:textAlignment="center"
+            android:textSize="20dp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/gradientAverageTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.24"
+            android:text="AVG"
+            android:textColor="#FFF"
+            android:textAlignment="center"
+            android:textSize="20dp"
+            android:textStyle="bold" />
+
+        <!--<TextView
+            android:id="@+id/otherSpacerTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.04"
+            android:text="a"
+            android:background="#000"
+            android:paddingTop="7dp"
+            android:paddingBottom="7dp"/> -->
+
+        <TextView
+            android:id="@+id/altitudeMaxTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.24"
+            android:text="MAX"
+            android:textColor="#FFF"
+            android:textAlignment="center"
+            android:textSize="20dp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/altitudeMinTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.24"
+            android:text="MIN"
+            android:textColor="#FFF"
+            android:textAlignment="center"
+            android:textSize="20dp"
+            android:textStyle="bold" />
+
+
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/otherValues"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="5"
+        android:background="#ddf4da">
+
+        <TextView
+            android:id="@+id/gradientMaxValue"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.24"
+            android:text="0°"
+            android:textAlignment="center"
+            android:textSize="17dp"
+            android:textStyle="italic" />
+
+        <TextView
+            android:id="@+id/gradientAverageValue"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.24"
+            android:text="0°"
+            android:textAlignment="center"
+            android:textSize="17dp"
+            android:textStyle="italic" />
+
+        <!-- <TextView
+            android:id="@+id/otherSpacerValue"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.04"
+            android:background="#000"
+            android:paddingTop="7dp"
+            android:paddingBottom="7dp"/> -->
+
+        <TextView
+        android:id="@+id/altitudeMaxValue"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1.24"
+        android:text="0m"
+        android:textAlignment="center"
+        android:textSize="17dp"
+        android:textStyle="italic" />
+
+        <TextView
+            android:id="@+id/altitudeMinValue"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.24"
+            android:text="0m"
+            android:textAlignment="center"
+            android:textSize="17dp"
+            android:textStyle="italic" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/other"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="5"
+        android:background="#ddf4da">
+
+        <TextView
+            android:id="@+id/gradientTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="2.34"
+            android:text="GRADIENT"
+            android:textColor="#000"
+            android:textAlignment="center"
+            android:textSize="27dp"
+            android:textStyle="bold"/>
+
+        <!--<TextView
+            android:id="@+id/otherSpacer"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.12"
+            android:text="a"
+            android:background="#000"
+            android:paddingTop="15dp"
+            android:paddingBottom="7dp"/> -->
+
+        <TextView
+            android:id="@+id/altitudeTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="2.5"
+            android:text="ALTITUDE"
+            android:textColor="#000"
+            android:textAlignment="center"
+            android:textSize="27dp"
+            android:textStyle="bold"/>
 
     </LinearLayout>
 
