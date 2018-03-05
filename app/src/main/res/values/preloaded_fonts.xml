@@ -2,7 +2,10 @@
 <resources>
     <array name="preloaded_fonts" translatable="false">
         <item>@font/acme</item>
+        <item>@font/averia_libre_bold</item>
+        <item>@font/bubblegum_sans</item>
         <item>@font/delius_unicase_bold</item>
         <item>@font/maven_pro_medium</item>
+        <item>@font/trade_winds</item>
     </array>
 </resources>
