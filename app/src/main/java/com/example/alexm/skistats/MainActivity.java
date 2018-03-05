@@ -2,6 +2,7 @@ package com.example.alexm.skistats;
 
 import android.content.Intent;
 import android.graphics.Typeface;
+import android.icu.text.AlphabeticIndex;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -90,7 +91,7 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_record) {
-            // Handle the camera action
+            startActivity(new Intent(MainActivity.this, RecordActivity.class));
 
         } else if (id == R.id.nav_history){
 
