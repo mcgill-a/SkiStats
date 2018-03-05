@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Ski Stats</string>
 
+    <string name="skier_icon_round">Skier Icon</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
