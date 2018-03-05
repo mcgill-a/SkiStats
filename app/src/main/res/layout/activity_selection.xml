@@ -284,19 +284,37 @@
         android:id="@+id/time"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:weightSum="1"
+        android:weightSum="5"
         android:background="#ddf4da">
+
+        <TextView
+            android:id="@+id/gpsStartTimeValue"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2.2"
+            android:text="STARTED: 00:00:00"
+            android:textAlignment="center"
+            android:textSize="13dp" />
 
         <TextView
             android:id="@+id/timeTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_weight="0.6"
             android:text="TIME"
             android:textColor="#000"
             android:textAlignment="center"
             android:textSize="27dp"
             android:textStyle="bold"/>
+
+        <TextView
+            android:id="@+id/gpsEndTimeValue"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2.2"
+            android:text="FINISHED: 00:00:00"
+            android:textAlignment="center"
+            android:textSize="13dp" />
 
     </LinearLayout>
 

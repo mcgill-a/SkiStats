@@ -19,6 +19,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 
 import org.joda.time.DateTime;
+import org.joda.time.LocalTime;
 import org.joda.time.Seconds;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -52,7 +53,11 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
     private TextView skiTimeValue;
     private TextView skiLiftTimeValue;
     private TextView skiTotalTimeValue;
+    private TextView gpsStartTimeValue;
+    private TextView gpsEndTimeValue;
 
+
+    private DateTimeFormatter fmt = DateTimeFormat.forPattern("HH:mm:ss");
     public List<TrackPoint> tPoints = new ArrayList<>();
     public List<TrackPoint> tPointsFiltered = new ArrayList<>();
 
@@ -71,7 +76,8 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
         skiTimeValue = (TextView)findViewById(R.id.skiTimeValue);
         skiLiftTimeValue = (TextView)findViewById(R.id.skiLiftTimeValue);
         skiTotalTimeValue = (TextView)findViewById(R.id.totalTimeValue);
-
+        gpsStartTimeValue = (TextView)findViewById(R.id.gpsStartTimeValue);
+        gpsEndTimeValue = (TextView)findViewById(R.id.gpsEndTimeValue);
 
         getFileName();
         Toast.makeText(getApplicationContext(), filename, Toast.LENGTH_SHORT).show();
@@ -128,6 +134,9 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
         int totalTime = 0;
 
 
+        LocalTime gpsStartTime;
+        LocalTime gpsEndTime;
+
         double distance = 0;
         double height = 0;
         double maxDistance = 0;
@@ -163,6 +172,10 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
         double averageGradient = 0;
 
         int pauseCount = 0;
+
+        gpsStartTime = tPoints.get(0).getTime().toLocalTime();
+        gpsEndTime = tPoints.get(tPoints.size()-1).getTime().toLocalTime();
+
         for (int i = 0; i + 1 < tPoints.size(); i++)
         {
             count++;
@@ -366,6 +379,9 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
         skiTimeValue.setText(totalSkiTimeString);
         skiLiftTimeValue.setText(totalSkiLiftTimeString);
         skiTotalTimeValue.setText(totalTimeString);
+        gpsStartTimeValue.setText("STARTED: " + fmt.print(gpsStartTime));
+        gpsEndTimeValue.setText("FINISHED: " + fmt.print(gpsEndTime));
+
 
         //Toast.makeText(getApplicationContext(), " Total Distance: " + roundedTotalDistance + " KM", Toast.LENGTH_LONG).show();
     }
