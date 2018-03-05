@@ -175,6 +175,7 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
         double gradient = 0;
         int gradientCount = 0;
         double averageGradient = 0;
+        double maxGradient = 0;
 
         int pauseCount = 0;
 
@@ -203,8 +204,6 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
             distance = vector.getDistance();
             height = vector.getHeight();
             altitude = current.getElevation();
-
-
 
 
             if (altitude > maxAltitude)
@@ -253,6 +252,7 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
                 if(avgheight < 0)
                 {
                     // user is on a ski lift
+
                     totalSkiLiftDistance += distance;
                     totalSkiLiftTime += time;
                 }
@@ -270,8 +270,14 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
                     gradientCount++;
                     // Gradient (rise/run) x 100
                     double rise = height;
-                    double run = distance;
+                    double run = distance * 1000;
                     gradient = (rise / run) * 100;
+
+                    if (gradient > maxGradient)
+                    {
+                        maxGradient = gradient;
+                    }
+
                     averageGradient += gradient;
                 }
 
@@ -367,7 +373,7 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
         Log.e(TAG,"Min Altitude: " + minAltitude);
 
         Log.e(TAG,"Pause Count: " + pauseCount);
-        Log.e(TAG,"Max Gradient: ");
+        Log.e(TAG,"Max Gradient: "  + maxGradient);
         Log.e(TAG,"Average Gradient: " + averageGradient);
 
         Log.e(TAG, "Max Speed: " + maxSpeed);

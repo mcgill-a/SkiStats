@@ -378,11 +378,7 @@
             android:textAlignment="center"
             android:textSize="20dp"
             android:textStyle="bold" />
-
-
-
     </LinearLayout>
-
 
     <LinearLayout
         android:id="@+id/otherValues"

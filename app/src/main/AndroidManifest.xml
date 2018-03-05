@@ -53,7 +53,8 @@
         <activity android:name=".ImportActivity" />
         <activity
             android:name=".SelectionActivity"
-            android:label="@string/title_activity_selection"></activity>
+            android:label="@string/title_activity_selection" />
+        <activity android:name=".RecordActivity"></activity>
     </application>
 
 </manifest>
