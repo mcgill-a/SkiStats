@@ -48,6 +48,8 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
     private SkiVector skiVector = new SkiVector();
 
     private TextView distanceTotalValue;
+    private TextView distanceSkiValue;
+    private TextView distanceSkiLiftValue;
     private TextView altitudeMaxValue;
     private TextView altitudeMinValue;
     private TextView skiTimeValue;
@@ -55,6 +57,7 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
     private TextView skiTotalTimeValue;
     private TextView gpsStartTimeValue;
     private TextView gpsEndTimeValue;
+
 
 
     private DateTimeFormatter fmt = DateTimeFormat.forPattern("HH:mm:ss");
@@ -71,6 +74,8 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
         mapFragment.getMapAsync(this);
 
         distanceTotalValue = (TextView)findViewById(R.id.distanceTotalValue);
+        distanceSkiValue = (TextView)findViewById(R.id.distanceSkiValue);
+        distanceSkiLiftValue = (TextView)findViewById(R.id.distanceSkiLiftValue);
         altitudeMaxValue = (TextView)findViewById(R.id.altitudeMaxValue);
         altitudeMinValue = (TextView)findViewById(R.id.altitudeMinValue);
         skiTimeValue = (TextView)findViewById(R.id.skiTimeValue);
@@ -128,7 +133,7 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
         double totalDistance = 0;
         double totalSkiLiftDistance = 0;
         double totalSkiDistance = 0;
-        double roundedTotalDistance = 0;
+
         int totalSkiTime = 0;
         int totalSkiLiftTime = 0;
         int totalTime = 0;
@@ -368,12 +373,16 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
         Log.e(TAG, "Max Speed: " + maxSpeed);
         Log.e(TAG, filename + " Average Speed: " + averageSpeed);
 
-        roundedTotalDistance = (double)Math.round(totalDistance * 100d) / 100d;
+        double roundedTotalDistance = (double)Math.round(totalDistance * 100d) / 100d;
+        double roundedSkiDistance = (double)Math.round(totalSkiDistance * 100d) / 100d;
+        double roundedSkiLiftDistance = (double)Math.round(totalSkiLiftDistance * 100d) / 100d;
 
         int altMaxInteger = (int) maxAltitude;
         int altMinInteger = (int) minAltitude;
 
         distanceTotalValue.setText(Double.toString(roundedTotalDistance) + " KM");
+        distanceSkiValue.setText(Double.toString(roundedSkiDistance) + " KM");
+        distanceSkiLiftValue.setText(Double.toString(roundedSkiLiftDistance) + " KM");
         altitudeMaxValue.setText(altMaxInteger + "m");
         altitudeMinValue.setText(altMinInteger + "m");
         skiTimeValue.setText(totalSkiTimeString);
