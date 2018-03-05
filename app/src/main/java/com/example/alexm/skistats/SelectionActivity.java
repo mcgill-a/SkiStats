@@ -3,6 +3,7 @@ package com.example.alexm.skistats;
 import android.graphics.Color;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.support.v7.widget.DialogTitle;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
@@ -46,6 +47,11 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
     private SkiVector skiVector = new SkiVector();
 
     private TextView distanceTotalValue;
+    private TextView altitudeMaxValue;
+    private TextView altitudeMinValue;
+    private TextView skiTimeValue;
+    private TextView skiLiftTimeValue;
+    private TextView skiTotalTimeValue;
 
     public List<TrackPoint> tPoints = new ArrayList<>();
     public List<TrackPoint> tPointsFiltered = new ArrayList<>();
@@ -60,6 +66,11 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
         mapFragment.getMapAsync(this);
 
         distanceTotalValue = (TextView)findViewById(R.id.distanceTotalValue);
+        altitudeMaxValue = (TextView)findViewById(R.id.altitudeMaxValue);
+        altitudeMinValue = (TextView)findViewById(R.id.altitudeMinValue);
+        skiTimeValue = (TextView)findViewById(R.id.skiTimeValue);
+        skiLiftTimeValue = (TextView)findViewById(R.id.skiLiftTimeValue);
+        skiTotalTimeValue = (TextView)findViewById(R.id.totalTimeValue);
 
 
         getFileName();
@@ -122,7 +133,7 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
         double maxDistance = 0;
         int count = 0;
 
-        SkiVector vector = new SkiVector();
+        SkiVector vector;
 
         TrackPoint current;
         TrackPoint next;
@@ -194,7 +205,7 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
             }
             speed = distance / time;
             // filter out invalid results (for example - when gps was paused and then resumed at another location
-            if ((time > 0 && time < 60) && speed < 0.1) // speed < 100km/h 0.0277
+            if ((time > 0 && time < 60) && speed < 0.0277) // speed < 100km/h 0.0277
             {
                 // TOTAL DISTANCE
                 if (distance > maxDistance)
@@ -345,8 +356,18 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
         Log.e(TAG, filename + " Average Speed: " + averageSpeed);
 
         roundedTotalDistance = (double)Math.round(totalDistance * 100d) / 100d;
+
+        int altMaxInteger = (int) maxAltitude;
+        int altMinInteger = (int) minAltitude;
+
         distanceTotalValue.setText(Double.toString(roundedTotalDistance) + " KM");
-        Toast.makeText(getApplicationContext(), " Total Distance: " + roundedTotalDistance + " KM", Toast.LENGTH_LONG).show();
+        altitudeMaxValue.setText(altMaxInteger + "m");
+        altitudeMinValue.setText(altMinInteger + "m");
+        skiTimeValue.setText(totalSkiTimeString);
+        skiLiftTimeValue.setText(totalSkiLiftTimeString);
+        skiTotalTimeValue.setText(totalTimeString);
+
+        //Toast.makeText(getApplicationContext(), " Total Distance: " + roundedTotalDistance + " KM", Toast.LENGTH_LONG).show();
     }
 
 
