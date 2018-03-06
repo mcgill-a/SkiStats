@@ -180,7 +180,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="2"
-            android:text="SPEED"
+            android:text="SKI SPEED"
             android:textColor="#000"
             android:textAlignment="center"
             android:textSize="27dp"
