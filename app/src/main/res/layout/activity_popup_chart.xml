@@ -15,5 +15,7 @@
         ap:lineLabelRotationBottom="-45"
         ap:lineLabelTextSizeLeft="14dp"
         ap:graphMarginLeft="15dp"
-        ap:legendVisible="false" />
+        ap:legendVisible="false"
+        ap:marginTop="5dp"
+        ap:graphMarginBottom="0dp"/>
 </LinearLayout>

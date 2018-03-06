@@ -42,7 +42,10 @@ public class PopupChart extends AppCompatActivity {
             stripedVal = new BigDecimal(filter).stripTrailingZeros();
             current = stripedVal.intValue();
             altitudes[i] = current;
+            /*
+            only needed if using pinch zoom
             counter++;
+
             if (current > maxAltitude)
             {
                 maxAltitude = current;
@@ -50,6 +53,7 @@ public class PopupChart extends AppCompatActivity {
             if (current < minAltitude) {
                 minAltitude = current;
             }
+            */
         }
         return altitudes;
     }
@@ -70,7 +74,7 @@ public class PopupChart extends AppCompatActivity {
         int width = dm.widthPixels;
         int height = dm.heightPixels;
 
-        getWindow().setLayout(width, (int)(height * 0.5));
+        getWindow().setLayout(width, (int)(height * 0.45));
 
 
         // initialize our XYPlot reference:
@@ -102,7 +106,7 @@ public class PopupChart extends AppCompatActivity {
 
         // need to use multithreading before implementing this. too resource intensive.
         //PanZoom.attach(plot, PanZoom.Pan.HORIZONTAL, PanZoom.Zoom.STRETCH_HORIZONTAL);
-        plot.getOuterLimits().set(0, counter, minAltitude, maxAltitude);
+        //plot.getOuterLimits().set(0, counter, minAltitude, maxAltitude);
         plot.getGraph().getLineLabelStyle(XYGraphWidget.Edge.LEFT).setFormat(new DecimalFormat("#"));
     }
 }

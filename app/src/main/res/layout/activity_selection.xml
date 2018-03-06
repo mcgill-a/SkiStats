@@ -482,11 +482,12 @@
 
 
     <LinearLayout
-        android:id="@+id/graph"
+        android:id="@+id/buttons"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:weightSum="4.5"
-        android:background="#000">
+        android:background="#000"
+        android:layout_gravity="center_vertical">
 
         <Button
             android:id="@+id/btn1"
