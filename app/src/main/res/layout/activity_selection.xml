@@ -117,6 +117,7 @@
 
     </LinearLayout>
 
+    <!--
     <LinearLayout
         android:id="@+id/speedTitles"
         android:layout_width="fill_parent"
@@ -196,7 +197,7 @@
             android:textSize="17dp"
             android:textStyle="italic" />
 
-    </LinearLayout>
+    </LinearLayout> -->
 
     <LinearLayout
         android:id="@+id/timeTitles"
@@ -326,7 +327,7 @@
         android:background="#013830">
 
         <TextView
-            android:id="@+id/gradientMaxTitle"
+            android:id="@+id/speedMaxTitle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1.24"
@@ -337,7 +338,7 @@
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/gradientAverageTitle"
+            android:id="@+id/speedAverageTitle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1.24"
@@ -388,21 +389,21 @@
         android:background="#ddf4da">
 
         <TextView
-            android:id="@+id/gradientMaxValue"
+            android:id="@+id/speedMaxValue"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1.24"
-            android:text="0°"
+            android:text="0 KM/H"
             android:textAlignment="center"
             android:textSize="17dp"
             android:textStyle="italic" />
 
         <TextView
-            android:id="@+id/gradientAverageValue"
+            android:id="@+id/speedAverageValue"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1.24"
-            android:text="0°"
+            android:text="0 KM/H"
             android:textAlignment="center"
             android:textSize="17dp"
             android:textStyle="italic" />
@@ -446,11 +447,11 @@
         android:background="#ddf4da">
 
         <TextView
-            android:id="@+id/gradientTitle"
+            android:id="@+id/speedTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="2.34"
-            android:text="GRADIENT"
+            android:text="SKI SPEED"
             android:textColor="#000"
             android:textAlignment="center"
             android:textSize="27dp"
@@ -475,6 +476,52 @@
             android:textColor="#000"
             android:textAlignment="center"
             android:textSize="27dp"
+            android:textStyle="bold"/>
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/graph"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="5"
+        android:background="#000">
+
+        <Button
+            android:id="@+id/btn1"
+            android:backgroundTint="#fff"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.5"
+            android:text="Button"
+            android:textColor="#000"
+            android:textAlignment="center"
+            android:textSize="20dp"
+            android:textStyle="bold"/>
+
+        <Button
+            android:id="@+id/btn2"
+            android:backgroundTint="#fff"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:text="Button"
+            android:textColor="#000"
+            android:textAlignment="center"
+            android:textSize="20dp"
+            android:textStyle="bold"/>
+
+        <Button
+            android:id="@+id/btnAltitude"
+            android:backgroundTint="#fff"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.5"
+            android:text="Button"
+            android:textColor="#000"
+            android:textAlignment="center"
+            android:textSize="20dp"
             android:textStyle="bold"/>
 
     </LinearLayout>

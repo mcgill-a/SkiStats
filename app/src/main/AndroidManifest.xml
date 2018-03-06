@@ -54,7 +54,9 @@
         <activity
             android:name=".SelectionActivity"
             android:label="@string/title_activity_selection" />
-        <activity android:name=".RecordActivity"></activity>
+        <activity android:name=".RecordActivity" />
+        <activity android:name=".PopupChart"
+            android:theme="@style/AppTheme.CustomTheme"></activity>
     </application>
 
 </manifest>

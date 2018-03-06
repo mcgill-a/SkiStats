@@ -1,14 +1,17 @@
 package com.example.alexm.skistats;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DialogTitle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.androidplot.xy.XYPlot;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
@@ -58,11 +61,13 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
     private TextView gpsStartTimeValue;
     private TextView gpsEndTimeValue;
 
+    private Button buttonAltitude;
+
 
 
     private DateTimeFormatter fmt = DateTimeFormat.forPattern("HH:mm:ss");
     public List<TrackPoint> tPoints = new ArrayList<>();
-    public List<TrackPoint> tPointsFiltered = new ArrayList<>();
+    //public List<TrackPoint> tPointsFiltered = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,6 +88,16 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
         skiTotalTimeValue = (TextView)findViewById(R.id.totalTimeValue);
         gpsStartTimeValue = (TextView)findViewById(R.id.gpsStartTimeValue);
         gpsEndTimeValue = (TextView)findViewById(R.id.gpsEndTimeValue);
+
+        buttonAltitude = (Button)findViewById(R.id.btnAltitude);
+
+        buttonAltitude.setOnClickListener(new View.OnClickListener()  {
+           @Override
+            public void onClick(View v)
+           {
+               startActivity(new Intent(SelectionActivity.this, PopupChart.class));
+           }
+        });
 
         getFileName();
         Toast.makeText(getApplicationContext(), filename, Toast.LENGTH_SHORT).show();
@@ -473,7 +488,6 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
 
         }
     }
-
 
     public void setTextVales()
     {
