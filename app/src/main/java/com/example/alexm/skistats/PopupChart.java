@@ -12,6 +12,8 @@ import com.androidplot.xy.SimpleXYSeries;
 import com.androidplot.xy.XYSeries;
 import com.androidplot.xy.*;
 
+import java.math.BigDecimal;
+import java.sql.Array;
 import java.text.DecimalFormat;
 import java.text.FieldPosition;
 import java.text.Format;
@@ -22,12 +24,45 @@ public class PopupChart extends AppCompatActivity {
 
 
     private XYPlot plot;
+    private ArrayList<String> altitudeStrings;
+    private int minAltitude = Integer.MAX_VALUE;
+    private int maxAltitude = Integer.MIN_VALUE;
+    private int counter = 0;
+
+      public Number[] getAltitudes()
+    {
+        Number altitudes[] = new Number[altitudeStrings.size()];
+        int current = 0;
+        String filter = "";
+        BigDecimal stripedVal;
+
+        for(int i = 0; i < altitudeStrings.size(); i++)
+        {
+            filter = altitudeStrings.get(i);
+            stripedVal = new BigDecimal(filter).stripTrailingZeros();
+            current = stripedVal.intValue();
+            altitudes[i] = current;
+            counter++;
+            if (current > maxAltitude)
+            {
+                maxAltitude = current;
+            }
+            if (current < minAltitude) {
+                minAltitude = current;
+            }
+        }
+        return altitudes;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_popup_chart);
 
+        Bundle bundleObject = getIntent().getExtras();
+        altitudeStrings = (ArrayList<String>) bundleObject.getSerializable("alts");
+
+        //convertAltitudesToNumbers();
         DisplayMetrics dm = new DisplayMetrics();
 
         getWindowManager().getDefaultDisplay().getMetrics(dm);
@@ -41,17 +76,13 @@ public class PopupChart extends AppCompatActivity {
         // initialize our XYPlot reference:
         plot = (XYPlot) findViewById(R.id.plot);
 
-        // create a couple arrays of y-values to plot:
-        final Number[] domainLabels = {1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2};
+        // create an array of y-values to plot:
         Number[] series1Numbers = {1500, 1550, 1620, 1660, 1700, 1925, 2100, 2150, 2000, 1900, 1500, 1550, 1620, 1660, 1700, 1925, 2100, 2150, 2000, 1900};
-        Number[] series2Numbers = {5, 2, 10, 5, 20, 10, 40, 20, 80, 40};
 
         // turn the above arrays into XYSeries':
         // (Y_VALS_ONLY means use the element index as the x value)
         XYSeries series1 = new SimpleXYSeries(
-                Arrays.asList(series1Numbers), SimpleXYSeries.ArrayFormat.Y_VALS_ONLY, "Series1");
-        XYSeries series2 = new SimpleXYSeries(
-                Arrays.asList(series2Numbers), SimpleXYSeries.ArrayFormat.Y_VALS_ONLY, "Series2");
+                Arrays.asList(getAltitudes()), SimpleXYSeries.ArrayFormat.Y_VALS_ONLY, "Series1");
 
         // create formatters to use for drawing a series using LineAndPointRenderer
         // and configure them from xml:
@@ -60,38 +91,18 @@ public class PopupChart extends AppCompatActivity {
 
         series1Format.setPointLabelFormatter(null);
 
-        LineAndPointFormatter series2Format =
-                new LineAndPointFormatter(this, R.xml.line_formatter_2);
-
-        // add an "dash" effect to the series2 line:
-        series2Format.getLinePaint().setPathEffect(new DashPathEffect(new float[] {
-
-                // always use DP when specifying pixel sizes, to keep things consistent across devices:
-                PixelUtils.dpToPix(20),
-                PixelUtils.dpToPix(15)}, 0));
 
         // just for fun, add some smoothing to the lines:
         // see: http://androidplot.com/smooth-curves-and-androidplot/
         series1Format.setInterpolationParams(
-                new CatmullRomInterpolator.Params(10, CatmullRomInterpolator.Type.Centripetal));
-
-        series2Format.setInterpolationParams(
-                new CatmullRomInterpolator.Params(10, CatmullRomInterpolator.Type.Centripetal));
+                new CatmullRomInterpolator.Params(15, CatmullRomInterpolator.Type.Centripetal));
 
         // add a new series' to the xyplot:
         plot.addSeries(series1, series1Format);
-       // plot.addSeries(series2, series2Format);
+
+        // need to use multithreading before implementing this. too resource intensive.
+        //PanZoom.attach(plot, PanZoom.Pan.HORIZONTAL, PanZoom.Zoom.STRETCH_HORIZONTAL);
+        plot.getOuterLimits().set(0, counter, minAltitude, maxAltitude);
         plot.getGraph().getLineLabelStyle(XYGraphWidget.Edge.LEFT).setFormat(new DecimalFormat("#"));
-        /*plot.getGraph().getLineLabelStyle(XYGraphWidget.Edge.BOTTOM).setFormat(new Format() {
-            @Override
-            public StringBuffer format(Object obj, StringBuffer toAppendTo, FieldPosition pos) {
-                int i = Math.round(((Number) obj).floatValue());
-                return toAppendTo.append(domainLabels[i]);
-            }
-            @Override
-            public Object parseObject(String source, ParsePosition pos) {
-                return null;
-            }
-        }); */
     }
 }

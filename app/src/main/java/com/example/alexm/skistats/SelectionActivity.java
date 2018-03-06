@@ -30,6 +30,7 @@ import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +41,7 @@ import io.ticofab.androidgpxparser.parser.domain.Track;
 import io.ticofab.androidgpxparser.parser.domain.TrackPoint;
 import io.ticofab.androidgpxparser.parser.domain.TrackSegment;
 
-public class SelectionActivity extends FragmentActivity implements OnMapReadyCallback {
+public class SelectionActivity extends FragmentActivity implements OnMapReadyCallback, Serializable{
 
     private GoogleMap mMap;
     private String filename;
@@ -49,6 +50,7 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
     private GPXParser mParser = new GPXParser();
 
     private SkiVector skiVector = new SkiVector();
+    private ArrayList<String> altitudes = new ArrayList<>();
 
     private TextView distanceTotalValue;
     private TextView distanceSkiValue;
@@ -91,13 +93,7 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
 
         buttonAltitude = (Button)findViewById(R.id.btnAltitude);
 
-        buttonAltitude.setOnClickListener(new View.OnClickListener()  {
-           @Override
-            public void onClick(View v)
-           {
-               startActivity(new Intent(SelectionActivity.this, PopupChart.class));
-           }
-        });
+
 
         getFileName();
         Toast.makeText(getApplicationContext(), filename, Toast.LENGTH_SHORT).show();
@@ -107,6 +103,32 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
         statCalculations();
 
         setTextVales();
+
+
+
+        //startActivity(intent);
+
+
+        buttonAltitude.setOnClickListener(new View.OnClickListener()  {
+            @Override
+            public void onClick(View v)
+            {
+                Log.e(TAG,"step 1");
+                Intent i = new Intent(SelectionActivity.this, PopupChart.class);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("alts", altitudes);
+                i.putExtras(bundle);
+                startActivity(i);
+
+                /*Intent intent = new Intent(SelectionActivity.this, PopupChart.class);
+                intent.putExtra("altitudes", altitudes);
+                startActivity(intent);*/
+
+
+                Log.e(TAG,"step 5");
+                //startActivity(new Intent(SelectionActivity.this, PopupChart.class));
+            }
+        });
 
     }
 
@@ -202,7 +224,7 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
             count++;
             current = tPoints.get(i);
             next = tPoints.get(i+1);
-
+            altitudes.add(current.getElevation().toString());
             Seconds seconds = Seconds.secondsBetween(current.getTime(), next.getTime());
 
             time = seconds.getSeconds();
