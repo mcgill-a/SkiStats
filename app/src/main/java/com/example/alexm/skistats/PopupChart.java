@@ -74,7 +74,7 @@ public class PopupChart extends AppCompatActivity {
         int width = dm.widthPixels;
         int height = dm.heightPixels;
 
-        getWindow().setLayout(width, (int)(height * 0.45));
+        getWindow().setLayout(width, (int)(height * 0.46));
 
 
         // initialize our XYPlot reference:

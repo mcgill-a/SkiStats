@@ -101,7 +101,7 @@
             android:id="@+id/stopwatch"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="00:00:00"
+            android:text="0:00:00"
             android:textAlignment="center"
             android:textSize="70dp"
             android:textStyle="bold"/>

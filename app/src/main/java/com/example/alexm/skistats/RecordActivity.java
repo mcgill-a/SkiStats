@@ -18,7 +18,7 @@ public class RecordActivity extends AppCompatActivity {
     private ImageButton recordImageButton, pauseImageButton, cancelImageButton, submitImageButton;
     private TextView stopwatch;
     long millisecondTime, startTime, timeBuff, updateTime = 0L;
-    int seconds, minutes, milliseconds;
+    int hours, seconds, minutes, milliseconds;
     Handler handler;
 
     @Override
@@ -86,6 +86,8 @@ public class RecordActivity extends AppCompatActivity {
 
             updateTime = timeBuff + millisecondTime;
 
+            hours = (int) ((millisecondTime / (1000*60*60)) % 24);
+
             seconds = (int) (updateTime / 1000);
 
             minutes = seconds / 60;
@@ -94,8 +96,17 @@ public class RecordActivity extends AppCompatActivity {
 
             milliseconds = (int) (updateTime % 1000);
 
-            stopwatch.setText("" + minutes + ":"
-                    + String.format("%02d", seconds));
+            if (minutes < 10)
+            {
+                stopwatch.setText(""  + hours + ":0" + minutes + ":"
+                        + String.format("%02d", seconds));
+            }
+            else
+            {
+                stopwatch.setText(""  + hours + ":" + minutes + ":"
+                        + String.format("%02d", seconds));
+            }
+
 
             handler.postDelayed(this, 0);
         }
