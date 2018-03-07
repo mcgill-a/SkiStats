@@ -97,39 +97,21 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
 
         getFileName();
         Toast.makeText(getApplicationContext(), filename, Toast.LENGTH_SHORT).show();
-
         getData();
-
         statCalculations();
-
         setTextVales();
-
-
-
-        //startActivity(intent);
-
 
         buttonAltitude.setOnClickListener(new View.OnClickListener()  {
             @Override
             public void onClick(View v)
             {
-                Log.e(TAG,"step 1");
                 Intent i = new Intent(SelectionActivity.this, PopupChart.class);
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("alts", altitudes);
                 i.putExtras(bundle);
                 startActivity(i);
-
-                /*Intent intent = new Intent(SelectionActivity.this, PopupChart.class);
-                intent.putExtra("altitudes", altitudes);
-                startActivity(intent);*/
-
-
-                Log.e(TAG,"step 5");
-                //startActivity(new Intent(SelectionActivity.this, PopupChart.class));
             }
         });
-
     }
 
     public void getData() {
@@ -176,8 +158,8 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
         int totalTime = 0;
 
 
-        LocalTime gpsStartTime;
-        LocalTime gpsEndTime;
+        DateTime gpsStartTime;
+        DateTime gpsEndTime;
 
         double distance = 0;
         double height = 0;
@@ -192,6 +174,8 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
         double averageSpeed = 0;
         double speed = 0;
         double maxSpeed = 0;
+        double maxspeedAvgHeight = 0;
+        int maxSpeedTime = 0;
         int time = 0;
         int maxTime = 0;
         int timeCount = 0;
@@ -200,8 +184,6 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
         double altitude = 0;
         double maxAltitude = 0;
         double minAltitude = Double.MAX_VALUE;
-
-
 
         double avgheight = 0;
         double a = 0;
@@ -216,15 +198,15 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
 
         int pauseCount = 0;
 
-        gpsStartTime = tPoints.get(0).getTime().toLocalTime();
-        gpsEndTime = tPoints.get(tPoints.size()-1).getTime().toLocalTime();
+        gpsStartTime = tPoints.get(0).getTime().toDateTime();
+        gpsEndTime = tPoints.get(tPoints.size()-1).getTime().toDateTime();
 
         for (int i = 0; i + 1 < tPoints.size(); i++)
         {
             count++;
             current = tPoints.get(i);
             next = tPoints.get(i+1);
-            altitudes.add(current.getElevation().toString());
+
             Seconds seconds = Seconds.secondsBetween(current.getTime(), next.getTime());
 
             time = seconds.getSeconds();
@@ -259,8 +241,9 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
             }
             speed = distance / time;
             // filter out invalid results (for example - when gps was paused and then resumed at another location
-            if ((time > 0 && time < 60) && speed < 0.0277) // speed < 100km/h 0.0277
+            if ((time > 0 && time < 40) && (speed < 0.0277)) // speed < 100km/h 0.0277
             {
+                altitudes.add(current.getElevation().toString());
                 // TOTAL DISTANCE
                 if (distance > maxDistance)
                 {
@@ -273,7 +256,6 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
                 // how?
                 // check average of 3 heights, 1 before 1 now 1 after. If average is uphill then lift
 
-
                     if (i > 1 && (i < tPoints.size() - 2)) // so doesnt go out of bounds (0-1) (size+2)
                     {
                         a = ((tPoints.get(i - 1).getElevation()) - (tPoints.get(i).getElevation()));
@@ -283,7 +265,7 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
                     }
                     else
                     {
-                        avgheight = 1; // set avg to 1 (poisitive height increase, so not on ski lift)
+                        avgheight = 1; // set avg to 1 (positive height increase, so not on ski lift)
                     }
 
                 if(avgheight < 0)
@@ -302,6 +284,8 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
                     if (speed > maxSpeed)
                     {
                         maxSpeed = speed;
+                        maxspeedAvgHeight = avgheight;
+                        maxSpeedTime = time;
                     }
                     averageSpeed += speed;
                     gradientCount++;
@@ -329,51 +313,6 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
                     averageSpeed += speed;
                 } */
             }
-
-            //DateTime dt = new DateTime(current.getTime());
-            //DateTimeFormatter fmt = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
-            //Log.e(TAG, seconds.getSeconds());
-            // AVERAGE SPEED
-            //timeDifference = (current.getTime() - next.getTime());
-            //DateTime dtNext = new DateTime(next.getTime());
-            if (time > maxTime)
-            {
-                maxTime = time;
-            }
-
-            if (time > 15 && time < 60) // ignore the speed
-            {
-                //timeCount++;
-            }
-            if (time > 60) // ignore the speed and distance
-            {
-                timeCount2++;
-            }
-
-            if (time == 1)
-            {
-                //marker++;
-            }
-            timeCount++;
-
-            /*if (time > 0 && time < 60) //&& distance < 0.043)
-            {
-                speed = distance / time;
-                if (speed > maxSpeed)
-                {
-                    maxSpeed = speed;
-                    //marker = i;
-                }
-                //averageSpeed += speed;
-            }*/
-            if (time != 0 && speed < 0.02)
-            {
-                /*if (speed > maxSpeed)
-                {
-                    maxSpeed = speed;
-                }
-                averageSpeed += speed; */
-            }
         }
         averageSpeed = averageSpeed / gradientCount;
         averageGradient = averageGradient / gradientCount;
@@ -397,7 +336,7 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
         //Log.e(TAG, "Max Time:  " + maxTime);
         //Log.e(TAG, "Time Count:  " + timeCount);
         //Log.e(TAG, "Time Count > 60:  " + timeCount2);
-        //Log.e(TAG, "Max Individual Distance: " + maxDistance);
+        Log.e(TAG, "Max Individual Distance: " + maxDistance);
         Log.e(TAG,"Total Distance: " + totalDistance);
         Log.e(TAG,"Total Ski Distance: " + totalSkiDistance);
         Log.e(TAG,"Total Ski Lift Distance: " + totalSkiLiftDistance);
@@ -414,6 +353,8 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
         Log.e(TAG,"Average Gradient: " + averageGradient);
 
         Log.e(TAG, "Max Speed: " + maxSpeed);
+        Log.e(TAG, "Max Speed avgheight: " + maxspeedAvgHeight);
+        Log.e(TAG, "Max Speed time: " + maxSpeedTime);
         Log.e(TAG, filename + " Average Speed: " + averageSpeed);
 
         double roundedTotalDistance = (double)Math.round(totalDistance * 100d) / 100d;
