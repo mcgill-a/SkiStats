@@ -153,7 +153,21 @@ public class RecordActivity extends AppCompatActivity {
                         ActivityCompat.requestPermissions(RecordActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_CODE);
                         return;
                     }
-                    fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.myLooper());
+
+                    /* GpsListener listener = new GpsListener(getApplicationContext());
+                    Location location = listener.getLocation();
+                    if (location == null)
+                    {
+                        Toast.makeText(getApplicationContext(),"GPS unable to return value",Toast.LENGTH_SHORT).show();
+                    }
+                    else
+                    {
+                        Log.e(TAG,"Lat: " + String.valueOf(location.getLatitude()) + " | Lon: " + String.valueOf(location.getLongitude()) + " | Altitude: " + String.valueOf(location.getAltitude()));
+                        locations.add(location);
+                    } */
+
+                    // Orgiginal gps location provider
+                    //fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.myLooper());
                     startTime = SystemClock.uptimeMillis();
                     handler.postDelayed(runnable, 0);
 
@@ -173,11 +187,6 @@ public class RecordActivity extends AppCompatActivity {
 
                     Toast.makeText(RecordActivity.this, "Paused Recording", Toast.LENGTH_SHORT).show();
 
-                    if (ActivityCompat.checkSelfPermission(RecordActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                            && ActivityCompat.checkSelfPermission(RecordActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                        ActivityCompat.requestPermissions(RecordActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_CODE);
-                        return;
-                    }
                     fusedLocationProviderClient.removeLocationUpdates(locationCallback);
 
                     // Change state of button
@@ -356,7 +365,10 @@ public class RecordActivity extends AppCompatActivity {
                 for(Location location : locationResult.getLocations())
                 {
                     Log.e(TAG,"Lat: " + String.valueOf(location.getLatitude()) + " | Lon: " + String.valueOf(location.getLongitude()) + " | Altitude: " + String.valueOf(location.getAltitude()));
-                    locations.add(location);
+                    if(location.getAccuracy() > 0)
+                    {
+                        locations.add(location);
+                    }
                 }
             }
         };

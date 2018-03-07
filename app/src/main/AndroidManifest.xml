@@ -57,6 +57,12 @@
         <activity android:name=".RecordActivity" />
         <activity android:name=".PopupChart"
             android:theme="@style/AppTheme.CustomTheme"></activity>
+
+        <service
+            android:name=".LocationService"
+            android:enabled="true"
+            android:exported="false"></service>
+
     </application>
 
 </manifest>
