@@ -6,6 +6,7 @@ import android.util.DisplayMetrics;
 import android.app.Activity;
 import android.graphics.*;
 import android.os.Bundle;
+import android.widget.Toast;
 
 import com.androidplot.util.PixelUtils;
 import com.androidplot.xy.SimpleXYSeries;
@@ -66,7 +67,6 @@ public class PopupChart extends AppCompatActivity {
         Bundle bundleObject = getIntent().getExtras();
         altitudeStrings = (ArrayList<String>) bundleObject.getSerializable("alts");
 
-        //convertAltitudesToNumbers();
         DisplayMetrics dm = new DisplayMetrics();
 
         getWindowManager().getDefaultDisplay().getMetrics(dm);
@@ -80,33 +80,46 @@ public class PopupChart extends AppCompatActivity {
         // initialize our XYPlot reference:
         plot = (XYPlot) findViewById(R.id.plot);
 
-        // create an array of y-values to plot:
-        Number[] series1Numbers = {1500, 1550, 1620, 1660, 1700, 1925, 2100, 2150, 2000, 1900, 1500, 1550, 1620, 1660, 1700, 1925, 2100, 2150, 2000, 1900};
+        if (altitudeStrings.size() == 0)
+        {
+            Toast.makeText(getApplicationContext(),"No GPS Data Loaded",Toast.LENGTH_LONG).show();
+        }
+        else if(altitudeStrings.size() > 0 && altitudeStrings.size() < 10)
+        {
+            Toast.makeText(getApplicationContext(),"Not enough GPS Data Loaded",Toast.LENGTH_LONG).show();
+        }
+        else
+        {
 
-        // turn the above arrays into XYSeries':
-        // (Y_VALS_ONLY means use the element index as the x value)
-        XYSeries series1 = new SimpleXYSeries(
-                Arrays.asList(getAltitudes()), SimpleXYSeries.ArrayFormat.Y_VALS_ONLY, "Series1");
+            // create an array of y-values to plot:
+            Number[] series1Numbers = {1500, 1550, 1620, 1660, 1700, 1925, 2100, 2150, 2000, 1900, 1500, 1550, 1620, 1660, 1700, 1925, 2100, 2150, 2000, 1900};
 
-        // create formatters to use for drawing a series using LineAndPointRenderer
-        // and configure them from xml:
-        LineAndPointFormatter series1Format =
-                new LineAndPointFormatter(this, R.xml.line_formatter_1);
+            // turn the above arrays into XYSeries':
+            // (Y_VALS_ONLY means use the element index as the x value)
+            XYSeries series1 = new SimpleXYSeries(
+                    Arrays.asList(getAltitudes()), SimpleXYSeries.ArrayFormat.Y_VALS_ONLY, "Series1");
 
-        series1Format.setPointLabelFormatter(null);
+            // create formatters to use for drawing a series using LineAndPointRenderer
+            // and configure them from xml:
+            LineAndPointFormatter series1Format =
+                    new LineAndPointFormatter(this, R.xml.line_formatter_1);
+
+            series1Format.setPointLabelFormatter(null);
 
 
-        // just for fun, add some smoothing to the lines:
-        // see: http://androidplot.com/smooth-curves-and-androidplot/
-        series1Format.setInterpolationParams(
-                new CatmullRomInterpolator.Params(15, CatmullRomInterpolator.Type.Centripetal));
+            // just for fun, add some smoothing to the lines:
+            // see: http://androidplot.com/smooth-curves-and-androidplot/
+            series1Format.setInterpolationParams(
+                    new CatmullRomInterpolator.Params(15, CatmullRomInterpolator.Type.Centripetal));
 
-        // add a new series' to the xyplot:
-        plot.addSeries(series1, series1Format);
+            // add a new series' to the xyplot:
+            plot.addSeries(series1, series1Format);
 
-        // need to use multithreading before implementing this. too resource intensive.
-        //PanZoom.attach(plot, PanZoom.Pan.HORIZONTAL, PanZoom.Zoom.STRETCH_HORIZONTAL);
-        //plot.getOuterLimits().set(0, counter, minAltitude, maxAltitude);
-        plot.getGraph().getLineLabelStyle(XYGraphWidget.Edge.LEFT).setFormat(new DecimalFormat("#"));
+            // need to use multithreading before implementing this. too resource intensive.
+            //PanZoom.attach(plot, PanZoom.Pan.HORIZONTAL, PanZoom.Zoom.STRETCH_HORIZONTAL);
+            //plot.getOuterLimits().set(0, counter, minAltitude, maxAltitude);
+            plot.getGraph().getLineLabelStyle(XYGraphWidget.Edge.LEFT).setFormat(new DecimalFormat("#"));
+        }
+        //convertAltitudesToNumbers();
     }
 }

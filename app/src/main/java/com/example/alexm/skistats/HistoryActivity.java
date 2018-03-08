@@ -1,13 +1,20 @@
 package com.example.alexm.skistats;
 
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.media.MediaScannerConnection;
 import android.os.Environment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.ContextMenu;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -15,6 +22,8 @@ import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -25,6 +34,9 @@ public class HistoryActivity extends AppCompatActivity {
     private ListView lv;
     private List<String> gpsFiles = new ArrayList<String>();
     private List<String> fileList = new ArrayList<>();
+    private String TAG = "SkiStats.Log";
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,18 +51,133 @@ public class HistoryActivity extends AppCompatActivity {
         // first parameter, the type of list view as a second parameter and your
         // array as a third parameter.
         sortListAlphabetically();
-        updateList();
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(
+                this,
+                android.R.layout.simple_list_item_1,
+                gpsFiles);
+        lv.setAdapter(arrayAdapter);
+        registerForContextMenu(lv);
+        //updateList();
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 //String filename = gpsFiles.get(i);
-                String filename = fileList.get(i);
+                String filename = gpsFiles.get(i);
                 //Toast.makeText(getApplicationContext(), filename, Toast.LENGTH_SHORT).show();
                 Intent appInfo = new Intent(HistoryActivity.this, SelectionActivity.class);
-                appInfo.putExtra("filename", filename);
+                String path = Environment.getExternalStorageDirectory() + "/" +  "SkiStats/GPS/Recordings/";
+                String full = path + filename;
+                appInfo.putExtra("filename", full);
                 startActivity(appInfo);
             }
         });
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        if(v.getId() == R.id.HistoryListView)
+        {
+            AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
+            menu.setHeaderTitle(gpsFiles.get(info.position));
+            menu.add(Menu.NONE, 0, 0, "Rename");
+            menu.add(Menu.NONE, 1, 1, "Delete");
+        }
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        int menuItemIndex = item.getItemId();
+        String menuItemName = "";
+        if (menuItemIndex == 0) {
+            menuItemName = "Rename";
+            renameFile(menuItemName, info.position);
+        } else if (menuItemIndex == 1) {
+            menuItemName = "Delete";
+            deleteFile(menuItemName, info.position);
+        }
+        //String listItemName = gpsFiles.get(info.position);
+
+
+        return true;
+    }
+
+    public void renameFile(String menuItem, int listPosition)
+    {
+        String name = gpsFiles.get(listPosition);
+        Toast.makeText(getApplicationContext(), "Editing " + name,Toast.LENGTH_SHORT).show();
+        //gpsFiles.get(listPosition);
+    }
+
+    public void deleteFile(String menuItem, int listPosition)
+    {
+        final String selectedName = gpsFiles.get(listPosition);
+
+        AlertDialog.Builder alert = new AlertDialog.Builder(HistoryActivity.this);
+        alert.setTitle("Delete Recording");
+        alert.setMessage("Do you want to delete this recording?");
+
+        DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                switch(i)
+                {
+                    case DialogInterface.BUTTON_POSITIVE:
+                        // User selects Yes
+                        // do a thing to cancel recording
+                        Log.e(TAG, "Deleting recording: " + selectedName);
+
+                        String path = Environment.getExternalStorageDirectory() + "/" +  "SkiStats/GPS/Recordings/";
+                        File dir = new File(path);
+
+                        String fullFileName = selectedName;// + ".gpx";
+                        String fullnamePath = path + fullFileName;
+                        File recording = new File(dir, fullFileName);
+                        Log.e(TAG,"Full path to remove: " + fullnamePath);
+
+                        recording.delete();
+                        if(recording.exists())
+                        {
+                            getApplicationContext().deleteFile(recording.getName());
+                        }
+                        MediaScannerConnection.scanFile(getApplicationContext(), new String[]{fullnamePath}, null, null);
+                        if(recording.exists())
+                        {
+                            Log.e(TAG,"exists");
+                        }
+                        else
+                        {
+                            Log.e(TAG,"deleted");
+                        }
+
+                        for (String current : gpsFiles)
+                        {
+                            if (current == selectedName)
+                            {
+                                gpsFiles.remove(current);
+                            }
+                        }
+
+                        updateList();
+                        break;
+
+                    case DialogInterface.BUTTON_NEGATIVE:
+                        // User clicked No
+                        break;
+                }
+            }
+        };
+
+        alert.setPositiveButton("Delete", dialogClickListener);
+        alert.setNegativeButton("Cancel", dialogClickListener);
+
+        AlertDialog dialog = alert.create();
+        // Display the alert
+        dialog.show();
+
+        Toast.makeText(getApplicationContext(), "Deleting " + selectedName,Toast.LENGTH_SHORT).show();
+        //gpsFiles.remove(listPosition);
     }
 
     public void sortListAlphabetically()
@@ -60,13 +187,12 @@ public class HistoryActivity extends AppCompatActivity {
 
     public void updateList()
     {
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(
+        /*ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(
                 this,
                 android.R.layout.simple_list_item_1,
                 gpsFiles);
-
-        lv.setAdapter(arrayAdapter);
-        arrayAdapter.notifyDataSetChanged();
+        lv.setAdapter(arrayAdapter); */
+        ((BaseAdapter) lv.getAdapter()).notifyDataSetChanged();
     }
 
     // temporary method, ghetto version that will do for now....

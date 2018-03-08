@@ -317,12 +317,13 @@ public class RecordActivity extends AppCompatActivity {
         String header = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\" ?>" + "\n" +
                 "<gpx xmlns=\"http://www.topografix.com/GPX/1/1\" creator=\"SkiStats\" version=\"1.1\"" + "\n" +
                 "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://www.topografix.com/GPX/1/1 " +
-                "http://www.topografix.com/GPX/1/1/gpx.xsd\">" + "\n" + "<trk>\n";
+                "http://www.topografix.com/GPX/1/1/gpx.xsd\">" + "\n";
 
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
-        DateTime currentTime = new DateTime();
+        DateTime currentTime = new DateTime(points.get(points.size()-1).getTime());
         //String metadata = "<metadata>" + "\n" + "<time>" + df.format(new DateTime(currentTime));
-
+        String metadata = "<metadata>" + "\n" + "<link href=\"https://cr-ad.github.io/alexmcgill.net/\">" +"\n" +
+                "<text>Ski Stats</text>" + "\n" + "</link>" + "\n" + "<time>" + currentTime + "</time>" + "\n" + "</metadata>" + "\n"+"<trk>" + "\n";
         String name = "<name>" + n + "</name>" + "\n" + "<trkseg>\n";
 
         String segments = "";
@@ -337,7 +338,7 @@ public class RecordActivity extends AppCompatActivity {
         try {
             FileWriter writer = new FileWriter(file, false);
             writer.append(header);
-            //writer.append(metadata);
+            writer.append(metadata);
             writer.append(name);
             writer.append(segments);
             writer.append(footer);

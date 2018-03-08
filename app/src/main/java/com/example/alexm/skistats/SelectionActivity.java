@@ -99,9 +99,15 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
 
         getFileName();
         //Toast.makeText(getApplicationContext(), filename, Toast.LENGTH_SHORT).show();
-        getData();
-        statCalculations();
-        setTextVales();
+        if(getData() != -1)
+        {
+            statCalculations();
+            setTextVales();
+        }
+        else
+        {
+            gpxReadFailed();
+        }
 
         buttonAltitude.setOnClickListener(new View.OnClickListener()  {
             @Override
@@ -116,7 +122,7 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
         });
     }
 
-    public void getData() {
+    public int getData() {
         Gpx parsedGpx = null;
 
         LatLng latlng;
@@ -152,11 +158,15 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
                     }
                 }
             }
-            //Toast.makeText(getApplicationContext(), "", Toast.LENGTH_SHORT).show();
-        } else {
-            Log.e(TAG, "Error parsing gpx file");
-            Toast.makeText(getApplicationContext(), "GPX File Read Failed", Toast.LENGTH_SHORT).show();
+            return 1;
         }
+        return -1;
+    }
+
+    public void gpxReadFailed()
+    {
+        Log.e(TAG, "Error parsing gpx file");
+        Toast.makeText(getApplicationContext(), "GPX File Read Failed", Toast.LENGTH_SHORT).show();
     }
 
     public void statCalculations()
