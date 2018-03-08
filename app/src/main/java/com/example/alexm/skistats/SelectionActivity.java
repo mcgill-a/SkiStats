@@ -28,6 +28,8 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.xmlpull.v1.XmlPullParserException;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
@@ -96,7 +98,7 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
 
 
         getFileName();
-        Toast.makeText(getApplicationContext(), filename, Toast.LENGTH_SHORT).show();
+        //Toast.makeText(getApplicationContext(), filename, Toast.LENGTH_SHORT).show();
         getData();
         statCalculations();
         setTextVales();
@@ -119,7 +121,17 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
 
         LatLng latlng;
         try {
-            InputStream in = getAssets().open("gpsData/sauze/"+ filename);
+            if (filename.charAt(0) == '/')
+            {
+                StringBuilder sb = new StringBuilder(filename);
+                sb.deleteCharAt(0);
+                filename = sb.toString();
+            }
+            //InputStream in = getAssets().open("gpsData/sauze/"+ filename);
+            Log.e(TAG,"FilePath: " + filename);
+            File file = new File(filename);
+            InputStream in = new FileInputStream(file);
+            //InputStream in = getAssets().open(filename);
             parsedGpx = mParser.parse(in);
         } catch (IOException | XmlPullParserException e) {
             e.printStackTrace();

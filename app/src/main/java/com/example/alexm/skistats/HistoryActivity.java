@@ -12,13 +12,19 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 public class HistoryActivity extends AppCompatActivity {
 
     private ListView lv;
     private List<String> gpsFiles = new ArrayList<String>();
+    private List<String> fileList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,16 +38,13 @@ public class HistoryActivity extends AppCompatActivity {
         // This is the array adapter, it takes the context of the activity as a
         // first parameter, the type of list view as a second parameter and your
         // array as a third parameter.
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(
-                this,
-                android.R.layout.simple_list_item_1,
-                gpsFiles);
-
-        lv.setAdapter(arrayAdapter);
+        sortListAlphabetically();
+        updateList();
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                String filename = gpsFiles.get(i);
+                //String filename = gpsFiles.get(i);
+                String filename = fileList.get(i);
                 //Toast.makeText(getApplicationContext(), filename, Toast.LENGTH_SHORT).show();
                 Intent appInfo = new Intent(HistoryActivity.this, SelectionActivity.class);
                 appInfo.putExtra("filename", filename);
@@ -50,15 +53,32 @@ public class HistoryActivity extends AppCompatActivity {
         });
     }
 
+    public void sortListAlphabetically()
+    {
+        Collections.sort(gpsFiles, String.CASE_INSENSITIVE_ORDER);
+    }
+
+    public void updateList()
+    {
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(
+                this,
+                android.R.layout.simple_list_item_1,
+                gpsFiles);
+
+        lv.setAdapter(arrayAdapter);
+        arrayAdapter.notifyDataSetChanged();
+    }
+
     // temporary method, ghetto version that will do for now....
     public void getAllGpsFileNames()
     {
         // Default Sample GPX Files
-        for (int i = 1; i < 5; i++)
+        /* for (int i = 1; i < 5; i++)
         {
             File file = new File("gpsData/sauze/Day_" + i + "_2017-2018.gpx");
             gpsFiles.add(file.getName());
-        }
+            fileList.add(file.getAbsolutePath());
+        } */
 
         // User Recording GPX Files
         String path = Environment.getExternalStorageDirectory() + "/" +  "SkiStats/GPS/Recordings/";
@@ -88,9 +108,10 @@ public class HistoryActivity extends AppCompatActivity {
                 if (extension.equals(".gpx"));
                 {
                     Log.e("SkiStats.Log", "File Name: " + file.getName());
+                    gpsFiles.add(file.getName());
+                    fileList.add(file.getAbsolutePath());
                 }
             }
         }
     }
-
 }
