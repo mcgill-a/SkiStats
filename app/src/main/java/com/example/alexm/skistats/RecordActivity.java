@@ -167,7 +167,7 @@ public class RecordActivity extends AppCompatActivity {
                     } */
 
                     // Orgiginal gps location provider
-                    //fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.myLooper());
+                    fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.myLooper());
                     startTime = SystemClock.uptimeMillis();
                     handler.postDelayed(runnable, 0);
 
@@ -283,12 +283,7 @@ public class RecordActivity extends AppCompatActivity {
                                 case DialogInterface.BUTTON_NEGATIVE:
                                     // User clicked No
                                     Log.e(TAG,"GPS Recording - Discarded");
-                                    millisecondTime = 0L;
-                                    startTime = 0L;
-                                    timeBuff = 0L;
-                                    updateTime = 0L;
-                                    locations.clear();
-                                    stopwatch.setText("0:00:00");
+                                    resetStopwatch();
                                     locations.clear();
                                     break;
                             }
@@ -348,7 +343,7 @@ public class RecordActivity extends AppCompatActivity {
             writer.append(footer);
             writer.flush();
             writer.close();
-            Log.e("SkiStats.Log.Status", "Saved " + points.size() + " points.");
+            Log.e("SkiStats.Log.Status", "Saved " + (points.size() -1) + " points.");
         } catch (IOException e) {
             // TODO Auto-generated catch block
             Log.e("SkiStats.Log.Status", "Error Writting Path",e);
@@ -411,8 +406,6 @@ public class RecordActivity extends AppCompatActivity {
                 stopwatch.setText(""  + hours + ":" + minutes + ":"
                         + String.format("%02d", seconds));
             }
-
-
             handler.postDelayed(this, 0);
         }
     };

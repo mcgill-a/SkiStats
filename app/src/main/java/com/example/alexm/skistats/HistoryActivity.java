@@ -1,8 +1,10 @@
 package com.example.alexm.skistats;
 
 import android.content.Intent;
+import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -51,10 +53,44 @@ public class HistoryActivity extends AppCompatActivity {
     // temporary method, ghetto version that will do for now....
     public void getAllGpsFileNames()
     {
+        // Default Sample GPX Files
         for (int i = 1; i < 5; i++)
         {
             File file = new File("gpsData/sauze/Day_" + i + "_2017-2018.gpx");
             gpsFiles.add(file.getName());
         }
+
+        // User Recording GPX Files
+        String path = Environment.getExternalStorageDirectory() + "/" +  "SkiStats/GPS/Recordings/";
+        File[] files = new File(path).listFiles();
+
+        showFiles(files);
     }
+    public void showFiles(File[] files)
+    {
+        for (File file : files)
+        {
+            if(file.isDirectory())
+            {
+                showFiles(file.listFiles());
+            }
+            else
+            {
+                // Reverse string to make file extension appear first
+                String reverse = new StringBuilder(file.getName()).reverse().toString();
+                String extension = "";
+                for (int i = 0; i < 4; i++)
+                {
+                    extension += reverse.charAt(i);
+                }
+                // Reverse file extension back
+                extension = new StringBuilder(extension).reverse().toString();
+                if (extension.equals(".gpx"));
+                {
+                    Log.e("SkiStats.Log", "File Name: " + file.getName());
+                }
+            }
+        }
+    }
+
 }
