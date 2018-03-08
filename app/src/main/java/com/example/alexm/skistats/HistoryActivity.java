@@ -1,5 +1,6 @@
 package com.example.alexm.skistats;
 
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.media.MediaScannerConnection;
@@ -9,12 +10,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.ContextMenu;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -35,6 +38,7 @@ public class HistoryActivity extends AppCompatActivity {
     private List<String> gpsFiles = new ArrayList<String>();
     private List<String> fileList = new ArrayList<>();
     private String TAG = "SkiStats.Log";
+    private String renameTo = "";
 
 
 
@@ -105,8 +109,32 @@ public class HistoryActivity extends AppCompatActivity {
 
     public void renameFile(String menuItem, int listPosition)
     {
-        String name = gpsFiles.get(listPosition);
-        Toast.makeText(getApplicationContext(), "Editing " + name,Toast.LENGTH_SHORT).show();
+        final String selectedName = gpsFiles.get(listPosition);
+
+        View view = (LayoutInflater.from(HistoryActivity.this)).inflate(R.layout.popup_rename_file, null);
+        AlertDialog.Builder alert = new AlertDialog.Builder(HistoryActivity.this);
+        alert.setTitle("Rename Recording");
+        //alert.setMessage("Enter the new name for the recording");
+        alert.setView(view);
+        final EditText userInput = (EditText) view.findViewById(R.id.userInput);
+
+        alert.setCancelable(true)
+                .setPositiveButton("Confirm", new DialogInterface.OnClickListener(){
+
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int which) {
+                        renameTo = userInput.getText().toString();
+                        Toast.makeText(getApplicationContext(), renameTo,Toast.LENGTH_SHORT).show();
+
+                    }
+
+    });
+
+        Dialog dialog = alert.create();
+        dialog.show();
+
+
+        Toast.makeText(getApplicationContext(), "Editing " + selectedName,Toast.LENGTH_SHORT).show();
         //gpsFiles.get(listPosition);
     }
 
@@ -141,24 +169,16 @@ public class HistoryActivity extends AppCompatActivity {
                         {
                             getApplicationContext().deleteFile(recording.getName());
                         }
+                        // To ensure the file is removed on Windows Operating System also
                         MediaScannerConnection.scanFile(getApplicationContext(), new String[]{fullnamePath}, null, null);
-                        if(recording.exists())
-                        {
-                            Log.e(TAG,"exists");
-                        }
-                        else
-                        {
-                            Log.e(TAG,"deleted");
-                        }
 
-                        for (String current : gpsFiles)
+                        for (int j = 0; j < gpsFiles.size(); j++)
                         {
-                            if (current == selectedName)
+                            if (gpsFiles.get(j).equals(selectedName))
                             {
-                                gpsFiles.remove(current);
+                                gpsFiles.remove(j);
                             }
                         }
-
                         updateList();
                         break;
 
@@ -187,11 +207,6 @@ public class HistoryActivity extends AppCompatActivity {
 
     public void updateList()
     {
-        /*ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(
-                this,
-                android.R.layout.simple_list_item_1,
-                gpsFiles);
-        lv.setAdapter(arrayAdapter); */
         ((BaseAdapter) lv.getAdapter()).notifyDataSetChanged();
     }
 
