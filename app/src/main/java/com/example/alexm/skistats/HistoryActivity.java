@@ -35,11 +35,38 @@ import java.util.List;
 public class HistoryActivity extends AppCompatActivity {
 
     private ListView lv;
+    private List<HistoryFile> historyFiles = new ArrayList<>();
     private List<String> gpsFiles = new ArrayList<String>();
     private List<String> gpsFilesNoExtension;
     //private List<String> fileList = new ArrayList<>();
     private String TAG = "SkiStats.Log";
     private String renameTo = "";
+
+    public void populateHistoryFiles()
+    {
+        HistoryFile historyFile = new HistoryFile();
+
+        for(int i = 0; i < gpsFiles.size(); i++)
+        {
+            historyFile.setFileName(gpsFiles.get(i));
+            historyFile.setDisplayName(gpsFilesNoExtension.get(i));
+            String path = Environment.getExternalStorageDirectory() + "/" +  "SkiStats/GPS/Recordings/";
+            String full = path + gpsFiles.get(i);
+            File file = new File("full");
+            long millisec;
+            if(file.exists())
+            {
+                millisec = file.lastModified();
+                Date date = new Date(millisec);
+                historyFile.setDateLastModified(date);
+            }
+            else
+            {
+                Log.e(TAG,"Error: Cannot find file: " + full);
+                historyFile.setDateLastModified(null);
+            }
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +83,7 @@ public class HistoryActivity extends AppCompatActivity {
         sortListsAlphabetically();
         gpsFilesNoExtension = (convertListToSpaces(gpsFilesNoExtension));
         gpsFilesNoExtension = (removeListGpxExtension(gpsFilesNoExtension));
+        populateHistoryFiles();
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(
                 this,
                 android.R.layout.simple_list_item_1,
