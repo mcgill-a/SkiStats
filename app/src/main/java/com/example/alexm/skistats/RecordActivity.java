@@ -42,7 +42,13 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import br.com.safety.locationlistenerhelper.core.CurrentLocationListener;
+import br.com.safety.locationlistenerhelper.core.CurrentLocationReceiver;
+import br.com.safety.locationlistenerhelper.core.LocationTracker;
+
 public class RecordActivity extends AppCompatActivity {
+
+    private LocationTracker locationTracker;
 
     private static final int REQUEST_CODE = 1000;
     FusedLocationProviderClient fusedLocationProviderClient;
@@ -59,6 +65,24 @@ public class RecordActivity extends AppCompatActivity {
     Handler handler;
 
     private static final int REQUEST_WRITE_EXTERNAL_STORAGE = 2000;
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        //locationTracker.stopLocationService(this);
+    }
+
+    /*@Override //For background-gps library that didn't work..
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        locationTracker.onRequestPermission(requestCode, permissions, grantResults);
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    } */
+
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -132,27 +156,22 @@ public class RecordActivity extends AppCompatActivity {
 
         handler = new Handler();
 
-        // Check permisison
-        if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_CODE);
-        } else {
-            // If permission granted
-            buildLocationRequest();
-            buildLocationCallBack();
+        // Set event for button
+        recordImageButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                /*locationTracker = new LocationTracker("my.action")
+                        .setInterval(1000)
+                        .setGps(true)
+                        .setNetWork(false)
+                        .start(getBaseContext(),RecordActivity.this); */
 
-            // Create FusedProviderClient
-            fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+                Log.e(TAG, "GPS Recording Started");
 
-
-            // Set event for button
-            recordImageButton.setOnClickListener(new View.OnClickListener() {
-                public void onClick(View view) {
-                    Log.e(TAG, "GPS Recording Started");
-                    if (ActivityCompat.checkSelfPermission(RecordActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                    /*if (ActivityCompat.checkSelfPermission(RecordActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                             && ActivityCompat.checkSelfPermission(RecordActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                         ActivityCompat.requestPermissions(RecordActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_CODE);
                         return;
-                    }
+                    } */
 
                     /* GpsListener listener = new GpsListener(getApplicationContext());
                     Location location = listener.getLocation();
@@ -166,23 +185,36 @@ public class RecordActivity extends AppCompatActivity {
                         locations.add(location);
                     } */
 
-                    // Orgiginal gps location provider
-                    fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.myLooper());
-                    startTime = SystemClock.uptimeMillis();
-                    handler.postDelayed(runnable, 0);
+                // Orgiginal gps location provider
+                //fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.myLooper());
 
-                    Toast.makeText(RecordActivity.this, "Recording Started", Toast.LENGTH_SHORT).show();
-                    // Change state of button
-                    recordImageButton.setEnabled(false);
-                    pauseImageButton.setEnabled(true);
-                }
-            });
+                startTime = SystemClock.uptimeMillis();
+                handler.postDelayed(runnable, 0);
+
+                Toast.makeText(RecordActivity.this, "Recording Started", Toast.LENGTH_SHORT).show();
+                // Change state of button
+                recordImageButton.setEnabled(false);
+                pauseImageButton.setEnabled(true);
+            }
+        });
+
+        // Check permission
+        if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_CODE);
+        } else {
+            // If permission granted
+            //buildLocationRequest();
+            //buildLocationCallBack();
+
+            // Create FusedProviderClient
+            //fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+
 
             pauseImageButton.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View view) {
                     Log.e(TAG, "GPS Recording Paused");
                     timeBuff += millisecondTime;
-
+                    locationTracker.stopLocationService(RecordActivity.this);
                     handler.removeCallbacks(runnable);
 
                     Toast.makeText(RecordActivity.this, "Paused Recording", Toast.LENGTH_SHORT).show();
@@ -265,7 +297,8 @@ public class RecordActivity extends AppCompatActivity {
 
                                     File recording = new File(dir, fullFileName);
                                     // CHANGE TO HIGHER NUMBER (ONLY LOW FOR TESTING)
-                                    if(locations.size() > 2)
+                                    Log.e(TAG,"Trying to save");
+                                    if(locations.size() > 10)
                                     {
                                         writePath(recording, filename, locations);
                                         Toast.makeText(RecordActivity.this, "Recording Saved", Toast.LENGTH_SHORT).show();

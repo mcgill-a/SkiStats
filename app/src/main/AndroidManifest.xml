@@ -7,8 +7,8 @@
          Google Maps Android API v2, but you must specify either coarse or fine
          location permissions for the 'MyLocation' functionality. 
     -->
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
@@ -58,10 +58,11 @@
         <activity android:name=".PopupChart"
             android:theme="@style/AppTheme.CustomTheme"></activity>
 
-        <service
-            android:name=".LocationService"
-            android:enabled="true"
-            android:exported="false"></service>
+        <receiver android:name=".LocationReceiver">
+            <intent-filter>
+                <action android:name="my.action"/>
+            </intent-filter>
+        </receiver>
 
     </application>
 

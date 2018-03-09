@@ -36,11 +36,9 @@ public class HistoryActivity extends AppCompatActivity {
 
     private ListView lv;
     private List<String> gpsFiles = new ArrayList<String>();
-    private List<String> fileList = new ArrayList<>();
+    //private List<String> fileList = new ArrayList<>();
     private String TAG = "SkiStats.Log";
     private String renameTo = "";
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -248,9 +246,9 @@ public class HistoryActivity extends AppCompatActivity {
                 extension = new StringBuilder(extension).reverse().toString();
                 if (extension.equals(".gpx"));
                 {
-                    Log.e("SkiStats.Log", "File Name: " + file.getName());
+                    //Log.e("SkiStats.Log", "File Name: " + file.getName());
                     gpsFiles.add(file.getName());
-                    fileList.add(file.getAbsolutePath());
+                    //fileList.add(file.getAbsolutePath());
                 }
             }
         }

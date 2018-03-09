@@ -13,7 +13,7 @@ import android.util.Log;
  * Created by AlexM on 07/03/2018.
  */
 
-public class LocationService extends Service
+public class LocationServiceOld extends Service
     {
         private static final String TAG = "BOOMBOOMTESTGPS";
         private LocationManager mLocationManager = null;
