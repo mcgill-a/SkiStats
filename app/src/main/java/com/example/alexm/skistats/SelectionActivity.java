@@ -67,8 +67,6 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
 
     private Button buttonAltitude;
 
-
-
     private DateTimeFormatter fmt = DateTimeFormat.forPattern("HH:mm:ss");
     public List<TrackPoint> tPoints = new ArrayList<>();
     //public List<TrackPoint> tPointsFiltered = new ArrayList<>();
