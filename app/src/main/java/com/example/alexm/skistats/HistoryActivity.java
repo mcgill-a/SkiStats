@@ -36,6 +36,7 @@ public class HistoryActivity extends AppCompatActivity {
 
     private ListView lv;
     private List<String> gpsFiles = new ArrayList<String>();
+    private List<String> gpsFilesNoExtension;
     //private List<String> fileList = new ArrayList<>();
     private String TAG = "SkiStats.Log";
     private String renameTo = "";
@@ -48,15 +49,17 @@ public class HistoryActivity extends AppCompatActivity {
         lv = (ListView) findViewById(R.id.HistoryListView);
 
         getAllGpsFileNames();
-
+        gpsFilesNoExtension = gpsFiles;
         // This is the array adapter, it takes the context of the activity as a
         // first parameter, the type of list view as a second parameter and your
         // array as a third parameter.
-        sortListAlphabetically();
+        sortListsAlphabetically();
+        gpsFilesNoExtension = (convertListToSpaces(gpsFilesNoExtension));
+        gpsFilesNoExtension = (removeListGpxExtension(gpsFilesNoExtension));
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(
                 this,
                 android.R.layout.simple_list_item_1,
-                gpsFiles);
+                gpsFilesNoExtension);
         lv.setAdapter(arrayAdapter);
         registerForContextMenu(lv);
         //updateList();
@@ -74,6 +77,65 @@ public class HistoryActivity extends AppCompatActivity {
             }
         });
     }
+
+    public String convertStringToUnderscore(String input)
+    {
+        String converted = input.replaceAll(" ", "_");
+        return converted;
+    }
+
+    public List<String> convertListToSpaces(List<String> input)
+    {
+        String converted = "";
+        List<String> list = new ArrayList<>();
+        for (int i = 0; i < input.size(); i++)
+        {
+            converted = input.get(i);
+            list.add(converted.replaceAll("_", " "));
+        }
+
+
+        return list;
+    }
+
+    public List<String> convertListToUnderscore(List<String> input)
+    {
+        String converted = "";
+        List<String> list = new ArrayList<>();
+        for (int i = 0; i < input.size(); i++)
+        {
+            converted = input.get(i);
+            list.add(converted.replaceAll(" ", "_"));
+        }
+
+
+        return list;
+    }
+
+    public List<String> removeListGpxExtension(List<String> input)
+    {
+        List<String> list = new ArrayList<>();
+        for(int i = 0; i < input.size(); i++)
+        {
+            String reversed = new StringBuilder(input.get(i)).reverse().toString();
+            StringBuilder sb = new StringBuilder(reversed);
+            int j = 0;
+            while (sb.charAt(j) != '.')
+            {
+                sb.deleteCharAt(j);
+            }
+            if(sb.charAt(j) == '.')
+            {
+                sb.deleteCharAt(j);
+            }
+
+            String normal = new StringBuilder(sb.toString()).reverse().toString();
+            list.add(normal);
+        }
+
+        return list;
+    }
+
 
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
@@ -198,9 +260,10 @@ public class HistoryActivity extends AppCompatActivity {
         //gpsFiles.remove(listPosition);
     }
 
-    public void sortListAlphabetically()
+    public void sortListsAlphabetically()
     {
         Collections.sort(gpsFiles, String.CASE_INSENSITIVE_ORDER);
+        Collections.sort(gpsFilesNoExtension, String.CASE_INSENSITIVE_ORDER);
     }
 
     public void updateList()

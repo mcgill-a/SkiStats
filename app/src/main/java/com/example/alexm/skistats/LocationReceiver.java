@@ -5,12 +5,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
 import android.util.Log;
-
+/*
 import br.com.safety.locationlistenerhelper.core.SettingsLocationTracker;
 
 /**
  * Created by AlexM on 09/03/2018.
- */
+ *     move this back > /
 
 public class LocationReceiver extends BroadcastReceiver {
 
@@ -24,3 +24,4 @@ public class LocationReceiver extends BroadcastReceiver {
     }
 
 }
+*/

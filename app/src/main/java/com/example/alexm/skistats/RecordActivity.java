@@ -42,13 +42,15 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+/*
 import br.com.safety.locationlistenerhelper.core.CurrentLocationListener;
 import br.com.safety.locationlistenerhelper.core.CurrentLocationReceiver;
 import br.com.safety.locationlistenerhelper.core.LocationTracker;
+*/
 
 public class RecordActivity extends AppCompatActivity {
 
-    private LocationTracker locationTracker;
+    //private LocationTracker locationTracker;
 
     private static final int REQUEST_CODE = 1000;
     FusedLocationProviderClient fusedLocationProviderClient;
@@ -167,11 +169,11 @@ public class RecordActivity extends AppCompatActivity {
 
                 Log.e(TAG, "GPS Recording Started");
 
-                    /*if (ActivityCompat.checkSelfPermission(RecordActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                    if (ActivityCompat.checkSelfPermission(RecordActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                             && ActivityCompat.checkSelfPermission(RecordActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                         ActivityCompat.requestPermissions(RecordActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_CODE);
                         return;
-                    } */
+                    }
 
                     /* GpsListener listener = new GpsListener(getApplicationContext());
                     Location location = listener.getLocation();
@@ -186,7 +188,7 @@ public class RecordActivity extends AppCompatActivity {
                     } */
 
                 // Orgiginal gps location provider
-                //fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.myLooper());
+                fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.myLooper());
 
                 startTime = SystemClock.uptimeMillis();
                 handler.postDelayed(runnable, 0);
@@ -203,18 +205,18 @@ public class RecordActivity extends AppCompatActivity {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_CODE);
         } else {
             // If permission granted
-            //buildLocationRequest();
-            //buildLocationCallBack();
+            buildLocationRequest();
+            buildLocationCallBack();
 
             // Create FusedProviderClient
-            //fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+            fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
 
 
             pauseImageButton.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View view) {
                     Log.e(TAG, "GPS Recording Paused");
                     timeBuff += millisecondTime;
-                    locationTracker.stopLocationService(RecordActivity.this);
+                    //locationTracker.stopLocationService(RecordActivity.this);
                     handler.removeCallbacks(runnable);
 
                     Toast.makeText(RecordActivity.this, "Paused Recording", Toast.LENGTH_SHORT).show();
@@ -308,6 +310,7 @@ public class RecordActivity extends AppCompatActivity {
                                     else
                                     {
                                         Log.e(TAG,"Error: Not enough GPS data recorded");
+                                        Toast.makeText(getApplicationContext(), "Error: Not enough GPS data recorded",Toast.LENGTH_LONG).show();
                                     }
 
 
