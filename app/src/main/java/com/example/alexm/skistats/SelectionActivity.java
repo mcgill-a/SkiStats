@@ -65,21 +65,16 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
     private TextView gpsStartTimeValue;
     private TextView gpsEndTimeValue;
 
+    private Button buttonShare;
+    private Button buttonSpeed;
     private Button buttonAltitude;
 
     private DateTimeFormatter fmt = DateTimeFormat.forPattern("HH:mm:ss");
     public List<TrackPoint> tPoints = new ArrayList<>();
     //public List<TrackPoint> tPointsFiltered = new ArrayList<>();
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_selection);
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
-
+    public void initialise()
+    {
         distanceTotalValue = (TextView)findViewById(R.id.distanceTotalValue);
         distanceSkiValue = (TextView)findViewById(R.id.distanceSkiValue);
         distanceSkiLiftValue = (TextView)findViewById(R.id.distanceSkiLiftValue);
@@ -91,9 +86,23 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
         gpsStartTimeValue = (TextView)findViewById(R.id.gpsStartTimeValue);
         gpsEndTimeValue = (TextView)findViewById(R.id.gpsEndTimeValue);
 
+        buttonShare = (Button)findViewById(R.id.btnShare);
+        buttonSpeed = (Button)findViewById(R.id.btnSpeed);
         buttonAltitude = (Button)findViewById(R.id.btnAltitude);
 
+    }
 
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_selection);
+
+        initialise();
+
+        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
 
         getFileName();
         //Toast.makeText(getApplicationContext(), filename, Toast.LENGTH_SHORT).show();
@@ -107,6 +116,22 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
             gpxReadFailed();
         }
 
+        buttonShare.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v)
+            {
+                Toast.makeText(getApplicationContext(),"Share Stats",Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        buttonSpeed.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v)
+            {
+                Toast.makeText(getApplicationContext(),"Speed History Graph",Toast.LENGTH_SHORT).show();
+            }
+        });
+
         buttonAltitude.setOnClickListener(new View.OnClickListener()  {
             @Override
             public void onClick(View v)
@@ -118,6 +143,11 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
                 startActivity(i);
             }
         });
+    }
+
+    public void getFileName()
+    {
+        filename = (String) getIntent().getStringExtra("filename");
     }
 
     public int getData() {
@@ -239,6 +269,7 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
                 continue;
             }
 
+            // SkiVector object - contains height and distance
             vector = calculateDistanceBetween(current, next);
             distance = vector.getDistance();
             height = vector.getHeight();
@@ -255,12 +286,8 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
                 minAltitude = altitude;
             }
 
-            if (distance < 0.05) // Ignore bad inputs (96mph is world record speed (43m/s so 43m, (0.043km/s))
-            {
-                //totalDistance += distance;
-            }
             speed = distance / time;
-            // filter out invalid results (for example - when gps was paused and then resumed at another location
+            // Try to filter out invalid results (for example - when gps was paused and then resumed at another location
             if ((time > 0 && time < 40) && (speed < 0.0277)) // speed < 100km/h 0.0277
             {
                 altitudes.add(current.getElevation().toString());
@@ -272,11 +299,10 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
                 totalDistance += distance;
 
                 // check if on ski lift or skiing
-                // should really check multiple distances to ensure that they are definitely on a lift
-                // how?
+                // check multiple distances to ensure that they are likely on a lift
                 // check average of 3 heights, 1 before 1 now 1 after. If average is uphill then lift
 
-                    if (i > 1 && (i < tPoints.size() - 2)) // so doesnt go out of bounds (0-1) (size+2)
+                    if (i > 1 && (i < tPoints.size() - 2)) // so doesnt go out of bounds >> (0-1) or (size+2)
                     {
                         a = ((tPoints.get(i - 1).getElevation()) - (tPoints.get(i).getElevation()));
                         b = ((tPoints.get(i).getElevation()) - (tPoints.get(i + 1).getElevation()));
@@ -285,7 +311,7 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
                     }
                     else
                     {
-                        avgheight = 1; // set avg to 1 (positive height increase, so not on ski lift)
+                        avgheight = 1; // set avg to 1 (positive height increase, so not on ski lift) - just a flag, value doesn't matter.
                     }
 
                 if(avgheight < 0)
@@ -304,13 +330,16 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
                     if (speed > maxSpeed)
                     {
                         maxSpeed = speed;
+                        // only getting avgheight and time to help debugging high max speed errors
                         maxspeedAvgHeight = avgheight;
                         maxSpeedTime = time;
                     }
                     averageSpeed += speed;
                     gradientCount++;
+
+                    // REMOVED DUE TO BEING TOO INACCURATE
                     // Gradient (rise/run) x 100
-                    double rise = height;
+                    /*double rise = height;
                     double run = distance * 1000;
                     gradient = (rise / run) * 100;
 
@@ -319,7 +348,7 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
                         maxGradient = gradient;
                     }
 
-                    averageGradient += gradient;
+                    averageGradient += gradient; */
                 }
 
                 // only get speed info when gps update time is less than 10s. reduces error
@@ -341,12 +370,8 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
         String totalSkiLiftTimeString = splitToComponentTimes(totalSkiLiftTime);
         String totalTimeString = splitToComponentTimes(totalTime);
 
-
-
-
         maxSpeed = maxSpeed * 3600; // convert from km/s to km/h
         averageSpeed = averageSpeed * 3600; // convert from km/s to km/h
-
 
         TrackPoint marked = tPoints.get(643);
         TrackPoint markedNext = tPoints.get(644);
@@ -394,11 +419,7 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
         skiTotalTimeValue.setText(totalTimeString);
         gpsStartTimeValue.setText("STARTED: " + fmt.print(gpsStartTime));
         gpsEndTimeValue.setText("FINISHED: " + fmt.print(gpsEndTime));
-
-
-        //Toast.makeText(getApplicationContext(), " Total Distance: " + roundedTotalDistance + " KM", Toast.LENGTH_LONG).show();
     }
-
 
     public static String splitToComponentTimes(Integer secondsTotal)
     {
@@ -440,16 +461,6 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
         skiVector.setDistance(distance / 1000);
         skiVector.setHeight(height);
         return (skiVector);
-
-        /*if (height < 0)
-        {
-            // for only recording ski distance downhill return -1;
-        }
-        else
-        {
-            //return (distance / 1000);
-        } */
-
     }
 
     public void processMap(GoogleMap googleMap)
@@ -468,13 +479,12 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
             googleMap.addPolyline(poption);
             LatLng firstLatLng = new LatLng(tPoints.get(0).getLatitude(), tPoints.get(0).getLongitude());
             googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(firstLatLng, 14));
-
         }
     }
 
     public void setTextVales()
     {
-
+        // Nothing rn but will eventually pass in all values from calculcate stats and set the text views from here
         //distanceTotalValue.setText();
     }
 
@@ -495,10 +505,5 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
        // LatLng sauze = new LatLng(45.0269, 6.8584);
        // mMap.addMarker(new MarkerOptions().position(sauze).title("Marker in Sauze d'Oulx"));
         //mMap.moveCamera(CameraUpdateFactory.newLatLng(sauze));
-    }
-
-    public void getFileName()
-    {
-        filename = (String) getIntent().getStringExtra("filename");
     }
 }
