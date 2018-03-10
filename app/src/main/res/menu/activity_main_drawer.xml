@@ -1,32 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:showIn="navigation_view">
 
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_record"
-            android:icon="@drawable/ic_menu_camera"
-            android:title="Record" />
+            android:icon="@drawable/d_ski"
+            android:title="Record"/>
 
         <item
             android:id="@+id/nav_history"
-            android:icon="@android:drawable/ic_menu_more"
-            android:title="History" />
+            android:icon="@drawable/d_history"
+            android:title="History"/>
 
         <item
             android:id="@+id/nav_gallery"
-            android:icon="@drawable/ic_menu_gallery"
+            android:icon="@drawable/d_gallery"
             android:title="Gallery" />
 
         <item
             android:id="@+id/nav_map"
-            android:icon="@android:drawable/ic_dialog_map"
+            android:icon="@drawable/d_map"
             android:title="Map" />
 
         <item
             android:id="@+id/nav_settings"
-            android:icon="@drawable/ic_menu_manage"
+            android:icon="@drawable/d_settings"
             android:title="Settings" />
     </group>
 
@@ -34,15 +35,15 @@
         <menu>
             <item
                 android:id="@+id/nav_import"
-                android:icon="@drawable/ic_menu_send"
+                android:icon="@drawable/d_import"
                 android:title="Import Data" />
             <item
                 android:id="@+id/nav_export"
-                android:icon="@drawable/ic_menu_send"
+                android:icon="@drawable/d_export"
                 android:title="Export Data" />
             <item
                 android:id="@+id/nav_share"
-                android:icon="@drawable/ic_menu_share"
+                android:icon="@drawable/d_share"
                 android:title="Share" />
         </menu>
     </item>

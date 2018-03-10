@@ -38,6 +38,7 @@ public class HistoryActivity extends AppCompatActivity {
     private List<HistoryFile> historyFiles = new ArrayList<>();
     private List<String> gpsFiles = new ArrayList<String>();
     private List<String> gpsFilesNoExtension;
+    private List<HistoryFile> HistoryFileDisplayNames;
     //private List<String> fileList = new ArrayList<>();
     private String TAG = "SkiStats.Log";
     private String renameTo = "";
@@ -65,6 +66,14 @@ public class HistoryActivity extends AppCompatActivity {
                 Log.e(TAG,"Error: Cannot find file: " + full);
                 historyFile.setDateLastModified(null);
             }
+        }
+    }
+
+    public void x()
+    {
+        for(int i = 0; i < historyFiles.size(); i++)
+        {
+
         }
     }
 
