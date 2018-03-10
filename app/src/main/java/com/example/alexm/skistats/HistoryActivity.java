@@ -204,8 +204,7 @@ public class HistoryActivity extends AppCompatActivity {
 
         View view = (LayoutInflater.from(HistoryActivity.this)).inflate(R.layout.popup_rename_file, null);
         AlertDialog.Builder alert = new AlertDialog.Builder(HistoryActivity.this);
-        alert.setTitle("Rename Recording");
-        //alert.setMessage("Enter the new name for the recording");
+        alert.setTitle("Rename File");
         alert.setView(view);
         final EditText userInput = (EditText) view.findViewById(R.id.userInput);
         userInput.setText(displayName);

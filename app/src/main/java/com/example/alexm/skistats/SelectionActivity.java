@@ -64,6 +64,7 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
     private TextView skiTotalTimeValue;
     private TextView gpsStartTimeValue;
     private TextView gpsEndTimeValue;
+    private TextView speedAverageValue;
 
     private Button buttonShare;
     private Button buttonSpeed;
@@ -85,6 +86,7 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
         skiTotalTimeValue = (TextView)findViewById(R.id.totalTimeValue);
         gpsStartTimeValue = (TextView)findViewById(R.id.gpsStartTimeValue);
         gpsEndTimeValue = (TextView)findViewById(R.id.gpsEndTimeValue);
+        speedAverageValue = (TextView)findViewById(R.id.speedAverageValue);
 
         buttonShare = (Button)findViewById(R.id.btnShare);
         buttonSpeed = (Button)findViewById(R.id.btnSpeed);
@@ -406,6 +408,8 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
         double roundedSkiDistance = (double)Math.round(totalSkiDistance * 100d) / 100d;
         double roundedSkiLiftDistance = (double)Math.round(totalSkiLiftDistance * 100d) / 100d;
 
+        double roundedAverageSpeed = (double)Math.round(averageSpeed * 10d) / 10d;
+
         int altMaxInteger = (int) maxAltitude;
         int altMinInteger = (int) minAltitude;
 
@@ -419,6 +423,7 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
         skiTotalTimeValue.setText(totalTimeString);
         gpsStartTimeValue.setText("STARTED: " + fmt.print(gpsStartTime));
         gpsEndTimeValue.setText("FINISHED: " + fmt.print(gpsEndTime));
+        speedAverageValue.setText(Double.toString(roundedAverageSpeed) + " KM/H");
     }
 
     public static String splitToComponentTimes(Integer secondsTotal)

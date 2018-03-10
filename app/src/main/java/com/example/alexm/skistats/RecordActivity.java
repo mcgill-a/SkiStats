@@ -152,7 +152,7 @@ public class RecordActivity extends AppCompatActivity {
 
         recordImageButton = (ImageButton) findViewById(R.id.recordImageButton);
         pauseImageButton = (ImageButton) findViewById(R.id.pauseImageButton);
-        cancelImageButton = (ImageButton) findViewById(R.id.cancelImageButton);
+        //cancelImageButton = (ImageButton) findViewById(R.id.cancelImageButton);
         submitImageButton = (ImageButton) findViewById(R.id.submitImageButton);
         stopwatch = (TextView) findViewById(R.id.stopwatch);
 
