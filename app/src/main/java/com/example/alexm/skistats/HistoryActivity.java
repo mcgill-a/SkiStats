@@ -63,7 +63,7 @@ public class HistoryActivity extends AppCompatActivity {
             }
             else
             {
-                Log.e(TAG,"Error: Cannot find file: " + full);
+                //Log.e(TAG,"Error: Cannot find file: " + full);
                 historyFile.setDateLastModified(null);
             }
         }
