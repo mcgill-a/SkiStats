@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
@@ -36,6 +37,8 @@ public class HistoryActivity extends AppCompatActivity {
     private List<String> gpsFilesNoExtension;
     private List<HistoryFile> HistoryFileDisplayNames;
     //private List<String> fileList = new ArrayList<>();
+
+    private String path = Environment.getExternalStorageDirectory() + "/" +  "SkiStats/GPS/Recordings/";
     private String TAG = "SkiStats.Log";
     private String renameTo = "";
 
@@ -64,7 +67,8 @@ public class HistoryActivity extends AppCompatActivity {
                 date = new Date();
             }
 
-            String fileDate = df.format(date).toString();
+            Date fileDate = date;
+            String fileDateString = df.format(date).toString();
             historyFile = new HistoryFile(filename, displayname, fileDate);
             historyFiles.add(historyFile);
         }
@@ -88,12 +92,6 @@ public class HistoryActivity extends AppCompatActivity {
         populateHistoryFiles();
         HistoryAdapter adapter = new HistoryAdapter(this, R.layout.history_list_row, historyFiles);
         lv.setAdapter(adapter);
-        //View header = (View)getLayoutInflater().inflate(R.layout.history_list_row, null);
-        /*ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(
-                this,
-                android.R.layout.simple_list_item_1,
-                gpsFilesNoExtension);
-        lv.setAdapter(arrayAdapter);*/
 
         registerForContextMenu(lv);
         updateList();
@@ -141,8 +139,6 @@ public class HistoryActivity extends AppCompatActivity {
             converted = input.get(i);
             list.add(converted.replaceAll(" ", "_"));
         }
-
-
         return list;
     }
 
@@ -176,7 +172,7 @@ public class HistoryActivity extends AppCompatActivity {
         if(v.getId() == R.id.HistoryListView)
         {
             AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
-            menu.setHeaderTitle(gpsFiles.get(info.position));
+            menu.setHeaderTitle(gpsFilesNoExtension.get(info.position));
             menu.add(Menu.NONE, 0, 0, "Rename");
             menu.add(Menu.NONE, 1, 1, "Delete");
         }
@@ -201,9 +197,10 @@ public class HistoryActivity extends AppCompatActivity {
         return true;
     }
 
-    public void renameFile(String menuItem, int listPosition)
+    public void renameFile(String menuItem, final int listPosition)
     {
         final String selectedName = gpsFiles.get(listPosition);
+        final String displayName = historyFiles.get(listPosition).displayName;
 
         View view = (LayoutInflater.from(HistoryActivity.this)).inflate(R.layout.popup_rename_file, null);
         AlertDialog.Builder alert = new AlertDialog.Builder(HistoryActivity.this);
@@ -211,20 +208,40 @@ public class HistoryActivity extends AppCompatActivity {
         //alert.setMessage("Enter the new name for the recording");
         alert.setView(view);
         final EditText userInput = (EditText) view.findViewById(R.id.userInput);
-
+        userInput.setText(displayName);
         alert.setCancelable(true)
                 .setPositiveButton("Confirm", new DialogInterface.OnClickListener(){
 
                     @Override
                     public void onClick(DialogInterface dialogInterface, int which) {
                         renameTo = userInput.getText().toString();
-                        Toast.makeText(getApplicationContext(), renameTo,Toast.LENGTH_SHORT).show();
+                        String fullRenameTo = ensureGpxExtension(renameTo);
+                        File file = new File(path + selectedName);
+                        File renamed = new File(path + fullRenameTo);
+                        Boolean flag = file.renameTo(renamed);
+                        if (flag)
+                        {
+                            Log.e(TAG, selectedName + " has been renamed");
+                            Toast.makeText(getApplicationContext(), selectedName + " renamed to: " + renameTo,Toast.LENGTH_SHORT).show();
+
+                            gpsFiles.set(listPosition, fullRenameTo);
+                            gpsFilesNoExtension.set(listPosition, renameTo);
+                            HistoryFile historyFile = new HistoryFile(fullRenameTo, renameTo, historyFiles.get(listPosition).dateLastModified);
+                            historyFiles.set(listPosition, historyFile);
+                            updateList();
+                        }
+                        else
+                        {
+                            Log.e(TAG,"Error: " + selectedName + " rename to " + renameTo + " failed");
+                        }
+
 
                     }
 
     });
 
         Dialog dialog = alert.create();
+        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
         dialog.show();
 
 
@@ -250,7 +267,7 @@ public class HistoryActivity extends AppCompatActivity {
                         // do a thing to cancel recording
                         Log.e(TAG, "Deleting recording: " + selectedName);
 
-                        String path = Environment.getExternalStorageDirectory() + "/" +  "SkiStats/GPS/Recordings/";
+
                         File dir = new File(path);
 
                         String fullFileName = selectedName;// + ".gpx";
@@ -352,6 +369,26 @@ public class HistoryActivity extends AppCompatActivity {
                 }
             }
         }
+    }
+
+    public String ensureGpxExtension(String name)
+    {
+        String store = name;
+        String gpx = ".gpx";
+        // Reverse string to make file extension appear first
+        String reverse = new StringBuilder(name).reverse().toString();
+        String extension = "";
+        for (int i = 0; i < 4; i++)
+        {
+            extension += reverse.charAt(i);
+        }
+        // Reverse file extension back
+        extension = new StringBuilder(extension).reverse().toString();
+        if (!extension.equals(".gpx"));
+        {
+            name += gpx;
+        }
+        return name;
     }
 }
 

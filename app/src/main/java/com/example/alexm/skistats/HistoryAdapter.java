@@ -15,7 +15,10 @@ import com.example.alexm.skistats.R;
 
 import org.w3c.dom.Text;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -60,7 +63,10 @@ public class HistoryAdapter extends ArrayAdapter<HistoryFile> {
 
         HistoryFile historyFile = historyFiles.get(position);
         holder.displayname.setText(historyFile.displayName);
-        holder.date.setText(historyFile.dateLastModified.toString());
+        DateFormat df = new SimpleDateFormat("yyyy/MM/dd");
+        Date date = historyFile.getDateLastModified();
+        String dateString = df.format(date).toString();
+        holder.date.setText(dateString);
 
         return row;
     }

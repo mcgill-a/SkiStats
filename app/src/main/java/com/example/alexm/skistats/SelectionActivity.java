@@ -373,9 +373,9 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
         maxSpeed = maxSpeed * 3600; // convert from km/s to km/h
         averageSpeed = averageSpeed * 3600; // convert from km/s to km/h
 
-        TrackPoint marked = tPoints.get(643);
-        TrackPoint markedNext = tPoints.get(644);
-        SkiVector dist = calculateDistanceBetween(marked, markedNext);
+        //TrackPoint marked = tPoints.get(643);
+        //TrackPoint markedNext = tPoints.get(644);
+        //SkiVector dist = calculateDistanceBetween(marked, markedNext);
         //Log.e(TAG, "Marker: " + marker);
         //Log.e(TAG, "Marked: " + dist.toString() + " | TIME 1: " + marked.getTime() + " TIME 2: " + markedNext.getTime());
         //Log.e(TAG, "Max Time:  " + maxTime);

@@ -229,7 +229,7 @@ public class RecordActivity extends AppCompatActivity {
                 }
             });
 
-            cancelImageButton.setOnClickListener(new View.OnClickListener() {
+            /*cancelImageButton.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View view) {
                     //Toast.makeText(RecordActivity.this, "Cancelled Recording", Toast.LENGTH_SHORT).show();
                     pauseImageButton.performClick();
@@ -263,7 +263,7 @@ public class RecordActivity extends AppCompatActivity {
                     // Display the alert
                     dialog.show();
                 }
-            });
+            }); */
 
             submitImageButton.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View view) {
@@ -286,7 +286,7 @@ public class RecordActivity extends AppCompatActivity {
                                     Log.e(TAG, "GPS Recording - Saving in progress..");
                                     DateFormat df = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
                                     // Prompt user for filename
-                                    String filename = "Ski_Activity";
+                                    String filename = "Ski Activity";
                                     String extension = ".gpx";
                                     //String filename = "SS_" + df.format(new Date(locations.get(0).getTime()));
 
@@ -303,7 +303,7 @@ public class RecordActivity extends AppCompatActivity {
                                     while(file.exists())
                                     {
                                         index++;
-                                        newFileName = filename + "_" + index;
+                                        newFileName = filename + " " + index;
                                         file = new File(path + newFileName + extension);
                                     }
                                     String fullFileName;
@@ -372,31 +372,20 @@ public class RecordActivity extends AppCompatActivity {
 
     public static void writePath(File file, String n, List<Location> points)
     {
-        String header = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\" ?>" + "\n" +
-                "<gpx xmlns=\"http://www.topografix.com/GPX/1/1\" creator=\"SkiStats\" version=\"1.1\"" + "\n" +
-                "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://www.topografix.com/GPX/1/1 " +
-                "http://www.topografix.com/GPX/1/1/gpx.xsd\">" + "\n";
-
-        DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
-        DateTime currentTime = new DateTime(points.get(points.size()-1).getTime());
-        //String metadata = "<metadata>" + "\n" + "<time>" + df.format(new DateTime(currentTime));
-        String metadata = "<metadata>" + "\n" + "<link href=\"https://cr-ad.github.io/alexmcgill.net/\">" +"\n" +
-                "<text>Ski Stats</text>" + "\n" + "</link>" + "\n" + "<time>" + currentTime + "</time>" + "\n" + "</metadata>" + "\n"+"<trk>" + "\n";
-        String name = "<name>" + n + "</name>" + "\n" + "<trkseg>\n";
+        String header = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\" ?><gpx xmlns=\"http://www.topografix.com/GPX/1/1\" creator=\"SkiStats\"><trk>\n";
+        String name = "<name>" + n + "</name><trkseg>\n";
 
         String segments = "";
-
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
         for (Location l : points) {
-            segments += "<trkpt lat=\"" + l.getLatitude() + "\" lon=\"" + l.getLongitude() + "\">" + "\n" +
-                    "<ele=" + l.getAltitude() + "</ele>\n" +  "<time>" + df.format(new Date(l.getTime())) + "</time></trkpt>\n";
+            segments += "<trkpt lat=\"" + l.getLatitude() + "\" lon=\"" + l.getLongitude() + "\"><ele>" + l.getAltitude() +"</ele><time>" + df.format(new Date(l.getTime())) + "</time></trkpt>\n";
         }
 
-        String footer = "</trkseg>" + "\n" + "</trk>" + "\n" + "</gpx>";
+        String footer = "</trkseg></trk></gpx>";
 
         try {
             FileWriter writer = new FileWriter(file, false);
             writer.append(header);
-            writer.append(metadata);
             writer.append(name);
             writer.append(segments);
             writer.append(footer);

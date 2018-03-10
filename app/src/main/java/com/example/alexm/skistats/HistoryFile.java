@@ -10,14 +10,14 @@ public class HistoryFile {
 
     public String filename;
     public String displayName;
-    public String dateLastModified;
+    public Date dateLastModified;
 
     public HistoryFile()
     {
         super();
     }
 
-    public HistoryFile(String filename, String displayName, String dateLastModified)
+    public HistoryFile(String filename, String displayName, Date dateLastModified)
     {
         super();
         this.filename = filename;
@@ -25,6 +25,36 @@ public class HistoryFile {
         this.dateLastModified = dateLastModified;
     }
 
+    public void setFileName(String input)
+    {
+        filename = input;
+    }
+
+    public void setDisplayName(String input)
+    {
+        displayName = input;
+    }
+
+    public void setDateLastModified(Date input)
+    {
+        dateLastModified = input;
+    }
+
+    public String getFileName()
+    {
+        return filename;
+    }
+
+
+    public String getDisplayName()
+    {
+        return displayName;
+    }
+
+    public Date getDateLastModified()
+    {
+        return dateLastModified;
+    }
 }
 
 /*
