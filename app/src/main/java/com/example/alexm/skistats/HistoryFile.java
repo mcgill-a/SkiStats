@@ -8,7 +8,27 @@ import java.util.Date;
 
 public class HistoryFile {
 
-    private String _filename;
+    public String filename;
+    public String displayName;
+    public String dateLastModified;
+
+    public HistoryFile()
+    {
+        super();
+    }
+
+    public HistoryFile(String filename, String displayName, String dateLastModified)
+    {
+        super();
+        this.filename = filename;
+        this.displayName = displayName;
+        this.dateLastModified = dateLastModified;
+    }
+
+}
+
+/*
+private String _filename;
     private String _displayName;
     private Date _dateLastModified;
 
@@ -47,5 +67,4 @@ public class HistoryFile {
     {
         return _dateLastModified;
     }
-}
-
+ */

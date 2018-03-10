@@ -285,25 +285,48 @@ public class RecordActivity extends AppCompatActivity {
                                     // do a thing to cancel recording
                                     Log.e(TAG, "GPS Recording - Saving in progress..");
                                     DateFormat df = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
-                                    String filename = "SS_" + df.format(new Date(locations.get(0).getTime()));
+                                    // Prompt user for filename
+                                    String filename = "Ski_Activity";
+                                    String extension = ".gpx";
+                                    //String filename = "SS_" + df.format(new Date(locations.get(0).getTime()));
 
                                     String path = Environment.getExternalStorageDirectory() + "/" +  "SkiStats/GPS/Recordings/";
+                                    // add loop to increment file name if it exists
                                     File dir = new File(path);
                                     if (!dir.exists())
                                     {
                                         dir.mkdirs();
                                     }
-                                    String fullFileName = filename + ".gpx";
+                                    File file = new File(path + filename + extension);
+                                    String newFileName = "";
+                                    int index = 1;
+                                    while(file.exists())
+                                    {
+                                        index++;
+                                        newFileName = filename + "_" + index;
+                                        file = new File(path + newFileName + extension);
+                                    }
+                                    String fullFileName;
+                                    if (newFileName.length() > 2)
+                                    {
+                                        fullFileName = newFileName + extension;
+                                        filename = newFileName;
+                                    }
+                                    else
+                                    {
+                                        fullFileName = filename + extension;
+                                    }
+
                                     String fullnamePath = path + fullFileName;
 
                                     File recording = new File(dir, fullFileName);
                                     // CHANGE TO HIGHER NUMBER (ONLY LOW FOR TESTING)
                                     Log.e(TAG,"Trying to save");
-                                    if(locations.size() > 10)
+                                    if(locations.size() > 3)
                                     {
                                         writePath(recording, filename, locations);
                                         Toast.makeText(RecordActivity.this, "Recording Saved", Toast.LENGTH_SHORT).show();
-                                        Log.e(TAG,"GPS Recording - Saved");
+                                        Log.e(TAG,"GPS Recording - Saved: " + filename);
                                         resetStopwatch();
                                     }
                                     else
@@ -379,7 +402,7 @@ public class RecordActivity extends AppCompatActivity {
             writer.append(footer);
             writer.flush();
             writer.close();
-            Log.e("SkiStats.Log.Status", "Saved " + (points.size() -1) + " points.");
+            Log.e("SkiStats.Log.Status", "Saved " + points.size() + " points.");
         } catch (IOException e) {
             // TODO Auto-generated catch block
             Log.e("SkiStats.Log.Status", "Error Writting Path",e);

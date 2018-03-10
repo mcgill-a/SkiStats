@@ -15,16 +15,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.attribute.BasicFileAttributes;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -43,6 +39,37 @@ public class HistoryActivity extends AppCompatActivity {
     private String TAG = "SkiStats.Log";
     private String renameTo = "";
 
+    public void populateHistoryFiles()
+    {
+        HistoryFile historyFile;
+
+        for(int i = 0; i < gpsFiles.size(); i++)
+        {
+            String filename = gpsFiles.get(i);
+            String displayname = gpsFilesNoExtension.get(i);
+            Date date = new Date();
+            String path = Environment.getExternalStorageDirectory() + "/" +  "SkiStats/GPS/Recordings/";
+            String full = path + gpsFiles.get(i);
+            File file = new File("full");
+            long millisec;
+            DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+            if(file.exists())
+            {
+                millisec = file.lastModified();
+                date = new Date(millisec);
+            }
+            else
+            {
+                //Log.e(TAG,"Error: Cannot find file: " + full);
+                date = new Date();
+            }
+
+            String fileDate = df.format(date).toString();
+            historyFile = new HistoryFile(filename, displayname, fileDate);
+            historyFiles.add(historyFile);
+        }
+    }
+    /*
     public void populateHistoryFiles()
     {
         HistoryFile historyFile = new HistoryFile();
@@ -69,13 +96,8 @@ public class HistoryActivity extends AppCompatActivity {
         }
     }
 
-    public void x()
-    {
-        for(int i = 0; i < historyFiles.size(); i++)
-        {
+     */
 
-        }
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,13 +115,20 @@ public class HistoryActivity extends AppCompatActivity {
         gpsFilesNoExtension = (convertListToSpaces(gpsFilesNoExtension));
         gpsFilesNoExtension = (removeListGpxExtension(gpsFilesNoExtension));
         populateHistoryFiles();
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(
+        HistoryAdapter adapter = new HistoryAdapter(this, R.layout.history_list_row, historyFiles);
+
+        View header = (View)getLayoutInflater().inflate(R.layout.history_list_row, null);
+        lv.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
+
+        /*ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(
                 this,
                 android.R.layout.simple_list_item_1,
                 gpsFilesNoExtension);
-        lv.setAdapter(arrayAdapter);
+        lv.setAdapter(arrayAdapter);*/
+
         registerForContextMenu(lv);
-        //updateList();
+        updateList();
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -305,7 +334,9 @@ public class HistoryActivity extends AppCompatActivity {
 
     public void updateList()
     {
-        ((BaseAdapter) lv.getAdapter()).notifyDataSetChanged();
+        
+
+        ((HistoryAdapter) lv.getAdapter()).notifyDataSetChanged();
     }
 
     // temporary method, ghetto version that will do for now....
