@@ -58,11 +58,11 @@
         <activity android:name=".PopupChart"
             android:theme="@style/AppTheme.CustomTheme"></activity>
 
-        <receiver android:name=".LocationReceiver">
+        <!--<receiver android:name=".LocationReceiver">
             <intent-filter>
                 <action android:name="my.action"/>
             </intent-filter>
-        </receiver>
+        </receiver> -->
 
     </application>
 

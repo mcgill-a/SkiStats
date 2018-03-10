@@ -30,7 +30,7 @@
             android:layout_marginLeft="10dp"
             android:src="@drawable/ic_magnify"/>
 
-        <EditText
+        <AutoCompleteTextView
             android:imeOptions="actionSearch"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -49,10 +49,10 @@
     <ImageView
         android:layout_width="40dp"
         android:layout_height="40dp"
-        android:layout_below="@id/relLayout1"
+        android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:layout_marginRight="10dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
         android:scaleType="centerCrop"
         android:id="@+id/ic_gps"
         android:src="@drawable/ic_gps"/>

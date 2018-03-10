@@ -15,18 +15,29 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
+import android.widget.AdapterView;
+import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.PendingResult;
+import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.places.AutocompletePrediction;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.PlaceBuffer;
+import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -35,17 +46,21 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
+public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleApiClient.OnConnectionFailedListener {
 
     private GoogleMap mMap;
     private FusedLocationProviderClient fusedLocationProviderClient;
-    private EditText mSearchText;
+
+    private AutoCompleteTextView mSearchText;
     private ImageView mCurrentPosition;
+    private PlaceAutocompleteAdapter mPlaceAutocompleteAdapter;
+    private GoogleApiClient mGoogleApiClient;
 
     private String TAG = "SkiStats.Log";
 
     private static final int ZOOM_DEFAULT = 15;
     private static final int REQUEST_CODE = 1000;
+    private static final LatLngBounds LAT_LNG_BOUNDS = new LatLngBounds(new LatLng(-40, -168), new LatLng(71, 136));
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,14 +77,25 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             return;
         }
 
-        mSearchText = (EditText) findViewById(R.id.input_search);
+        mSearchText = (AutoCompleteTextView) findViewById(R.id.input_search);
         mCurrentPosition = (ImageView) findViewById(R.id.ic_gps);
 
     }
 
 
-    private void loadFunctionality()
+    private void initialise()
     {
+        mGoogleApiClient = new GoogleApiClient
+                .Builder(this)
+                .addApi(Places.GEO_DATA_API)
+                .addApi(Places.PLACE_DETECTION_API)
+                .enableAutoManage(this, this)
+                .build();
+
+        mPlaceAutocompleteAdapter = new PlaceAutocompleteAdapter(this, mGoogleApiClient, LAT_LNG_BOUNDS, null);
+
+        mSearchText.setAdapter(mPlaceAutocompleteAdapter);
+
         mSearchText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
@@ -89,6 +115,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 currentLocation();
             }
         });
+
+
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
     }
 
@@ -179,27 +211,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             mMap.setMyLocationEnabled(true);
             mMap.getUiSettings().setMyLocationButtonEnabled(false);
 
-            loadFunctionality();
-            //mMap.getUiSettings().setCompassEnabled(true);
-
+            initialise();
         }
-
-        // Add a marker in Sauze and move the camera
-        //LatLng sauze = new LatLng(45.0269, 6.8584);
-        //mMap.addMarker(new MarkerOptions().position(sauze).title("Marker in Sauze d'Oulx"));
-        //mMap.moveCamera(CameraUpdateFactory.newLatLng(sauze));
-    }
-
-    public void addCoords(GoogleMap googleMap)
-    {
-        mMap = googleMap;
-        //LatLng gps = new LatLng(44.9999815, 6.87474577);
-        //mMap.addMarker(new MarkerOptions().position(gps).title("GPS1"));
     }
 
     public void hideKeyboard()
     {
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
     }
-
 }
