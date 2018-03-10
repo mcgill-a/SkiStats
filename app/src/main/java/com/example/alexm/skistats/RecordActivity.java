@@ -158,16 +158,27 @@ public class RecordActivity extends AppCompatActivity {
 
         handler = new Handler();
 
-        // Set event for button
-        recordImageButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View view) {
+        // Check permission
+        if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_CODE);
+        } else {
+            // If permission granted
+            buildLocationRequest();
+            buildLocationCallBack();
+
+            // Create FusedProviderClient
+            fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+
+            // Set event for button
+            recordImageButton.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View view) {
                 /*locationTracker = new LocationTracker("my.action")
                         .setInterval(1000)
                         .setGps(true)
                         .setNetWork(false)
                         .start(getBaseContext(),RecordActivity.this); */
 
-                Log.e(TAG, "GPS Recording Started");
+                    Log.e(TAG, "GPS Recording Started");
 
                     if (ActivityCompat.checkSelfPermission(RecordActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                             && ActivityCompat.checkSelfPermission(RecordActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -187,30 +198,18 @@ public class RecordActivity extends AppCompatActivity {
                         locations.add(location);
                     } */
 
-                // Orgiginal gps location provider
-                fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.myLooper());
+                    // Orgiginal gps location provider
+                    fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.myLooper());
 
-                startTime = SystemClock.uptimeMillis();
-                handler.postDelayed(runnable, 0);
+                    startTime = SystemClock.uptimeMillis();
+                    handler.postDelayed(runnable, 0);
 
-                Toast.makeText(RecordActivity.this, "Recording Started", Toast.LENGTH_SHORT).show();
-                // Change state of button
-                recordImageButton.setEnabled(false);
-                pauseImageButton.setEnabled(true);
-            }
-        });
-
-        // Check permission
-        if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_CODE);
-        } else {
-            // If permission granted
-            buildLocationRequest();
-            buildLocationCallBack();
-
-            // Create FusedProviderClient
-            fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
-
+                    Toast.makeText(RecordActivity.this, "Recording Started", Toast.LENGTH_SHORT).show();
+                    // Change state of button
+                    recordImageButton.setEnabled(false);
+                    pauseImageButton.setEnabled(true);
+                }
+            });
 
             pauseImageButton.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View view) {

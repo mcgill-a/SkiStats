@@ -87,5 +87,6 @@
     <string name="title_notifications">Notifications</string>
 
     <string name="ski_icon_description">Skier image icon</string>
+    <string name="maps_search_hint">Search here</string>
 
 </resources>
