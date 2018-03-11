@@ -1,9 +1,17 @@
 package com.example.alexm.skistats;
 
+import android.content.ContentValues;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.net.Uri;
+import android.os.Environment;
+import android.os.StrictMode;
+import android.provider.MediaStore;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.support.v4.content.FileProvider;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -12,6 +20,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.GoogleMapOptions;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
@@ -23,10 +32,14 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.xmlpull.v1.XmlPullParserException;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -115,7 +128,8 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
             @Override
             public void onClick(View v)
             {
-                Toast.makeText(getApplicationContext(),"Share Stats",Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getApplicationContext(),"Share Stats",Toast.LENGTH_SHORT).show();
+                shareSocial();
             }
         });
 
@@ -138,6 +152,46 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
                 startActivity(i);
             }
         });
+    }
+
+    public Bitmap shareScreen(View view)
+    {
+        Bitmap bitmap = Bitmap.createBitmap(view.getWidth(),(view.getHeight()), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        view.draw(canvas);
+        return bitmap;
+    }
+
+    public void shareSocial()
+    {
+        Bitmap icon = shareScreen((this.getWindow().getDecorView().findViewById(android.R.id.content)));
+        Intent share = new Intent(Intent.ACTION_SEND);
+        share.setType("image/jpg");
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        icon.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+        String jpgExtension = ".jpg";
+        File f = new File(Environment.getExternalStorageDirectory() + File.separator + "SkiStats/Share/Stats" + jpgExtension);
+        int index = 1;
+        while(f.exists())
+        {
+            index++;
+            f = new File(Environment.getExternalStorageDirectory() + File.separator + "SkiStats/Share/Stats" + index + jpgExtension);
+        }
+        try {
+            f.getParentFile().mkdirs();
+            f.createNewFile();
+            FileOutputStream fo = new FileOutputStream(f);
+            fo.write(bytes.toByteArray());
+        } catch (IOException e) {
+            e.printStackTrace();
+            Log.e(TAG,"Error: " + e.getMessage());
+        }
+        String path = f.getAbsolutePath();
+        share.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
+        StrictMode.setVmPolicy(builder.build());
+        share.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(new File(path)));
+        startActivity(Intent.createChooser(share, "Share Your Stats"));
     }
 
     public void getFileName()

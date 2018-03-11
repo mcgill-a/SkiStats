@@ -20,13 +20,26 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.model.LatLng;
+
+import org.xmlpull.v1.XmlPullParserException;
+
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+
+import io.ticofab.androidgpxparser.parser.GPXParser;
+import io.ticofab.androidgpxparser.parser.domain.Gpx;
+import io.ticofab.androidgpxparser.parser.domain.Track;
+import io.ticofab.androidgpxparser.parser.domain.TrackPoint;
+import io.ticofab.androidgpxparser.parser.domain.TrackSegment;
 
 public class HistoryActivity extends AppCompatActivity {
 
@@ -47,12 +60,13 @@ public class HistoryActivity extends AppCompatActivity {
         {
             String filename = gpsFiles.get(i);
             String displayname = gpsFilesNoExtension.get(i);
-            Date date;
+            Date date = new Date();
             String path = "/SkiStats/GPS/Recordings/";
             String full = path + gpsFiles.get(i);
 
             /*
                 Now I just need to loop through each file, get the date of the first track point and set to the date of the file.
+                takes too long
              */
 
 
@@ -61,20 +75,58 @@ public class HistoryActivity extends AppCompatActivity {
             DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
             if(file.exists())
             {
-                millisec = file.lastModified();
-                date = new Date(millisec);
+                // too slow
+                //date = getDate(file.getAbsolutePath());
             }
             else
             {
                 Log.e(TAG,"Error: Cannot find file: " + full);
-                date = new Date();
             }
-
             Date fileDate = date;
             String fileDateString = df.format(date).toString();
             historyFile = new HistoryFile(filename, displayname, fileDate);
             historyFiles.add(historyFile);
         }
+    }
+
+    public Date getDate(String filename) {
+        Gpx parsedGpx = null;
+        GPXParser mParser = new GPXParser();
+        Date date = new Date();
+        LatLng latlng;
+        try {
+            if (filename.charAt(0) == '/')
+            {
+                StringBuilder sb = new StringBuilder(filename);
+                sb.deleteCharAt(0);
+                filename = sb.toString();
+            }
+            //Log.e(TAG,"FilePath: " + filename);
+            File file = new File(filename);
+            InputStream in = new FileInputStream(file);
+            parsedGpx = mParser.parse(in);
+        } catch (IOException | XmlPullParserException e) {
+            e.printStackTrace();
+        }
+
+        if (parsedGpx != null)
+        {
+            // Get first track date
+            List<Track> tracks = parsedGpx.getTracks();
+            Track track = tracks.get(0);
+            List<TrackSegment> segments = track.getTrackSegments();
+            TrackSegment segment = segments.get(0);
+            date = segment.getTrackPoints().get(0).getTime().toDate();
+            //Log.e(TAG,"Date: " + date.toString());
+            return date;
+        }
+        return date;
+    }
+
+    public void gpxReadFailed()
+    {
+        Log.e(TAG, "Error parsing gpx file");
+        Toast.makeText(getApplicationContext(), "GPX File Read Failed", Toast.LENGTH_SHORT).show();
     }
 
     @Override
