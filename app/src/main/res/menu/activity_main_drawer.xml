@@ -37,14 +37,14 @@
                 android:id="@+id/nav_import"
                 android:icon="@drawable/d_import"
                 android:title="Import Data" />
-            <item
+            <!--<item
                 android:id="@+id/nav_export"
                 android:icon="@drawable/d_export"
                 android:title="Export Data" />
             <item
                 android:id="@+id/nav_share"
                 android:icon="@drawable/d_share"
-                android:title="Share" />
+                android:title="Share" /> -->
         </menu>
     </item>
 

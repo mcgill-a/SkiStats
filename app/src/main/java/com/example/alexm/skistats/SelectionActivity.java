@@ -54,7 +54,7 @@ import io.ticofab.androidgpxparser.parser.domain.TrackSegment;
 public class SelectionActivity extends FragmentActivity implements OnMapReadyCallback, Serializable{
 
     private GoogleMap mMap;
-    private String filename;
+    private String absoluteFilepath;
     private String TAG = "SkiStats.Log";
     private GPXParser mParser = new GPXParser();
 
@@ -138,7 +138,8 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
             @Override
             public void onClick(View v)
             {
-                Toast.makeText(getApplicationContext(),"Export gpx file",Toast.LENGTH_SHORT).show();
+                exportFile();
+                //Toast.makeText(getApplicationContext(),"Export gpx file",Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -155,6 +156,23 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
         });
     }
 
+    public void exportFile()
+    {
+        Intent share = new Intent(Intent.ACTION_SEND);
+        share.setType("text/xml");
+        File f = new File(absoluteFilepath);
+        String path = f.getAbsolutePath();
+        if(f.exists())
+        {
+            share.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
+            StrictMode.setVmPolicy(builder.build());
+            share.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(new File(path)));
+            startActivity(Intent.createChooser(share, "Export Your Recording"));
+        }
+    }
+
+
     public Bitmap shareScreen(View view)
     {
         Bitmap bitmap = Bitmap.createBitmap(view.getWidth(),(view.getHeight()), Bitmap.Config.ARGB_8888);
@@ -169,7 +187,7 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
         clearSharedImagesFolder(folder);
         Bitmap icon = shareScreen((this.getWindow().getDecorView().findViewById(android.R.id.content)));
         Intent share = new Intent(Intent.ACTION_SEND);
-        share.setType("image/jpg");
+        share.setType("image/jpeg");
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         icon.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
         String jpgExtension = ".jpg";
@@ -207,8 +225,6 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
         {
             for (File image : allFiles)
             {
-                Log.e(TAG,"Full path of temp image to remove: " + image.getAbsolutePath());
-
                 image.delete();
                 if(image.exists())
                 {
@@ -222,10 +238,10 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
 
     public void getFileName()
     {
-        filename = (String) getIntent().getStringExtra("filename");
+        absoluteFilepath = (String) getIntent().getStringExtra("filename");
     }
 
-    public void getName(String filename)
+    public void getName(String name)
     {
         // get display name for share image file
     }
@@ -235,17 +251,15 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
 
         LatLng latlng;
         try {
-            if (filename.charAt(0) == '/')
+            if (absoluteFilepath.charAt(0) == '/')
             {
-                StringBuilder sb = new StringBuilder(filename);
+                StringBuilder sb = new StringBuilder(absoluteFilepath);
                 sb.deleteCharAt(0);
-                filename = sb.toString();
+                absoluteFilepath = sb.toString();
             }
-            //InputStream in = getAssets().open("gpsData/sauze/"+ filename);
-            Log.e(TAG,"FilePath: " + filename);
-            File file = new File(filename);
+            Log.e(TAG,"FilePath: " + absoluteFilepath);
+            File file = new File(absoluteFilepath);
             InputStream in = new FileInputStream(file);
-            //InputStream in = getAssets().open(filename);
             parsedGpx = mParser.parse(in);
         } catch (IOException | XmlPullParserException e) {
             e.printStackTrace();
@@ -480,7 +494,7 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
         Log.e(TAG, "Max Speed: " + maxSpeed);
         Log.e(TAG, "Max Speed avgheight: " + maxspeedAvgHeight);
         Log.e(TAG, "Max Speed time: " + maxSpeedTime);
-        Log.e(TAG, filename + " Average Speed: " + averageSpeed);
+        Log.e(TAG, absoluteFilepath + " Average Speed: " + averageSpeed);
 
         double roundedTotalDistance = (double)Math.round(totalDistance * 100d) / 100d;
         double roundedSkiDistance = (double)Math.round(totalSkiDistance * 100d) / 100d;
