@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.EditText;
@@ -43,7 +44,8 @@ import io.ticofab.androidgpxparser.parser.domain.TrackSegment;
 
 public class HistoryActivity extends AppCompatActivity {
 
-    private ListView lv;
+    private ListView recordingLv;
+    private ListView importLv;
     private List<HistoryFile> historyFiles = new ArrayList<>();
     private List<String> gpsFiles = new ArrayList<String>();
     private List<String> gpsFilesNoExtension;
@@ -53,6 +55,43 @@ public class HistoryActivity extends AppCompatActivity {
     private String renameTo = "";
 
     public void populateHistoryFiles()
+    {
+        HistoryFile historyFile;
+
+        for(int i = 0; i < gpsFiles.size(); i++)
+        {
+            String filename = gpsFiles.get(i);
+            String displayname = gpsFilesNoExtension.get(i);
+            Date date = new Date();
+            String path = "/SkiStats/GPS/Recordings/";
+            String full = path + gpsFiles.get(i);
+
+            /*
+                Now I just need to loop through each file, get the date of the first track point and set to the date of the file.
+                takes too long
+             */
+
+
+            File file = new File(sdDir + full);
+            long millisec;
+            DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+            if(file.exists())
+            {
+                // too slow
+                //date = getDate(file.getAbsolutePath());
+            }
+            else
+            {
+                Log.e(TAG,"Error: Cannot find file: " + full);
+            }
+            Date fileDate = date;
+            String fileDateString = df.format(date).toString();
+            historyFile = new HistoryFile(filename, displayname, fileDate);
+            historyFiles.add(historyFile);
+        }
+    }
+
+    public void populateHistoryImportFiles()
     {
         HistoryFile historyFile;
 
@@ -134,7 +173,8 @@ public class HistoryActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_history);
 
-        lv = (ListView) findViewById(R.id.HistoryListView);
+        recordingLv = (ListView) findViewById(R.id.HistoryRecordingListView);
+        importLv = (ListView) findViewById(R.id.HistoryImportListView);
 
         getAllGpsFileNames();
         gpsFilesNoExtension = gpsFiles;
@@ -146,11 +186,13 @@ public class HistoryActivity extends AppCompatActivity {
         gpsFilesNoExtension = (removeListGpxExtension(gpsFilesNoExtension));
         populateHistoryFiles();
         HistoryAdapter adapter = new HistoryAdapter(this, R.layout.history_list_row, historyFiles);
-        lv.setAdapter(adapter);
+        recordingLv.setAdapter(adapter);
 
-        registerForContextMenu(lv);
+        ListUtils.setDynamicHeight(recordingLv);
+
+        registerForContextMenu(recordingLv);
         updateList();
-        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        recordingLv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 //String filename = gpsFiles.get(i);
@@ -163,6 +205,29 @@ public class HistoryActivity extends AppCompatActivity {
                 startActivity(appInfo);
             }
         });
+
+        Log.e(TAG,"History files size: "+ historyFiles.size());
+    }
+
+    public static class ListUtils {
+        public static void setDynamicHeight(ListView mListView) {
+            HistoryAdapter mListAdapter = (HistoryAdapter) mListView.getAdapter();
+            if (mListAdapter == null) {
+                // when adapter is null
+                return;
+            }
+            int height = 0;
+            int desiredWidth = View.MeasureSpec.makeMeasureSpec(mListView.getWidth(), View.MeasureSpec.UNSPECIFIED);
+            for (int i = 0; i < mListAdapter.getCount(); i++) {
+                View listItem = mListAdapter.getView(i, null, mListView);
+                listItem.measure(desiredWidth, View.MeasureSpec.UNSPECIFIED);
+                height += listItem.getMeasuredHeight();
+            }
+            ViewGroup.LayoutParams params = mListView.getLayoutParams();
+            params.height = height + (mListView.getDividerHeight() * (mListAdapter.getCount() - 1));
+            mListView.setLayoutParams(params);
+            mListView.requestLayout();
+        }
     }
 
     public String convertStringToUnderscore(String input)
@@ -224,7 +289,7 @@ public class HistoryActivity extends AppCompatActivity {
 
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-        if(v.getId() == R.id.HistoryListView)
+        if(v.getId() == R.id.HistoryRecordingListView)
         {
             AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
             menu.setHeaderTitle(gpsFilesNoExtension.get(info.position));
@@ -376,20 +441,12 @@ public class HistoryActivity extends AppCompatActivity {
     {
 
 
-        ((HistoryAdapter) lv.getAdapter()).notifyDataSetChanged();
+        ((HistoryAdapter) recordingLv.getAdapter()).notifyDataSetChanged();
     }
 
     // temporary method, ghetto version that will do for now....
     public void getAllGpsFileNames()
     {
-        // Default Sample GPX Files
-        /* for (int i = 1; i < 5; i++)
-        {
-            File file = new File("gpsData/sauze/Day_" + i + "_2017-2018.gpx");
-            gpsFiles.add(file.getName());
-            fileList.add(file.getAbsolutePath());
-        } */
-
         // User Recording GPX Files
         String path = Environment.getExternalStorageDirectory() + "/" +  "SkiStats/GPS/Recordings/";
         File[] files = new File(path).listFiles();
