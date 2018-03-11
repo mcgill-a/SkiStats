@@ -438,7 +438,7 @@ public class HistoryActivity extends AppCompatActivity {
         }
         // Reverse file extension back
         extension = new StringBuilder(extension).reverse().toString();
-        if (!extension.equals(".gpx"));
+        if (!extension.equals(".gpx"))
         {
             name += gpx;
         }
