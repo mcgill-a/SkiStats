@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Environment;
 import android.os.StrictMode;
@@ -164,6 +165,8 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
 
     public void shareSocial()
     {
+        String folder = Environment.getExternalStorageDirectory() + File.separator + "SkiStats/Share/";
+        clearSharedImagesFolder(folder);
         Bitmap icon = shareScreen((this.getWindow().getDecorView().findViewById(android.R.id.content)));
         Intent share = new Intent(Intent.ACTION_SEND);
         share.setType("image/jpg");
@@ -194,9 +197,37 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
         startActivity(Intent.createChooser(share, "Share Your Stats"));
     }
 
+    public void clearSharedImagesFolder(String directory)
+    {
+        File dir = new File(directory);
+        // loop through each file in directory
+
+        File[] allFiles = dir.listFiles();
+        if (allFiles != null)
+        {
+            for (File image : allFiles)
+            {
+                Log.e(TAG,"Full path of temp image to remove: " + image.getAbsolutePath());
+
+                image.delete();
+                if(image.exists())
+                {
+                    getApplicationContext().deleteFile(image.getName());
+                }
+                // To ensure the file is removed on Windows Operating System also
+                MediaScannerConnection.scanFile(getApplicationContext(), new String[]{image.getAbsolutePath()}, null, null);
+            }
+        }
+    }
+
     public void getFileName()
     {
         filename = (String) getIntent().getStringExtra("filename");
+    }
+
+    public void getName(String filename)
+    {
+
     }
 
     public int getData() {

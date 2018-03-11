@@ -347,6 +347,23 @@ public class RecordActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        if(!recordImageButton.isEnabled())
+        {
+            // ask user to submit or discard
+            submitImageButton.performClick();
+        }
+        else
+        {
+            // exit normally
+            finish();
+        }
+
+
+        //moveTaskToBack(true);
+    }
+
     public void resetStopwatch()
     {
         millisecondTime = 0L;
