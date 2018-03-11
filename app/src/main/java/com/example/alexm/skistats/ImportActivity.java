@@ -56,11 +56,7 @@ public class ImportActivity extends AppCompatActivity {
     // temporary method, ghetto version that will do for now....
     public void getAllGpsFiles(View view)
     {
-        for (int i = 1; i < 5; i++)
-        {
-            File file = new File("gpsData/sauze/Day_" + i + "_2017-2018.gpx");
-            gpsFiles.add(file);
-        }
+
     }
 
     public void displayGpsList()

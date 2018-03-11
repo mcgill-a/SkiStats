@@ -1,67 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.example.alexm.skistats.ImportActivity">
 
-    <TextView
-        android:id="@+id/importTitle"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:textSize="25dp"
-        android:text="Import GPX Data" />
+        android:orientation="horizontal"
+        android:weightSum="10">
+
+        <TextView
+            android:id="@+id/importTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:layout_weight="10"
+            android:layout_centerHorizontal="true"
+            android:textSize="40sp"
+            android:text="Import GPX Files" />
+
+    </LinearLayout>
 
 
-    <Button
-        android:id="@+id/btnImport"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/txtInput"
-        android:layout_alignStart="@+id/importTitle"
-        android:layout_marginBottom="13dp"
-        android:onClick="btnImport"
-        android:text="Import" />
 
-    <EditText
-        android:id="@+id/txtInput"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/txtView"
-        android:layout_marginBottom="33dp"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:text="File" />
 
-    <TextView
-        android:id="@+id/txtView"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginBottom="217dp"
-        android:text="" />
-
-    <Button
-        android:id="@+id/btnExport"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/btnImport"
-        android:layout_alignBottom="@+id/btnImport"
-        android:layout_alignEnd="@+id/importTitle"
-        android:onClick="btnExportClick"
-        android:text="Export" />
-
-    <Button
-        android:id="@+id/button2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/txtInput"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="72dp"
-        android:onClick="getAllGpsFiles"
-        android:text="Get GPS Files" />
-
-</RelativeLayout>
+</LinearLayout>
