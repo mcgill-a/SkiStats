@@ -1,5 +1,8 @@
 package com.example.alexm.skistats;
 
+import android.app.Activity;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -10,6 +13,9 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+
+import com.nononsenseapps.filepicker.FilePickerActivity;
+import com.nononsenseapps.filepicker.Utils;
 
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -32,9 +38,12 @@ public class ImportActivity extends AppCompatActivity {
     public EditText editText;
     public TextView textView;
     public Button save, load;
-    public GPXParser mParser = new GPXParser();
+    //public GPXParser mParser = new GPXParser();
 
-    private List<File> gpsFiles = new ArrayList<File>();
+    private static final int FILE_CODE = 1;
+
+
+    private List<File> imports = new ArrayList<>();
     public String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "aa/test1";
 
 
@@ -43,112 +52,34 @@ public class ImportActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_import);
 
-
-        editText = (EditText) findViewById(R.id.txtInput);
-        textView = (TextView) findViewById(R.id.txtView);
-        save = (Button) findViewById(R.id.btnExport);
-        load = (Button) findViewById(R.id.btnImport);
-
-        File dir = new File(path);
-        dir.mkdirs();
+        startFilePicker();
     }
 
-    // temporary method, ghetto version that will do for now....
-    public void getAllGpsFiles(View view)
+    public void startFilePicker()
     {
+        Intent i = new Intent(getApplicationContext(), FilePickerActivity.class);
 
+        i.putExtra(FilePickerActivity.EXTRA_ALLOW_MULTIPLE, true);
+        i.putExtra(FilePickerActivity.EXTRA_ALLOW_CREATE_DIR, false);
+        i.putExtra(FilePickerActivity.EXTRA_MODE, FilePickerActivity.MODE_FILE);
+
+        String location = Environment.getExternalStorageDirectory().getPath();
+        i.putExtra(FilePickerActivity.EXTRA_START_PATH, location);
+
+        startActivityForResult(i, FILE_CODE);
     }
-
-    public void displayGpsList()
+    protected void onActivityResult(int requestCode, int resultCode, Intent intent)
     {
-        String finalString = "";
-        for (int i = 0; i < gpsFiles.size(); i++)
+        if((requestCode == FILE_CODE) && (resultCode == Activity.RESULT_OK))
         {
-            finalString += gpsFiles.get(i).getName() + "\n";
-        }
-        textView.setText(finalString);
-    }
-
-    public void btnImport(View view)
-    {
-        Gpx parsedGpx = null;
-
-        try
-        {
-            InputStream in = getAssets().open("gpsData/sauze/Day_2_2017-2018.gpx");
-            parsedGpx = mParser.parse(in);
-        }
-        catch(IOException | XmlPullParserException e)
-        {
-            e.printStackTrace();
-        }
-
-        if(parsedGpx != null)
-        {
-            Integer count = 0;
-            List<Track> tracks = parsedGpx.getTracks();
-            for(int i = 0; i < tracks.size(); i++)
+            List<Uri> files = Utils.getSelectedFilesFromResult(intent);
+            for (Uri uri : files)
             {
-                Track track = tracks.get(i);
-                Log.e(TAG, "track " + i + ":");
-                List<TrackSegment> segments = track.getTrackSegments();
-                for (int j = 0; j < segments.size(); j++)
-                {
-                    TrackSegment segment = segments.get(i);
-                    Log.e(TAG," segment " + j + ":");
-                    for (TrackPoint trackPoint : segment.getTrackPoints())
-                    {
-                        Log.e(TAG, "   point: lat" + trackPoint.getLatitude() + ", lon " + trackPoint.getLongitude() + ", time " + trackPoint.getTime());
-                        count++;
-                    }
-                }
+                File file = Utils.getFileForUri(uri);
+                imports.add(file);
+                Log.e(TAG, file.getAbsolutePath());
             }
-            Toast.makeText(getApplicationContext(), "Entry Count: " + count, Toast.LENGTH_SHORT).show();
-        }
-        else
-        {
-            Log.e(TAG, "Error parsing gpx file");
-            //Toast.makeText(getApplicationContext(), "GPX File Read Failed", Toast.LENGTH_SHORT).show();
         }
     }
 
-
-    public void btnExportClick(View view)
-    {
-        Log.e("alexm.org", "Step 1");
-        File file = new File(path + "/savedFile.txt");
-        Log.e("alexm.org", "Step 2");
-
-        String [] saveText = new String[100];
-        saveText[0] = "test";
-        // String [] saveText = String.valueOf(editText.getText()).split(System.getProperty("line.seperator"));
-        Log.e("alexm.org", "Step 3");
-        editText.setText("");
-        Log.e("alexm.org", "Step 4");
-        Toast.makeText(getApplicationContext(), "Saved, not rly but lets pretend anyways", Toast.LENGTH_LONG).show();
-        Log.e("alexm.org", "Step 5");
-        //Save(file, saveText);
-        Log.e("alexm.org", "Step 6");
-    }
-
-    public void btnImportClick(View view) {
-        File file = new File(path + "/savedFile.txt");
-
-        String[] loadText = new String[6];
-        loadText[0] = "String 1";
-        loadText[1] = "String 2";
-        loadText[2] = "String 3";
-        loadText[3] = "String 4";
-        loadText[4] = "String 5";
-        loadText[5] = "String 6";
-
-
-        String finalString = "";
-
-        for (int i = 0; i < loadText.length; i++) {
-            finalString += loadText[i] + "\n";
-        }
-
-        textView.setText(finalString);
-    }
 }

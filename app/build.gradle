@@ -39,4 +39,5 @@ dependencies {
     compile 'net.danlew:android.joda:2.9.9.2'
     compile 'io.ticofab.androidgpxparser:parser:1.1.0'
     compile "com.androidplot:androidplot-core:1.5.4"
+    compile 'com.nononsenseapps:filepicker:4.1.0'
 }
