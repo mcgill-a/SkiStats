@@ -73,7 +73,7 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
 
     private DateTimeFormatter fmt = DateTimeFormat.forPattern("HH:mm:ss");
     public List<TrackPoint> tPoints = new ArrayList<>();
-    //public List<TrackPoint> tPointsFiltered = new ArrayList<>();
+    //public List<TrackPoint> tPointsFiltered = new ArrayList<>(); // this would be the kalman filtered gps data
 
     public void initialise()
     {
@@ -108,7 +108,6 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
         mapFragment.getMapAsync(this);
 
         getFileName();
-        //Toast.makeText(getApplicationContext(), filename, Toast.LENGTH_SHORT).show();
         if(getData() != -1)
         {
             statCalculations();
@@ -123,7 +122,6 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
             @Override
             public void onClick(View v)
             {
-                //Toast.makeText(getApplicationContext(),"Share Stats",Toast.LENGTH_SHORT).show();
                 shareSocial();
             }
         });
@@ -133,7 +131,6 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
             public void onClick(View v)
             {
                 exportFile();
-                //Toast.makeText(getApplicationContext(),"Export gpx file",Toast.LENGTH_SHORT).show();
             }
         });
 
