@@ -74,7 +74,7 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
     private TextView speedAverageValue;
 
     private Button buttonShare;
-    private Button buttonSpeed;
+    private Button buttonExport;
     private Button buttonAltitude;
 
     private DateTimeFormatter fmt = DateTimeFormat.forPattern("HH:mm:ss");
@@ -96,7 +96,7 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
         speedAverageValue = (TextView)findViewById(R.id.speedAverageValue);
 
         buttonShare = (Button)findViewById(R.id.btnShare);
-        buttonSpeed = (Button)findViewById(R.id.btnSpeed);
+        buttonExport = (Button)findViewById(R.id.btnExport);
         buttonAltitude = (Button)findViewById(R.id.btnAltitude);
 
     }
@@ -134,11 +134,11 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
             }
         });
 
-        buttonSpeed.setOnClickListener(new View.OnClickListener() {
+        buttonExport.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v)
             {
-                Toast.makeText(getApplicationContext(),"Speed History Graph",Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(),"Export gpx file",Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -227,7 +227,7 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
 
     public void getName(String filename)
     {
-
+        // get display name for share image file
     }
 
     public int getData() {
