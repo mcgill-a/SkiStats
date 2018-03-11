@@ -1,7 +1,6 @@
 package com.example.alexm.skistats;
 
 import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.media.MediaScannerConnection;
@@ -17,7 +16,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
-import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -36,8 +34,6 @@ public class HistoryActivity extends AppCompatActivity {
     private List<HistoryFile> historyFiles = new ArrayList<>();
     private List<String> gpsFiles = new ArrayList<String>();
     private List<String> gpsFilesNoExtension;
-    private List<HistoryFile> HistoryFileDisplayNames;
-    //private List<String> fileList = new ArrayList<>();
     private File sdDir = Environment.getExternalStorageDirectory();
     private String path = Environment.getExternalStorageDirectory() + "/" +  "SkiStats/GPS/Recordings/";
     private String TAG = "SkiStats.Log";
