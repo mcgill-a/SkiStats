@@ -1,6 +1,7 @@
 package com.example.alexm.skistats;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.media.MediaScannerConnection;
@@ -37,7 +38,7 @@ public class HistoryActivity extends AppCompatActivity {
     private List<String> gpsFilesNoExtension;
     private List<HistoryFile> HistoryFileDisplayNames;
     //private List<String> fileList = new ArrayList<>();
-
+    private File sdDir = Environment.getExternalStorageDirectory();
     private String path = Environment.getExternalStorageDirectory() + "/" +  "SkiStats/GPS/Recordings/";
     private String TAG = "SkiStats.Log";
     private String renameTo = "";
@@ -50,10 +51,16 @@ public class HistoryActivity extends AppCompatActivity {
         {
             String filename = gpsFiles.get(i);
             String displayname = gpsFilesNoExtension.get(i);
-            Date date = new Date();
-            String path = Environment.getExternalStorageDirectory() + "/" +  "SkiStats/GPS/Recordings/";
+            Date date;
+            String path = "/SkiStats/GPS/Recordings/";
             String full = path + gpsFiles.get(i);
-            File file = new File("full");
+
+            /*
+                Now I just need to loop through each file, get the date of the first track point and set to the date of the file.
+             */
+
+
+            File file = new File(sdDir + full);
             long millisec;
             DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
             if(file.exists())
@@ -63,7 +70,7 @@ public class HistoryActivity extends AppCompatActivity {
             }
             else
             {
-                //Log.e(TAG,"Error: Cannot find file: " + full);
+                Log.e(TAG,"Error: Cannot find file: " + full);
                 date = new Date();
             }
 
