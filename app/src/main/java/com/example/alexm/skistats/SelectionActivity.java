@@ -108,6 +108,7 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
         mapFragment.getMapAsync(this);
 
         getFileName();
+
         if(getData() != -1)
         {
             statCalculations();
@@ -145,6 +146,7 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
                 startActivity(i);
             }
         });
+
     }
 
     public void exportFile()
@@ -232,11 +234,6 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
         absoluteFilepath = (String) getIntent().getStringExtra("filename");
     }
 
-    public void getName(String name)
-    {
-        // get display name for share image file
-    }
-
     public int getData() {
         Gpx parsedGpx = null;
 
@@ -312,10 +309,6 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
         double maxspeedAvgHeight = 0;
         int maxSpeedTime = 0;
         int time = 0;
-        int maxTime = 0;
-        int timeCount = 0;
-        int timeCount2 = 0;
-        int marker = 0;
         double altitude = 0;
         double maxAltitude = 0;
         double minAltitude = Double.MAX_VALUE;
@@ -325,13 +318,7 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
         double b = 0;
         double c = 0;
 
-
-        double gradient = 0;
-        int gradientCount = 0;
-        double averageGradient = 0;
-        double maxGradient = 0;
-
-        int pauseCount = 0;
+        int speedCounter = 0;
 
         gpsStartTime = tPoints.get(0).getTime().toDateTime();
         gpsEndTime = tPoints.get(tPoints.size()-1).getTime().toDateTime();
@@ -346,11 +333,10 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
 
             time = seconds.getSeconds();
 
-            // If the time between the current track point and the next track point is more than x minutes,
+            // If the time between the current track point and the next track point is more than 60 seconds,
             // skip to the next one as the gps recording isn't useful
             if (time > 60)
             {
-                pauseCount++;
                 continue;
             }
 
@@ -375,6 +361,7 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
             // Try to filter out invalid results (for example - when gps was paused and then resumed at another location
             if ((time > 0 && time < 40) && (speed < 0.0277)) // speed < 100km/h 0.0277
             {
+
                 altitudes.add(current.getElevation().toString());
                 // TOTAL DISTANCE
                 if (distance > maxDistance)
@@ -419,21 +406,8 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
                         maxspeedAvgHeight = avgheight;
                         maxSpeedTime = time;
                     }
+                    speedCounter++;
                     averageSpeed += speed;
-                    gradientCount++;
-
-                    // REMOVED DUE TO BEING TOO INACCURATE
-                    // Gradient (rise/run) x 100
-                    /*double rise = height;
-                    double run = distance * 1000;
-                    gradient = (rise / run) * 100;
-
-                    if (gradient > maxGradient)
-                    {
-                        maxGradient = gradient;
-                    }
-
-                    averageGradient += gradient; */
                 }
 
                 // only get speed info when gps update time is less than 10s. reduces error
@@ -442,14 +416,12 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
                     if (speed > maxSpeed && height < 0)
                     {
                         maxSpeed = speed;
-                        marker = i;
                     }
                     averageSpeed += speed;
                 } */
             }
         }
-        averageSpeed = averageSpeed / gradientCount;
-        averageGradient = averageGradient / gradientCount;
+        averageSpeed = averageSpeed / speedCounter;
         totalTime = totalSkiTime + totalSkiLiftTime;
         String totalSkiTimeString = splitToComponentTimes(totalSkiTime);
         String totalSkiLiftTimeString = splitToComponentTimes(totalSkiLiftTime);
@@ -458,14 +430,6 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
         maxSpeed = maxSpeed * 3600; // convert from km/s to km/h
         averageSpeed = averageSpeed * 3600; // convert from km/s to km/h
 
-        //TrackPoint marked = tPoints.get(643);
-        //TrackPoint markedNext = tPoints.get(644);
-        //SkiVector dist = calculateDistanceBetween(marked, markedNext);
-        //Log.e(TAG, "Marker: " + marker);
-        //Log.e(TAG, "Marked: " + dist.toString() + " | TIME 1: " + marked.getTime() + " TIME 2: " + markedNext.getTime());
-        //Log.e(TAG, "Max Time:  " + maxTime);
-        //Log.e(TAG, "Time Count:  " + timeCount);
-        //Log.e(TAG, "Time Count > 60:  " + timeCount2);
         Log.e(TAG, "Max Individual Distance: " + maxDistance);
         Log.e(TAG,"Total Distance: " + totalDistance);
         Log.e(TAG,"Total Ski Distance: " + totalSkiDistance);
@@ -477,10 +441,6 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
 
         Log.e(TAG,"Max Altitude: " + maxAltitude);
         Log.e(TAG,"Min Altitude: " + minAltitude);
-
-        Log.e(TAG,"Pause Count: " + pauseCount);
-        Log.e(TAG,"Max Gradient: "  + maxGradient);
-        Log.e(TAG,"Average Gradient: " + averageGradient);
 
         Log.e(TAG, "Max Speed: " + maxSpeed);
         Log.e(TAG, "Max Speed avgheight: " + maxspeedAvgHeight);
@@ -576,15 +536,6 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
         //distanceTotalValue.setText();
     }
 
-    /**
-     * Manipulates the map once available.
-     * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near Sydney, Australia.
-     * If Google Play services is not installed on the device, the user will be prompted to install
-     * it inside the SupportMapFragment. This method will only be triggered once the user has
-     * installed Google Play services and returned to the app.
-     */
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;

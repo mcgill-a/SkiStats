@@ -9,6 +9,7 @@ import android.content.pm.PackageManager;
 import android.media.MediaScannerConnection;
 import android.os.Build;
 import android.os.Environment;
+import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -31,17 +32,22 @@ import com.google.android.gms.maps.model.LatLng;
 
 import org.xmlpull.v1.XmlPullParserException;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 import io.ticofab.androidgpxparser.parser.GPXParser;
 import io.ticofab.androidgpxparser.parser.domain.Gpx;
@@ -92,9 +98,6 @@ public class HistoryActivity extends AppCompatActivity {
         HistoryAdapter importAdapter = new HistoryAdapter(this, R.layout.history_list_row, historyImportFiles);
         recordingLv.setAdapter(recordingAdapter);
         importLv.setAdapter(importAdapter);
-
-        //setListViewHeightBasedOnChildren(recordingLv);
-        //setListViewHeightBasedOnChildren(importLv);
 
         ListUtils.setDynamicHeight(recordingLv);
         ListUtils.setDynamicHeight(importLv);
@@ -148,6 +151,40 @@ public class HistoryActivity extends AppCompatActivity {
                 startActivity(appInfo);
             }
         });
+        getCorrectRecordingFileDates();
+        getCorrectImportFileDates();
+        updateList();
+    }
+
+
+    private void getCorrectRecordingFileDates()
+    {
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+        Date date;
+        for (int i = 0; i < historyRecordingFiles.size(); i++)
+        {
+            String name = historyRecordingFiles.get(i).getFileName();
+            String directory = sdDir + "/" +  "SkiStats/GPS/Recordings/";
+            String absPath = directory + name;
+            date = getDateQuick(absPath);
+            historyRecordingFiles.get(i).setDateCreated(date);
+            Log.e(TAG,"Abs path: " + absPath + " | Date: " + df.format(date));
+        }
+    }
+
+    private void getCorrectImportFileDates()
+    {
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+        Date date;
+        for (int i = 0; i < historyImportFiles.size(); i++)
+        {
+            String name = historyImportFiles.get(i).getFileName();
+            String directory = sdDir + "/" +  "SkiStats/GPS/Imports/";
+            String absPath = directory + name;
+            date = getDateQuick(absPath);
+            historyImportFiles.get(i).setDateCreated(date);
+            Log.e(TAG,"Abs path: " + absPath + " | Date: " + df.format(date));
+        }
     }
 
     public boolean checkPermissionForReadExtertalStorage() {
@@ -261,7 +298,7 @@ public class HistoryActivity extends AppCompatActivity {
         if(v.getId() == R.id.HistoryRecordingListView)
         {
             AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
-            menu.setHeaderTitle(historyRecordingFiles.get(info.position).displayName);
+            menu.setHeaderTitle(historyRecordingFiles.get(info.position).getDisplayName());
             menu.add(Menu.NONE, 0, 0, "Rename");
             menu.add(Menu.NONE, 1, 1, "Delete");
         }
@@ -288,8 +325,8 @@ public class HistoryActivity extends AppCompatActivity {
 
     public void renameFile(String menuItem, final int listPosition)
     {
-        final String selectedName = historyRecordingFiles.get(listPosition).filename;
-        final String displayName = historyRecordingFiles.get(listPosition).displayName;
+        final String selectedName = historyRecordingFiles.get(listPosition).getFileName();
+        final String displayName = historyRecordingFiles.get(listPosition).getDisplayName();
 
         View view = (LayoutInflater.from(HistoryActivity.this)).inflate(R.layout.popup_rename_file, null);
         AlertDialog.Builder alert = new AlertDialog.Builder(HistoryActivity.this);
@@ -311,7 +348,7 @@ public class HistoryActivity extends AppCompatActivity {
                         {
                             Log.e(TAG, selectedName + " has been renamed");
                             Toast.makeText(getApplicationContext(), selectedName + " renamed to: " + renameTo,Toast.LENGTH_SHORT).show();
-                            HistoryFile historyFile = new HistoryFile(fullRenameTo, renameTo, historyRecordingFiles.get(listPosition).dateLastModified);
+                            HistoryFile historyFile = new HistoryFile(fullRenameTo, renameTo, historyRecordingFiles.get(listPosition).getDateCreated());
                             historyRecordingFiles.set(listPosition, historyFile);
                             updateList();
                         }
@@ -335,7 +372,7 @@ public class HistoryActivity extends AppCompatActivity {
 
     public void deleteFile(String menuItem, int listPosition)
     {
-        final String selectedName = historyRecordingFiles.get(listPosition).filename;
+        final String selectedName = historyRecordingFiles.get(listPosition).getFileName();
 
         AlertDialog.Builder alert = new AlertDialog.Builder(HistoryActivity.this);
         alert.setTitle("Delete Recording");
@@ -367,7 +404,7 @@ public class HistoryActivity extends AppCompatActivity {
 
                         for (int j = 0; j < historyRecordingFiles.size(); j++)
                         {
-                            if (historyRecordingFiles.get(j).filename.equals(selectedName))
+                            if (historyRecordingFiles.get(j).getFileName().equals(selectedName))
                             {
                                 historyRecordingFiles.remove(j);
                             }
@@ -467,7 +504,6 @@ public class HistoryActivity extends AppCompatActivity {
                     String displayname = convertStringToSpaces(filename);
                     displayname = removeGpxExtension(displayname);
 
-                    //Log.e(TAG,"displayname: " + displayname);
                     Date date = new Date();
                     String path = "/SkiStats/GPS/" + location;
                     String full = path + filename;
@@ -501,6 +537,66 @@ public class HistoryActivity extends AppCompatActivity {
                 }
             }
         }
+    }
+
+    public Date getDateQuick(String filename) {
+        DateFormat longdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+        Date date = new Date();
+        boolean found = false;
+        String time = "";
+        try {
+            if (filename.charAt(0) == '/')
+            {
+                StringBuilder sb = new StringBuilder(filename);
+                sb.deleteCharAt(0);
+                filename = sb.toString();
+            }
+            BufferedReader br=new BufferedReader(
+                    new FileReader(new File(filename)));
+            String line;
+            String text = "";
+            int count = 0;
+            try
+            {
+                while ((line=br.readLine())!=null && !found)
+                {
+                    if(line.contains("<time>"))
+                    {
+                        if (count == 1)
+                        {
+                            String cropped = line;
+                            StringBuilder croppedSb = new StringBuilder(line);
+                            while(!cropped.startsWith("<time>"))
+                            {
+                                croppedSb.deleteCharAt(0);
+                                cropped = croppedSb.toString();
+                            }
+                            String[] splits = cropped.split(">");
+                            String[] cut = splits[1].split("<");
+                            time = cut[0];
+                            Date temp = longdf.parse(time);
+                            String tempString = df.format(temp);
+                            Date created = df.parse(tempString);
+                            //Log.e(TAG,"File: " + filename + " | time: " + time +  " | Created: " + created.toString());
+                            found = true;
+                            return created;
+                        }
+                        count++;
+                    }
+                }
+                //System.out.println(text);
+            } catch (IOException e)
+            {
+                e.printStackTrace();
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        return date;
     }
 
     public Date getDate(String filename) {

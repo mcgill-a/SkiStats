@@ -9,7 +9,9 @@
         android:layout_width="match_parent"
         android:layout_height="fill_parent"
         android:orientation="vertical"
-        android:padding="10dip" >
+        android:paddingLeft="10dip"
+        android:paddingRight="10dip"
+        android:paddingBottom="10dip">
 
         <TextView
             android:layout_width="match_parent"

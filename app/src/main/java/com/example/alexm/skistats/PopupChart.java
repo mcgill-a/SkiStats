@@ -90,11 +90,7 @@ public class PopupChart extends AppCompatActivity {
         }
         else
         {
-
-            // create an array of y-values to plot:
-            Number[] series1Numbers = {1500, 1550, 1620, 1660, 1700, 1925, 2100, 2150, 2000, 1900, 1500, 1550, 1620, 1660, 1700, 1925, 2100, 2150, 2000, 1900};
-
-            // turn the above arrays into XYSeries':
+            // turn the array into XYSeries:
             // (Y_VALS_ONLY means use the element index as the x value)
             XYSeries series1 = new SimpleXYSeries(
                     Arrays.asList(getAltitudes()), SimpleXYSeries.ArrayFormat.Y_VALS_ONLY, "Series1");
@@ -120,6 +116,5 @@ public class PopupChart extends AppCompatActivity {
             //plot.getOuterLimits().set(0, counter, minAltitude, maxAltitude);
             plot.getGraph().getLineLabelStyle(XYGraphWidget.Edge.LEFT).setFormat(new DecimalFormat("#"));
         }
-        //convertAltitudesToNumbers();
     }
 }

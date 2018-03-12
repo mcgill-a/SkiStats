@@ -64,7 +64,7 @@ public class HistoryAdapter extends ArrayAdapter<HistoryFile> {
         HistoryFile historyFile = historyFiles.get(position);
         holder.displayname.setText(historyFile.getDisplayName());
         DateFormat df = new SimpleDateFormat("yyyy/MM/dd");
-        Date date = historyFile.getDateLastModified();
+        Date date = historyFile.getDateCreated();
         String dateString = df.format(date).toString();
         holder.date.setText(dateString);
 

@@ -176,14 +176,14 @@ public class RecordActivity extends AppCompatActivity {
                         .setNetWork(false)
                         .start(getBaseContext(),RecordActivity.this); */
 
-                    Log.e(TAG, "GPS Recording Started");
+
 
                     if (ActivityCompat.checkSelfPermission(RecordActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                             && ActivityCompat.checkSelfPermission(RecordActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                         ActivityCompat.requestPermissions(RecordActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_CODE);
                         return;
                     }
-
+                    Log.d(TAG, "GPS Recording Started");
                     // Original gps location provider
                     fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.myLooper());
 
@@ -199,7 +199,7 @@ public class RecordActivity extends AppCompatActivity {
 
             pauseImageButton.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View view) {
-                    Log.e(TAG, "GPS Recording Paused");
+                    Log.d(TAG, "GPS Recording Paused");
                     timeBuff += millisecondTime;
                     //locationTracker.stopLocationService(RecordActivity.this);
                     handler.removeCallbacks(runnable);
@@ -233,7 +233,7 @@ public class RecordActivity extends AppCompatActivity {
                                 case DialogInterface.BUTTON_POSITIVE:
                                     // User selects Yes
                                     // do a thing to cancel recording
-                                    Log.e(TAG, "GPS Recording - Saving in progress..");
+                                    Log.d(TAG, "GPS Recording - Saving in progress..");
                                     DateFormat df = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
                                     // Prompt user for filename
                                     String filename = "Ski Activity";
@@ -271,17 +271,17 @@ public class RecordActivity extends AppCompatActivity {
 
                                     File recording = new File(dir, fullFileName);
                                     // CHANGE TO HIGHER NUMBER (ONLY LOW FOR TESTING)
-                                    Log.e(TAG,"Trying to save");
+                                    Log.d(TAG,"Trying to save");
                                     if(locations.size() > 3)
                                     {
                                         writePath(recording, filename, locations);
                                         Toast.makeText(RecordActivity.this, "Recording Saved", Toast.LENGTH_SHORT).show();
-                                        Log.e(TAG,"GPS Recording - Saved: " + filename);
+                                        Log.d(TAG,"GPS Recording - Saved: " + filename);
                                         resetStopwatch();
                                     }
                                     else
                                     {
-                                        Log.e(TAG,"Error: Not enough GPS data recorded");
+                                        Log.d(TAG,"Error: Not enough GPS data recorded");
                                         Toast.makeText(getApplicationContext(), "Error: Not enough GPS data recorded",Toast.LENGTH_LONG).show();
                                     }
 
@@ -290,7 +290,7 @@ public class RecordActivity extends AppCompatActivity {
 
                                 case DialogInterface.BUTTON_NEGATIVE:
                                     // User clicked No
-                                    Log.e(TAG,"GPS Recording - Discarded");
+                                    Log.d(TAG,"GPS Recording - Discarded");
                                     resetStopwatch();
                                     locations.clear();
                                     break;
@@ -339,16 +339,16 @@ public class RecordActivity extends AppCompatActivity {
 
     public static void writePath(File file, String n, List<Location> points)
     {
-        String header = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\" ?><gpx xmlns=\"http://www.topografix.com/GPX/1/1\" creator=\"SkiStats\"><trk>\n";
-        String name = "<name>" + n + "</name><trkseg>\n";
+        String header = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\" ?><gpx xmlns=\"http://www.topografix.com/GPX/1/1\" creator=\"SkiStats\">\n<trk>\n";
+        String name = "<name>" + n + "</name>\n<trkseg>\n";
 
         String segments = "";
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
         for (Location l : points) {
-            segments += "<trkpt lat=\"" + l.getLatitude() + "\" lon=\"" + l.getLongitude() + "\"><ele>" + l.getAltitude() +"</ele><time>" + df.format(new Date(l.getTime())) + "</time></trkpt>\n";
+            segments += "<trkpt lat=\"" + l.getLatitude() + "\" lon=\"" + l.getLongitude() + "\">\n<ele>" + l.getAltitude() +"</ele>\n<time>" + df.format(new Date(l.getTime())) + "</time></trkpt>\n";
         }
 
-        String footer = "</trkseg></trk></gpx>";
+        String footer = "</trkseg>\n</trk>\n</gpx>";
 
         try {
             FileWriter writer = new FileWriter(file, false);
@@ -358,10 +358,10 @@ public class RecordActivity extends AppCompatActivity {
             writer.append(footer);
             writer.flush();
             writer.close();
-            Log.e("SkiStats.Log.Status", "Saved " + points.size() + " points.");
+            Log.d("SkiStats.Log.Status", "Saved " + points.size() + " points.");
         } catch (IOException e) {
             // TODO Auto-generated catch block
-            Log.e("SkiStats.Log.Status", "Error Writting Path",e);
+            Log.d("SkiStats.Log.Status", "Error Writting Path",e);
         }
     }
 
@@ -374,7 +374,7 @@ public class RecordActivity extends AppCompatActivity {
             {
                 for(Location location : locationResult.getLocations())
                 {
-                    Log.e(TAG,"Lat: " + String.valueOf(location.getLatitude()) + " | Lon: " + String.valueOf(location.getLongitude()) + " | Altitude: " + String.valueOf(location.getAltitude()));
+                    Log.d(TAG,"Lat: " + String.valueOf(location.getLatitude()) + " | Lon: " + String.valueOf(location.getLongitude()) + " | Altitude: " + String.valueOf(location.getAltitude()));
                     if(location.getAccuracy() > 0)
                     {
                         locations.add(location);
