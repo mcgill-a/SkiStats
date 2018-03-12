@@ -40,7 +40,7 @@ public class RecordActivity extends AppCompatActivity {
     //private LocationTracker locationTracker;
 
     private static final int REQUEST_CODE = 1000;
-    FusedLocationProviderClient fusedLocationProviderClient;
+    //FusedLocationProviderClient fusedLocationProviderClient;
     LocationRequest locationRequest;
     LocationCallback locationCallback;
     String TAG = "SkiStats.Log";
@@ -137,6 +137,7 @@ public class RecordActivity extends AppCompatActivity {
             Toast.makeText(this,"External Storage permission is needed to store GPS (.gpx) files",Toast.LENGTH_LONG).show();
         }
 
+
         recordImageButton = (ImageButton) findViewById(R.id.recordImageButton);
         pauseImageButton = (ImageButton) findViewById(R.id.pauseImageButton);
         //cancelImageButton = (ImageButton) findViewById(R.id.cancelImageButton);
@@ -149,12 +150,13 @@ public class RecordActivity extends AppCompatActivity {
         if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_CODE);
         } else {
+
             // If permission granted
-            buildLocationRequest();
-            buildLocationCallBack();
+            //buildLocationRequest();
+            //buildLocationCallBack();
 
             // Create FusedProviderClient
-            fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+            //fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
 
             // Set event for button
             recordImageButton.setOnClickListener(new View.OnClickListener() {
@@ -173,20 +175,8 @@ public class RecordActivity extends AppCompatActivity {
                         return;
                     }
 
-                    /* GpsListener listener = new GpsListener(getApplicationContext());
-                    Location location = listener.getLocation();
-                    if (location == null)
-                    {
-                        Toast.makeText(getApplicationContext(),"GPS unable to return value",Toast.LENGTH_SHORT).show();
-                    }
-                    else
-                    {
-                        Log.e(TAG,"Lat: " + String.valueOf(location.getLatitude()) + " | Lon: " + String.valueOf(location.getLongitude()) + " | Altitude: " + String.valueOf(location.getAltitude()));
-                        locations.add(location);
-                    } */
-
                     // Orgiginal gps location provider
-                    fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.myLooper());
+                    //fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.myLooper());
 
                     startTime = SystemClock.uptimeMillis();
                     handler.postDelayed(runnable, 0);
@@ -207,7 +197,7 @@ public class RecordActivity extends AppCompatActivity {
 
                     Toast.makeText(RecordActivity.this, "Paused Recording", Toast.LENGTH_SHORT).show();
 
-                    fusedLocationProviderClient.removeLocationUpdates(locationCallback);
+                    //fusedLocationProviderClient.removeLocationUpdates(locationCallback);
 
                     // Change state of button
                     recordImageButton.setEnabled(true);
@@ -215,42 +205,6 @@ public class RecordActivity extends AppCompatActivity {
 
                 }
             });
-
-            /*cancelImageButton.setOnClickListener(new View.OnClickListener() {
-                public void onClick(View view) {
-                    //Toast.makeText(RecordActivity.this, "Cancelled Recording", Toast.LENGTH_SHORT).show();
-                    pauseImageButton.performClick();
-                    AlertDialog.Builder alert = new AlertDialog.Builder(RecordActivity.this);
-                    alert.setTitle("Discard Recording");
-                    alert.setMessage("Are you sure you want to discard the recording?");
-
-                    DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            switch(i)
-                            {
-                                case DialogInterface.BUTTON_POSITIVE:
-                                    // User selects Yes
-                                    // do a thing to cancel recording
-                                    Log.e(TAG, "GPS Recording Discarded");
-                                    resetStopwatch();
-                                    break;
-
-                                case DialogInterface.BUTTON_NEGATIVE:
-                                    // User clicked No
-                                    break;
-                            }
-                        }
-                    };
-
-                    alert.setPositiveButton("Yes", dialogClickListener);
-                    alert.setNegativeButton("No", dialogClickListener);
-
-                    AlertDialog dialog = alert.create();
-                    // Display the alert
-                    dialog.show();
-                }
-            }); */
 
             submitImageButton.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View view) {
