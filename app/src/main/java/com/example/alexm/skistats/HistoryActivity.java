@@ -525,33 +525,3 @@ public class HistoryActivity extends AppCompatActivity {
         return name;
     }
 }
-
-/*
-    // old
-    public void populateHistoryFiles()
-    {
-        HistoryFile historyFile = new HistoryFile();
-
-        for(int i = 0; i < gpsFiles.size(); i++)
-        {
-            historyFile.setFileName(gpsFiles.get(i));
-            historyFile.setDisplayName(gpsFilesNoExtension.get(i));
-            String path = Environment.getExternalStorageDirectory() + "/" +  "SkiStats/GPS/Recordings/";
-            String full = path + gpsFiles.get(i);
-            File file = new File("full");
-            long millisec;
-            if(file.exists())
-            {
-                millisec = file.lastModified();
-                Date date = new Date(millisec);
-                historyFile.setDateLastModified(date);
-            }
-            else
-            {
-                //Log.e(TAG,"Error: Cannot find file: " + full);
-                historyFile.setDateLastModified(null);
-            }
-        }
-    }
-
-     */
