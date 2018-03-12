@@ -2,7 +2,9 @@ package com.example.alexm.skistats;
 
 import android.Manifest;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.icu.text.AlphabeticIndex;
 import android.location.Location;
 import android.os.Environment;
 import android.os.Handler;
@@ -20,6 +22,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -37,10 +40,10 @@ import java.util.List;
 
 public class RecordActivity extends AppCompatActivity {
 
-    //private LocationTracker locationTracker;
+    private static GoogleApiClient mGoogleApiClient;
 
     private static final int REQUEST_CODE = 1000;
-    //FusedLocationProviderClient fusedLocationProviderClient;
+    FusedLocationProviderClient fusedLocationProviderClient;
     LocationRequest locationRequest;
     LocationCallback locationCallback;
     String TAG = "SkiStats.Log";
@@ -149,12 +152,20 @@ public class RecordActivity extends AppCompatActivity {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_CODE);
         } else {
 
+            /*
+            //Without Google API Client Auto Location Dialog will not work
+            mGoogleApiClient = new GoogleApiClient.Builder(RecordActivity.this)
+                    .addApi(LocationServices.API)
+                    .build();
+            mGoogleApiClient.connect();
+            startService(new Intent(this, MyLocationService.class));
+            */
             // If permission granted
-            //buildLocationRequest();
-            //buildLocationCallBack();
+            buildLocationRequest();
+            buildLocationCallBack();
 
             // Create FusedProviderClient
-            //fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+            fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
 
             // Set event for button
             recordImageButton.setOnClickListener(new View.OnClickListener() {
@@ -173,8 +184,8 @@ public class RecordActivity extends AppCompatActivity {
                         return;
                     }
 
-                    // Orgiginal gps location provider
-                    //fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.myLooper());
+                    // Original gps location provider
+                    fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.myLooper());
 
                     startTime = SystemClock.uptimeMillis();
                     handler.postDelayed(runnable, 0);
@@ -195,7 +206,7 @@ public class RecordActivity extends AppCompatActivity {
 
                     Toast.makeText(RecordActivity.this, "Paused Recording", Toast.LENGTH_SHORT).show();
 
-                    //fusedLocationProviderClient.removeLocationUpdates(locationCallback);
+                    fusedLocationProviderClient.removeLocationUpdates(locationCallback);
 
                     // Change state of button
                     recordImageButton.setEnabled(true);
