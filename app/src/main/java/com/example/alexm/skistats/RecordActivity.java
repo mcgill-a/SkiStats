@@ -66,13 +66,6 @@ public class RecordActivity extends AppCompatActivity {
         //locationTracker.stopLocationService(this);
     }
 
-    /*@Override //For background-gps library that didn't work..
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        locationTracker.onRequestPermission(requestCode, permissions, grantResults);
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-    } */
-
-
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -131,10 +124,15 @@ public class RecordActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_record);
 
-        while (!checkPermissions())
+        if (!checkPermissions())
         {
             checkPermissions();
             Toast.makeText(this,"External Storage permission is needed to store GPS (.gpx) files",Toast.LENGTH_LONG).show();
+        }
+
+        if(!checkPermissions())
+        {
+            finish();
         }
 
 

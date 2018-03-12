@@ -1,10 +1,15 @@
 package com.example.alexm.skistats;
 
+import android.Manifest;
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.media.MediaScannerConnection;
+import android.os.Build;
 import android.os.Environment;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -55,6 +60,8 @@ public class HistoryActivity extends AppCompatActivity {
     private String TAG = "SkiStats.Log";
     private String renameTo = "";
 
+    private static final int READ_STORAGE_PERMISSION_REQUEST_CODE = 1001;
+
     public void gpxReadFailed()
     {
         Log.e(TAG, "Error parsing gpx file");
@@ -66,6 +73,14 @@ public class HistoryActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_history);
 
+        if (!checkPermissionForReadExtertalStorage())
+        {
+            requestPermissionForReadExtertalStorage();
+        }
+        if (!checkPermissionForReadExtertalStorage())
+        {
+            finish();
+        }
         recordingLv = (ListView) findViewById(R.id.HistoryRecordingListView);
         importLv = (ListView) findViewById(R.id.HistoryImportListView);
 
@@ -135,6 +150,23 @@ public class HistoryActivity extends AppCompatActivity {
         });
     }
 
+    public boolean checkPermissionForReadExtertalStorage() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            int result = getApplicationContext().checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE);
+            return result == PackageManager.PERMISSION_GRANTED;
+        }
+        return false;
+    }
+
+    public void requestPermissionForReadExtertalStorage() {
+        try {
+            ActivityCompat.requestPermissions((Activity) HistoryActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                    READ_STORAGE_PERMISSION_REQUEST_CODE);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
+    }
 
     public static class ListUtils {
         public static void setDynamicHeight(ListView mListView) {
@@ -435,7 +467,7 @@ public class HistoryActivity extends AppCompatActivity {
                     String displayname = convertStringToSpaces(filename);
                     displayname = removeGpxExtension(displayname);
 
-                    Log.e(TAG,"displayname: " + displayname);
+                    //Log.e(TAG,"displayname: " + displayname);
                     Date date = new Date();
                     String path = "/SkiStats/GPS/" + location;
                     String full = path + filename;
