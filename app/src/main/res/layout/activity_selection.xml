@@ -452,7 +452,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="10"
-            android:text="OTHER"
+            android:text="SPEED"
             android:textColor="#000"
             android:textAlignment="center"
             android:textSize="27dp"
@@ -530,28 +530,3 @@
     </LinearLayout>
 
 </LinearLayout>
-
-
-    <!--<TextView
-           android:layout_width="match_parent"
-           android:layout_height="0dp"
-           android:layout_weight=".50"
-           android:background="#22bfb2"
-           android:gravity="center"
-           android:text="Ski Stats Map Test"
-           android:textColor="#ffffff" />
-
-    <TextView
-        android:id="@+id/distanceTotalTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:layout_gravity="center"
-        android:layout_weight="0.05"
-        android:text="TOTAL"
-        android:textAlignment="center"
-        android:textSize="20dp"
-        android:textStyle="bold" />
-
-
-
-           -->

@@ -1,10 +1,13 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <SwitchPreference
-        android:defaultValue="true"
-        android:key="example_switch"
-        android:summary="@string/pref_description_social_recommendations"
-        android:title="@string/pref_title_social_recommendations" />
+    <ListPreference
+        android:defaultValue="KM/H"
+        android:entries="@array/unit_options"
+        android:entryValues="@array/unit_options"
+        android:key="unit_of_measurement"
+        android:negativeButtonText="@null"
+        android:positiveButtonText="@null"
+        android:title="@string/measurement_unit_title" />
 
     <!-- NOTE: EditTextPreference accepts EditText attributes. -->
     <!-- NOTE: EditTextPreference's summary should be set to its value by the activity code. -->
@@ -21,13 +24,10 @@
     <!-- NOTE: Hide buttons to simplify the UI. Users can touch outside the dialog to
          dismiss it. -->
     <!-- NOTE: ListPreference's summary should be set to its value by the activity code. -->
-    <ListPreference
-        android:defaultValue="-1"
-        android:entries="@array/pref_example_list_titles"
-        android:entryValues="@array/pref_example_list_values"
-        android:key="example_list"
-        android:negativeButtonText="@null"
-        android:positiveButtonText="@null"
-        android:title="@string/pref_title_add_friends_to_messages" />
+    <SwitchPreference
+        android:defaultValue="true"
+        android:key="example_switch"
+        android:summary="This is a switch preference"
+        android:title="Switch Preference" />
 
 </PreferenceScreen>

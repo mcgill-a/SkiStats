@@ -19,7 +19,7 @@
     </string>
 
     <string name="pref_title_display_name">Display name</string>
-    <string name="pref_default_display_name">John Smith</string>
+    <string name="pref_default_display_name">Ben Dover</string>
 
     <string name="pref_title_add_friends_to_messages">Add friends to messages</string>
     <string-array name="pref_example_list_titles">
@@ -75,6 +75,13 @@
 
     <string name="pref_title_new_message_notifications">New message notifications</string>
 
+    <string-array name="unit_options">
+        <item>KM/H</item>
+        <item>MPH</item>
+    </string-array>
+
+    <string name="measurement_unit_title">Unit of Measurement</string>
+    <string name="use_mph">Enable to use MPH instead of KM/H</string>
     <string name="pref_title_ringtone">Ringtone</string>
     <string name="pref_ringtone_silent">Silent</string>
 
