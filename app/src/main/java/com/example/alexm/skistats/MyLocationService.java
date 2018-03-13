@@ -16,6 +16,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 /**
@@ -30,7 +31,6 @@ public class MyLocationService extends Service {
     private static final int NOTIFICATION_ID = 2000;
     //private static final String ANDROID_CHANNEL_ID = "SS_NOTIFY";
 
-
     private class LocationListener implements android.location.LocationListener {
         Location mLastLocation;
 
@@ -42,7 +42,21 @@ public class MyLocationService extends Service {
         @Override
         public void onLocationChanged(Location location) {
             Log.e(TAG, "onLocationChanged: " + location);
+
             mLastLocation.set(location);
+
+            Intent intent = new Intent("backgroundGpsUpdates");
+            sendLocationUpdate(intent);
+
+        }
+
+        private void sendLocationUpdate(Intent intent)
+        {
+            intent.putExtra("latitude", mLastLocation.getLatitude());
+            intent.putExtra("longitude", mLastLocation.getLongitude());
+            intent.putExtra("altitude",mLastLocation.getAltitude());
+            intent.putExtra("time",mLastLocation.getTime());
+            LocalBroadcastManager.getInstance(MyLocationService.this).sendBroadcast(intent);
         }
 
         @Override
@@ -66,14 +80,6 @@ public class MyLocationService extends Service {
             new LocationListener(LocationManager.NETWORK_PROVIDER)
     };
 
-    /*
-    LocationListener[] mLocationListeners = new LocationListener[]{
-            new LocationListener(LocationManager.PASSIVE_PROVIDER)
-    };
-
-    */
-
-
     @Override
     public IBinder onBind(Intent arg0) {
         return null;
@@ -94,28 +100,26 @@ public class MyLocationService extends Service {
 
             // Configure the notification channel.
             notificationChannel.setDescription("Channel description");
-            notificationChannel.enableLights(true);
+            notificationChannel.enableLights(false);
             notificationChannel.setLightColor(Color.RED);
             //notificationChannel.setVibrationPattern(new long[]{0, 1000, 500, 1000});
             notificationChannel.enableVibration(false);
             notificationManager.createNotificationChannel(notificationChannel);
         }
 
-
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID);
 
         notificationBuilder.setAutoCancel(true)
-                .setDefaults(Notification.DEFAULT_ALL)
+                .setDefaults(Notification.DEFAULT_LIGHTS | Notification.DEFAULT_SOUND)
                 .setWhen(System.currentTimeMillis())
                 .setSmallIcon(R.drawable.ic_gps)
-                .setVibrate(new long[] {0})
+                .setVibrate(new long[] {0L})
                 .setColor(2)
                 .setContentTitle("Ski Stats Recording")
                 .setContentText("Currently Tracking GPS Location")
                 .setContentInfo("Info");
 
         startForeground(NOTIFICATION_ID, notificationBuilder.build());
-        Log.e(TAG,"Finished onStart");
         return START_STICKY;
     }
 
@@ -125,11 +129,6 @@ public class MyLocationService extends Service {
         Log.e(TAG, "onCreate");
 
         initializeLocationManager();
-        Notification notification = new Notification.Builder(this)
-                .setContentTitle("SkiStats")
-                .setContentText("Recording GPS")
-                .setOngoing(true).build();
-
 
         try {
             mLocationManager.requestLocationUpdates(
@@ -143,21 +142,6 @@ public class MyLocationService extends Service {
         } catch (IllegalArgumentException ex) {
             Log.d(TAG, "network provider does not exist, " + ex.getMessage());
         }
-
-        //this.startForeground(NOTIFICATION_ID, notification);
-
-        /*try {
-            mLocationManager.requestLocationUpdates(
-                    LocationManager.GPS_PROVIDER,
-                    LOCATION_INTERVAL,
-                    LOCATION_DISTANCE,
-                    mLocationListeners[1]
-            );
-        } catch (java.lang.SecurityException ex) {
-            Log.i(TAG, "fail to request location update, ignore", ex);
-        } catch (IllegalArgumentException ex) {
-            Log.d(TAG, "gps provider does not exist " + ex.getMessage());
-        }*/
     }
 
     @Override
@@ -176,6 +160,14 @@ public class MyLocationService extends Service {
                 }
             }
         }
+    }
+
+    @Override
+    public void onTaskRemoved(Intent rootIntent)
+    {
+        Log.e(TAG,"onTaskRemoved");
+
+        stopSelf();
     }
 
     private void initializeLocationManager() {

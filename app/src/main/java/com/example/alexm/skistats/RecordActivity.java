@@ -1,8 +1,11 @@
 package com.example.alexm.skistats;
 
 import android.Manifest;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Build;
@@ -14,6 +17,7 @@ import android.speech.RecognizerResultsIntent;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -152,6 +156,10 @@ public class RecordActivity extends AppCompatActivity {
         } else {
 
             // If permission granted
+
+            LocalBroadcastManager.getInstance(this).registerReceiver(messageReciever, new IntentFilter("backgroundGpsUpdates"));
+
+
 
             final Intent intent = new Intent(RecordActivity.this, MyLocationService.class);
             // Set event for button
@@ -305,6 +313,25 @@ public class RecordActivity extends AppCompatActivity {
             });
         }
     }
+
+    private BroadcastReceiver messageReciever = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            Double latitude = intent.getDoubleExtra("latitude", 0);
+            Double longitude = intent.getDoubleExtra("longitude", 0);
+            Double altitude = intent.getDoubleExtra("altitude", 0);
+            Long time = intent.getLongExtra("time",0);
+
+            Location location = new Location("");
+            location.setLatitude(latitude);
+            location.setLongitude(longitude);
+            location.setAltitude(altitude);
+            location.setTime(time);
+            locations.add(location);
+            Log.e(TAG,"LOCATION ADDED: " + location.getTime() + " " + location.getLatitude() + " " + location.getLongitude() + " " + location.getAltitude());
+        }
+    };
 
     @Override
     public void onBackPressed() {

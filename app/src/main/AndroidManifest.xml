@@ -57,6 +57,7 @@
 
         <service
             android:name=".MyLocationService"
+            android:stopWithTask="false"
             android:enabled="true" />
 
         <activity
