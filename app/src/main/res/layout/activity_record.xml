@@ -6,6 +6,7 @@
     android:layout_height="fill_parent"
     android:orientation="vertical"
     android:background="#ddf4da"
+    android:keepScreenOn="true"
     tools:context="com.example.alexm.skistats.RecordActivity">
 
 

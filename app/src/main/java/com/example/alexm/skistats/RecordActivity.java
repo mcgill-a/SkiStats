@@ -4,8 +4,8 @@ import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.icu.text.AlphabeticIndex;
 import android.location.Location;
+import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
@@ -22,7 +22,6 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -40,7 +39,7 @@ import java.util.List;
 
 public class RecordActivity extends AppCompatActivity {
 
-    private static GoogleApiClient mGoogleApiClient;
+    //private static GoogleApiClient mGoogleApiClient;
 
     private static final int REQUEST_CODE = 1000;
     FusedLocationProviderClient fusedLocationProviderClient;
@@ -164,19 +163,20 @@ public class RecordActivity extends AppCompatActivity {
             buildLocationRequest();
             buildLocationCallBack();
 
+            Intent intent = new Intent(this, MyLocationService.class);
+            if (Build.VERSION.SDK_INT < 26) {
+                Log.w(TAG, "This might not work....");
+                startService(intent);
+            } else {
+                startForegroundService(intent);
+            }
+
             // Create FusedProviderClient
             fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
 
             // Set event for button
             recordImageButton.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View view) {
-                /*locationTracker = new LocationTracker("my.action")
-                        .setInterval(1000)
-                        .setGps(true)
-                        .setNetWork(false)
-                        .start(getBaseContext(),RecordActivity.this); */
-
-
 
                     if (ActivityCompat.checkSelfPermission(RecordActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                             && ActivityCompat.checkSelfPermission(RecordActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {

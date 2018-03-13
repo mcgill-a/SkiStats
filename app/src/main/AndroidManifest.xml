@@ -19,7 +19,6 @@
         android:hardwareAccelerated="true"
         android:icon="@mipmap/ic_launcher_skier"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_skier_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
@@ -58,7 +57,7 @@
 
         <service
             android:name=".MyLocationService"
-            android:process=":my_service" />
+            android:enabled="true" />
 
         <activity
             android:name=".PopupChart"

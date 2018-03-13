@@ -1,5 +1,6 @@
 package com.example.alexm.skistats;
 
+import android.app.Notification;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -16,10 +17,10 @@ import android.util.Log;
  */
 
 public class MyLocationService extends Service {
-    private static final String TAG = "MyLocationService";
+    private static final String TAG = "SkiStats.Log.GPS";
     private LocationManager mLocationManager = null;
     private static final int LOCATION_INTERVAL = 1000;
-    private static final float LOCATION_DISTANCE = 10f;
+    private static final float LOCATION_DISTANCE = 0f;
 
     private class LocationListener implements android.location.LocationListener {
         Location mLastLocation;
@@ -51,16 +52,19 @@ public class MyLocationService extends Service {
         }
     }
 
-    /*
+
     LocationListener[] mLocationListeners = new LocationListener[]{
-            new LocationListener(LocationManager.GPS_PROVIDER)
+            new LocationListener(LocationManager.GPS_PROVIDER),
             new LocationListener(LocationManager.NETWORK_PROVIDER)
-    }; */
+    };
 
 
+    /*
     LocationListener[] mLocationListeners = new LocationListener[]{
             new LocationListener(LocationManager.PASSIVE_PROVIDER)
     };
+
+    */
 
 
     @Override
@@ -84,7 +88,7 @@ public class MyLocationService extends Service {
 
         try {
             mLocationManager.requestLocationUpdates(
-                    LocationManager.PASSIVE_PROVIDER,
+                    LocationManager.GPS_PROVIDER,
                     LOCATION_INTERVAL,
                     LOCATION_DISTANCE,
                     mLocationListeners[0]
@@ -94,6 +98,8 @@ public class MyLocationService extends Service {
         } catch (IllegalArgumentException ex) {
             Log.d(TAG, "network provider does not exist, " + ex.getMessage());
         }
+
+        this.startForeground(1231562, new Notification.Builder(this).build());
 
         /*try {
             mLocationManager.requestLocationUpdates(

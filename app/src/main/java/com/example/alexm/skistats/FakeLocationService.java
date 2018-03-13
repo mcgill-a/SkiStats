@@ -13,12 +13,12 @@ import android.util.Log;
  * Created by AlexM on 07/03/2018.
  */
 
-public class LocationService extends Service
+public class FakeLocationService extends Service
     {
         private static final String TAG = "BOOMBOOMTESTGPS";
         private LocationManager mLocationManager = null;
         private static final int LOCATION_INTERVAL = 1000;
-        private static final float LOCATION_DISTANCE = 10f;
+        private static final float LOCATION_DISTANCE = 0f;
 
         private class LocationListener implements android.location.LocationListener{
             Location mLastLocation;
@@ -56,6 +56,8 @@ public class LocationService extends Service
         @Override
         public IBinder onBind(Intent arg0)
         {
+
+            Log.e("BOOMBOOMTESTGPS", "TTT");
             return null;
         }
         @Override
