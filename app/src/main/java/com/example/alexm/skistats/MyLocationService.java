@@ -1,15 +1,21 @@
 package com.example.alexm.skistats;
 
 import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 /**
@@ -20,7 +26,10 @@ public class MyLocationService extends Service {
     private static final String TAG = "SkiStats.Log.GPS";
     private LocationManager mLocationManager = null;
     private static final int LOCATION_INTERVAL = 1000;
-    private static final float LOCATION_DISTANCE = 0f;
+    private static final float LOCATION_DISTANCE = 0.1f;
+    private static final int NOTIFICATION_ID = 2000;
+    private static final String ANDROID_CHANNEL_ID = "SS_NOTIFY";
+
 
     private class LocationListener implements android.location.LocationListener {
         Location mLastLocation;
@@ -74,6 +83,43 @@ public class MyLocationService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.e(TAG, "onStartCommand");
         super.onStartCommand(intent, flags, startId);
+
+        String text = "GPS - RECORDING";
+
+        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        String NOTIFICATION_CHANNEL_ID = "my_channel_id_01";
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel notificationChannel = new NotificationChannel(NOTIFICATION_CHANNEL_ID, "My Notifications", NotificationManager.IMPORTANCE_HIGH);
+
+            // Configure the notification channel.
+            notificationChannel.setDescription("Channel description");
+            notificationChannel.enableLights(true);
+            notificationChannel.setLightColor(Color.RED);
+            //notificationChannel.setVibrationPattern(new long[]{0, 1000, 500, 1000});
+            notificationChannel.enableVibration(false);
+            notificationManager.createNotificationChannel(notificationChannel);
+        }
+
+
+        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID);
+
+        notificationBuilder.setAutoCancel(true)
+                .setDefaults(Notification.DEFAULT_ALL)
+                .setWhen(System.currentTimeMillis())
+                .setSmallIcon(R.drawable.ic_gps)
+                .setVibrate(new long[] {0})
+                .setColor(2)
+                //     .setPriority(Notification.PRIORITY_MAX)
+                .setContentTitle("Ski Stats Recording")
+                .setContentText("Currently Tracking GPS Location")
+                .setContentInfo("Info");
+
+        //notificationManager.notify(/*notification id*/1, notificationBuilder.build());
+
+
+        startForeground(NOTIFICATION_ID, notificationBuilder.build());
+        Log.e(TAG,"Finished onStart");
         return START_STICKY;
     }
 
@@ -83,6 +129,11 @@ public class MyLocationService extends Service {
         Log.e(TAG, "onCreate");
 
         initializeLocationManager();
+        Notification notification = new Notification.Builder(this)
+                .setContentTitle("SkiStats")
+                .setContentText("Recording GPS")
+                .setOngoing(true).build();
+
 
         try {
             mLocationManager.requestLocationUpdates(
@@ -97,7 +148,7 @@ public class MyLocationService extends Service {
             Log.d(TAG, "network provider does not exist, " + ex.getMessage());
         }
 
-        this.startForeground(1231562, new Notification.Builder(this).build());
+        //this.startForeground(NOTIFICATION_ID, notification);
 
         /*try {
             mLocationManager.requestLocationUpdates(
