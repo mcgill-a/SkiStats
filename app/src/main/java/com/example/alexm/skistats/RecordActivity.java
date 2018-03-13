@@ -56,6 +56,8 @@ public class RecordActivity extends AppCompatActivity {
 
     private static final int REQUEST_WRITE_EXTERNAL_STORAGE = 2000;
 
+
+
     @Override
     protected void onStart() {
         super.onStart();
@@ -136,7 +138,6 @@ public class RecordActivity extends AppCompatActivity {
             finish();
         }
 
-
         recordImageButton = (ImageButton) findViewById(R.id.recordImageButton);
         pauseImageButton = (ImageButton) findViewById(R.id.pauseImageButton);
         //cancelImageButton = (ImageButton) findViewById(R.id.cancelImageButton);
@@ -151,13 +152,8 @@ public class RecordActivity extends AppCompatActivity {
         } else {
 
             // If permission granted
-            Intent intent = new Intent(this, MyLocationService.class);
-            if (Build.VERSION.SDK_INT < 26) {
-                Log.w(TAG, "This might not work....");
-                startService(intent);
-            } else {
-                startForegroundService(intent);
-            }
+
+            final Intent intent = new Intent(RecordActivity.this, MyLocationService.class);
             // Set event for button
             recordImageButton.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View view) {
@@ -168,6 +164,11 @@ public class RecordActivity extends AppCompatActivity {
                         return;
                     }
 
+                    if (Build.VERSION.SDK_INT < 26) {
+                        startService(intent);
+                    } else {
+                        startForegroundService(intent);
+                    }
 
                     Log.d(TAG, "GPS Recording Started");
 
@@ -191,6 +192,8 @@ public class RecordActivity extends AppCompatActivity {
                     Toast.makeText(RecordActivity.this, "Paused Recording", Toast.LENGTH_SHORT).show();
 
                     // stop getting gps updates
+                    stopService(intent);
+
 
                     // Change state of button
                     recordImageButton.setEnabled(true);

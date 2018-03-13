@@ -25,10 +25,10 @@ import android.util.Log;
 public class MyLocationService extends Service {
     private static final String TAG = "SkiStats.Log.GPS";
     private LocationManager mLocationManager = null;
-    private static final int LOCATION_INTERVAL = 1000;
-    private static final float LOCATION_DISTANCE = 0.1f;
+    private static final int LOCATION_INTERVAL = 2000;
+    private static final float LOCATION_DISTANCE = 0f;
     private static final int NOTIFICATION_ID = 2000;
-    private static final String ANDROID_CHANNEL_ID = "SS_NOTIFY";
+    //private static final String ANDROID_CHANNEL_ID = "SS_NOTIFY";
 
 
     private class LocationListener implements android.location.LocationListener {
@@ -110,13 +110,9 @@ public class MyLocationService extends Service {
                 .setSmallIcon(R.drawable.ic_gps)
                 .setVibrate(new long[] {0})
                 .setColor(2)
-                //     .setPriority(Notification.PRIORITY_MAX)
                 .setContentTitle("Ski Stats Recording")
                 .setContentText("Currently Tracking GPS Location")
                 .setContentInfo("Info");
-
-        //notificationManager.notify(/*notification id*/1, notificationBuilder.build());
-
 
         startForeground(NOTIFICATION_ID, notificationBuilder.build());
         Log.e(TAG,"Finished onStart");
