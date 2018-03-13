@@ -9,7 +9,6 @@
     tools:showIn="@layout/app_bar_main"
     android:background="@mipmap/bg_1_ski_hut">
 
-
     <TextView
         android:id="@+id/skiStatsHeader"
         android:layout_width="wrap_content"
