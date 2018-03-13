@@ -27,7 +27,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dip"
-            android:background="#015448" >
+            android:background="#015448"
+            android:longClickable="true">
         </ListView>
 
         <TextView
@@ -45,7 +46,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dip"
-            android:background="#015448" >
+            android:background="#015448"
+            android:longClickable="true">
         </ListView>
     </LinearLayout>
 

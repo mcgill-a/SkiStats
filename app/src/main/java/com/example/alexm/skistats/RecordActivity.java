@@ -236,7 +236,7 @@ public class RecordActivity extends AppCompatActivity {
                                     Log.d(TAG, "GPS Recording - Saving in progress..");
                                     DateFormat df = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
                                     // Prompt user for filename
-                                    String filename = "Ski Activity";
+                                    String filename = "Ski Activity 1";
                                     String extension = ".gpx";
                                     //String filename = "SS_" + df.format(new Date(locations.get(0).getTime()));
 
@@ -248,7 +248,16 @@ public class RecordActivity extends AppCompatActivity {
                                         dir.mkdirs();
                                     }
                                     File file = new File(path + filename + extension);
+                                    if(file.exists())
+                                    {
+                                        StringBuilder sb = new StringBuilder(filename);
+                                        sb.deleteCharAt(sb.length()-1);
+                                        sb.deleteCharAt(sb.length()-1);
+                                        filename = sb.toString();
+                                    }
                                     String newFileName = "";
+
+
                                     int index = 1;
                                     while(file.exists())
                                     {
@@ -343,7 +352,7 @@ public class RecordActivity extends AppCompatActivity {
         String name = "<name>" + n + "</name>\n<trkseg>\n";
 
         String segments = "";
-        DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
         for (Location l : points) {
             segments += "<trkpt lat=\"" + l.getLatitude() + "\" lon=\"" + l.getLongitude() + "\">\n<ele>" + l.getAltitude() +"</ele>\n<time>" + df.format(new Date(l.getTime())) + "</time></trkpt>\n";
         }
@@ -361,7 +370,7 @@ public class RecordActivity extends AppCompatActivity {
             Log.d("SkiStats.Log.Status", "Saved " + points.size() + " points.");
         } catch (IOException e) {
             // TODO Auto-generated catch block
-            Log.d("SkiStats.Log.Status", "Error Writting Path",e);
+            Log.e("SkiStats.Log.Status", "Error Writting Path",e);
         }
     }
 

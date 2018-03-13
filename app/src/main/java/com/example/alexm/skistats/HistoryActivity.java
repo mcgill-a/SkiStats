@@ -62,11 +62,16 @@ public class HistoryActivity extends AppCompatActivity {
     private List<HistoryFile> historyRecordingFiles = new ArrayList<>();
     private List<HistoryFile> historyImportFiles = new ArrayList<>();
     private File sdDir = Environment.getExternalStorageDirectory();
-    private String path = Environment.getExternalStorageDirectory() + "/" +  "SkiStats/GPS/Recordings/";
+    private String pathRecord = Environment.getExternalStorageDirectory() + "/" +  "SkiStats/GPS/Recordings/";
+    private String pathImport = Environment.getExternalStorageDirectory() + "/" +  "SkiStats/GPS/Imports/";
     private String TAG = "SkiStats.Log";
     private String renameTo = "";
 
     private static final int READ_STORAGE_PERMISSION_REQUEST_CODE = 1001;
+    private final int REC_RENAME = 0;
+    private final int REC_DELETE = 1;
+    private final int IMP_RENAME = 2;
+    private final int IMP_DELETE = 3;
 
     public void gpxReadFailed()
     {
@@ -103,6 +108,7 @@ public class HistoryActivity extends AppCompatActivity {
         ListUtils.setDynamicHeight(importLv);
 
         registerForContextMenu(recordingLv);
+
         updateList();
         recordingLv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -128,6 +134,7 @@ public class HistoryActivity extends AppCompatActivity {
             }
         });
 
+
         importLv.setOnTouchListener(new View.OnTouchListener() {
             // Setting on Touch Listener for handling the touch inside ScrollView
             @Override
@@ -137,7 +144,7 @@ public class HistoryActivity extends AppCompatActivity {
                 return false;
             }
         });
-
+        registerForContextMenu(importLv);
         importLv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -168,7 +175,7 @@ public class HistoryActivity extends AppCompatActivity {
             String absPath = directory + name;
             date = getDateQuick(absPath);
             historyRecordingFiles.get(i).setDateCreated(date);
-            Log.e(TAG,"Abs path: " + absPath + " | Date: " + df.format(date));
+            //Log.e(TAG,"Abs path: " + absPath + " | Date: " + df.format(date));
         }
     }
 
@@ -183,7 +190,7 @@ public class HistoryActivity extends AppCompatActivity {
             String absPath = directory + name;
             date = getDateQuick(absPath);
             historyImportFiles.get(i).setDateCreated(date);
-            Log.e(TAG,"Abs path: " + absPath + " | Date: " + df.format(date));
+            //Log.e(TAG,"Abs path: " + absPath + " | Date: " + df.format(date));
         }
     }
 
@@ -225,29 +232,6 @@ public class HistoryActivity extends AppCompatActivity {
             mListView.requestLayout();
         }
     }
-
-    /*
-    public static void setListViewHeightBasedOnChildren(ListView listView) {
-        HistoryAdapter listAdapter = (HistoryAdapter) listView.getAdapter();
-        if (listAdapter == null)
-            return;
-
-        int desiredWidth = View.MeasureSpec.makeMeasureSpec(listView.getWidth(), View.MeasureSpec.UNSPECIFIED);
-        int totalHeight = 0;
-        View view = null;
-        for (int i = 0; i < listAdapter.getCount(); i++) {
-            view = listAdapter.getView(i, view, listView);
-            if (i == 0)
-                view.setLayoutParams(new ViewGroup.LayoutParams(desiredWidth, ViewGroup.LayoutParams.WRAP_CONTENT));
-
-            view.measure(desiredWidth, View.MeasureSpec.UNSPECIFIED);
-            totalHeight += view.getMeasuredHeight();
-        }
-        ViewGroup.LayoutParams params = listView.getLayoutParams();
-        params.height = totalHeight + (listView.getDividerHeight() * (listAdapter.getCount()));
-        listView.setLayoutParams(params);
-    } */
-
 
     public String convertStringToUnderscore(String input)
     {
@@ -295,12 +279,21 @@ public class HistoryActivity extends AppCompatActivity {
 
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-        if(v.getId() == R.id.HistoryRecordingListView)
+        super.onCreateContextMenu(menu, v, menuInfo);
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
+        switch(v.getId())
         {
-            AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
-            menu.setHeaderTitle(historyRecordingFiles.get(info.position).getDisplayName());
-            menu.add(Menu.NONE, 0, 0, "Rename");
-            menu.add(Menu.NONE, 1, 1, "Delete");
+            case R.id.HistoryRecordingListView:
+                menu.setHeaderTitle(historyRecordingFiles.get(info.position).getDisplayName());
+                menu.add(Menu.NONE, REC_RENAME, 0, "Rename");
+                menu.add(Menu.NONE, REC_DELETE, 1, "Delete");
+                break;
+
+            case R.id.HistoryImportListView:
+                menu.setHeaderTitle(historyImportFiles.get(info.position).getDisplayName());
+                menu.add(Menu.NONE, IMP_RENAME, 0, "Rename");
+                menu.add(Menu.NONE, IMP_DELETE, 1, "Delete");
+                break;
         }
     }
 
@@ -310,12 +303,29 @@ public class HistoryActivity extends AppCompatActivity {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
         int menuItemIndex = item.getItemId();
         String menuItemName = "";
+        switch (menuItemIndex)
+        {
+            case REC_RENAME:
+                menuItemName = "Rename";
+                renameAFile(menuItemName, info.position, "Recordings");
+                break;
+            case REC_DELETE:
+                menuItemName = "Delete";
+                deleteAFile(menuItemName, info.position, "Recordings");
+                break;
+            case IMP_RENAME:
+                menuItemName = "Rename";
+                renameAFile(menuItemName, info.position, "Imports");
+                break;
+            case IMP_DELETE:
+                menuItemName = "Delete";
+                deleteAFile(menuItemName, info.position, "Imports");
+                break;
+        }
         if (menuItemIndex == 0) {
-            menuItemName = "Rename";
-            renameFile(menuItemName, info.position);
+
         } else if (menuItemIndex == 1) {
-            menuItemName = "Delete";
-            deleteFile(menuItemName, info.position);
+
         }
         //String listItemName = gpsFiles.get(info.position);
 
@@ -323,7 +333,7 @@ public class HistoryActivity extends AppCompatActivity {
         return true;
     }
 
-    public void renameFile(String menuItem, final int listPosition)
+   /* public void renameFile(String menuItem, final int listPosition)
     {
         final String selectedName = historyRecordingFiles.get(listPosition).getFileName();
         final String displayName = historyRecordingFiles.get(listPosition).getDisplayName();
@@ -341,8 +351,8 @@ public class HistoryActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialogInterface, int which) {
                         renameTo = userInput.getText().toString();
                         String fullRenameTo = ensureGpxExtension(renameTo);
-                        File file = new File(path + selectedName);
-                        File renamed = new File(path + fullRenameTo);
+                        File file = new File(pathRecord + selectedName);
+                        File renamed = new File(pathRecord + fullRenameTo);
                         Boolean flag = file.renameTo(renamed);
                         if (flag)
                         {
@@ -369,8 +379,84 @@ public class HistoryActivity extends AppCompatActivity {
 
         Toast.makeText(getApplicationContext(), "Editing " + selectedName,Toast.LENGTH_SHORT).show();
     }
+    */
 
+    public void renameAFile(String menuItem, final int listPosition, final String list)
+    {
+        final String selectedName;
+        final String displayName;
+        if (list.equals("Recordings"))
+        {
+            selectedName = historyRecordingFiles.get(listPosition).getFileName();
+            displayName = historyRecordingFiles.get(listPosition).getDisplayName();
+        }
+        else
+        {
+            selectedName = historyImportFiles.get(listPosition).getFileName();
+            displayName = historyImportFiles.get(listPosition).getDisplayName();
+        }
+
+        View view = (LayoutInflater.from(HistoryActivity.this)).inflate(R.layout.popup_rename_file, null);
+        AlertDialog.Builder alert = new AlertDialog.Builder(HistoryActivity.this);
+        alert.setTitle("Rename File");
+        alert.setView(view);
+        final EditText userInput = (EditText) view.findViewById(R.id.userInput);
+        userInput.setText(displayName);
+        alert.setCancelable(true)
+                .setPositiveButton("Confirm", new DialogInterface.OnClickListener(){
+
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int which) {
+                        renameTo = userInput.getText().toString();
+                        String fullRenameTo = ensureGpxExtension(renameTo);
+                        File file;
+                        File renamed;
+                        if (list.equals("Recordings"))
+                        {
+                            file = new File(pathRecord + selectedName);
+                            renamed = new File(pathRecord + fullRenameTo);
+                        }
+                        else
+                        {
+                            file = new File(pathImport + selectedName);
+                            renamed = new File(pathImport + fullRenameTo);
+                        }
+                        Boolean flag = file.renameTo(renamed);
+                        if (flag)
+                        {
+                            Log.e(TAG, selectedName + " has been renamed");
+                            Toast.makeText(getApplicationContext(), selectedName + " renamed to: " + renameTo,Toast.LENGTH_SHORT).show();
+                            if (list.equals("Recordings"))
+                            {
+                                HistoryFile historyFile = new HistoryFile(fullRenameTo, renameTo, historyRecordingFiles.get(listPosition).getDateCreated());
+                                historyRecordingFiles.set(listPosition, historyFile);
+                            }
+                            else
+                            {
+                                HistoryFile historyFile = new HistoryFile(fullRenameTo, renameTo, historyImportFiles.get(listPosition).getDateCreated());
+                                historyImportFiles.set(listPosition, historyFile);
+                            }
+
+                            updateList();
+                        }
+                        else
+                        {
+                            Log.e(TAG,"Error: " + selectedName + " rename to " + renameTo + " failed");
+                        }
+                    }
+                });
+
+        Dialog dialog = alert.create();
+        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+        dialog.show();
+
+
+        Toast.makeText(getApplicationContext(), "Editing " + selectedName,Toast.LENGTH_SHORT).show();
+    }
+
+   /*
     public void deleteFile(String menuItem, int listPosition)
+
     {
         final String selectedName = historyRecordingFiles.get(listPosition).getFileName();
 
@@ -387,10 +473,10 @@ public class HistoryActivity extends AppCompatActivity {
                         // User selects Yes
                         // do a thing to cancel recording
                         Log.e(TAG, "Deleting recording: " + selectedName);
-                        File dir = new File(path);
+                        File dir = new File(pathRecord);
 
                         String fullFileName = selectedName;// + ".gpx";
-                        String fullnamePath = path + fullFileName;
+                        String fullnamePath = pathRecord + fullFileName;
                         File recording = new File(dir, fullFileName);
                         Log.e(TAG,"Full path to remove: " + fullnamePath);
 
@@ -407,6 +493,102 @@ public class HistoryActivity extends AppCompatActivity {
                             if (historyRecordingFiles.get(j).getFileName().equals(selectedName))
                             {
                                 historyRecordingFiles.remove(j);
+                            }
+                        }
+                        updateList();
+                        break;
+
+                    case DialogInterface.BUTTON_NEGATIVE:
+                        // User clicked No
+                        break;
+                }
+            }
+        };
+
+        alert.setPositiveButton("Delete", dialogClickListener);
+        alert.setNegativeButton("Cancel", dialogClickListener);
+
+        AlertDialog dialog = alert.create();
+        // Display the alert
+        dialog.show();
+
+        Toast.makeText(getApplicationContext(), "Deleting " + selectedName,Toast.LENGTH_SHORT).show();
+        //gpsFiles.remove(listPosition);
+    }
+
+    */
+
+    public void deleteAFile(String menuItem, int listPosition, final String list)
+    {
+        final String selectedName;
+        if (list.equals("Recordings"))
+        {
+            selectedName = historyRecordingFiles.get(listPosition).getFileName();
+        }
+        else
+        {
+            selectedName = historyImportFiles.get(listPosition).getFileName();
+        }
+
+
+        AlertDialog.Builder alert = new AlertDialog.Builder(HistoryActivity.this);
+        alert.setTitle("Delete Recording");
+        alert.setMessage("Do you want to delete this recording?");
+
+        DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                switch(i)
+                {
+                    case DialogInterface.BUTTON_POSITIVE:
+                        // User selects Yes
+                        // do a thing to cancel recording
+                        Log.e(TAG, "Deleting recording: " + selectedName);
+                        File dir;
+                        String fullFileName = selectedName;// + ".gpx";
+                        String fullnamePath;
+                        if (list.equals("Recordings"))
+                        {
+                            dir = new File(pathRecord);
+                            fullnamePath = pathRecord + fullFileName;
+                        }
+                        else
+                        {
+                            dir = new File(pathImport);
+                            fullnamePath = pathImport + fullFileName;
+                        }
+
+
+
+                        File recording = new File(dir, fullFileName);
+                        Log.e(TAG,"Full path to remove: " + fullnamePath);
+
+                        recording.delete();
+                        if(recording.exists())
+                        {
+                            getApplicationContext().deleteFile(recording.getName());
+                        }
+                        // To ensure the file is removed on Windows Operating System also
+                        MediaScannerConnection.scanFile(getApplicationContext(), new String[]{fullnamePath}, null, null);
+
+                        if (list.equals("Recordings"))
+                        {
+                            for (int j = 0; j < historyRecordingFiles.size(); j++)
+                            {
+                                if (historyRecordingFiles.get(j).getFileName().equals(selectedName))
+                                {
+                                    historyRecordingFiles.remove(j);
+                                }
+                            }
+                        }
+                        else
+                        {
+                            for (int j = 0; j < historyImportFiles.size(); j++)
+                            {
+                                if (historyImportFiles.get(j).getFileName().equals(selectedName))
+                                {
+                                    historyImportFiles.remove(j);
+                                }
                             }
                         }
                         updateList();
@@ -591,6 +773,7 @@ public class HistoryActivity extends AppCompatActivity {
                 e.printStackTrace();
             } catch (ParseException e) {
                 e.printStackTrace();
+                Log.e(TAG,"Error: Parsing date failed for: " + filename);
             }
         } catch (FileNotFoundException e) {
             e.printStackTrace();

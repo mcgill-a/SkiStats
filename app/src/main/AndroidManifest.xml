@@ -54,10 +54,6 @@
             android:name=".SelectionActivity"
             android:label="@string/title_activity_selection" />
         <activity android:name=".RecordActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER"/>
-            </intent-filter>
         </activity>
         <service android:name=".MyLocationService" android:process=":my_service" />
 
