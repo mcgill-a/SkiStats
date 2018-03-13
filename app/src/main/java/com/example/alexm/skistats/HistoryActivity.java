@@ -95,10 +95,19 @@ public class HistoryActivity extends AppCompatActivity {
         recordingLv = (ListView) findViewById(R.id.HistoryRecordingListView);
         importLv = (ListView) findViewById(R.id.HistoryImportListView);
 
-        getAllRecordingNames();
-        getAllImportNames();
-        sortListsAlphabetically();
+        // Check permission
+        if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_EXTERNAL_STORAGE)) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, READ_STORAGE_PERMISSION_REQUEST_CODE);
+        } else {
 
+            // If permission granted
+
+
+            getAllRecordingNames();
+            getAllImportNames();
+            sortListsAlphabetically();
+
+        }
         HistoryAdapter recordingAdapter = new HistoryAdapter(this, R.layout.history_list_row, historyRecordingFiles);
         HistoryAdapter importAdapter = new HistoryAdapter(this, R.layout.history_list_row, historyImportFiles);
         recordingLv.setAdapter(recordingAdapter);
@@ -113,9 +122,7 @@ public class HistoryActivity extends AppCompatActivity {
         recordingLv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                //String filename = gpsFiles.get(i);
                 String filename = historyRecordingFiles.get(i).getFileName();
-                //Toast.makeText(getApplicationContext(), filename, Toast.LENGTH_SHORT).show();
                 Intent appInfo = new Intent(HistoryActivity.this, SelectionActivity.class);
                 String path = Environment.getExternalStorageDirectory() + "/" +  "SkiStats/GPS/Recordings/";
                 String full = path + filename;
@@ -148,9 +155,7 @@ public class HistoryActivity extends AppCompatActivity {
         importLv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                //String filename = gpsFiles.get(i);
                 String filename = historyImportFiles.get(i).getFileName();
-                //Toast.makeText(getApplicationContext(), filename, Toast.LENGTH_SHORT).show();
                 Intent appInfo = new Intent(HistoryActivity.this, SelectionActivity.class);
                 String path = Environment.getExternalStorageDirectory() + "/" +  "SkiStats/GPS/Imports/";
                 String full = path + filename;
@@ -166,7 +171,7 @@ public class HistoryActivity extends AppCompatActivity {
 
     private void getCorrectRecordingFileDates()
     {
-        DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+        //DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
         Date date;
         for (int i = 0; i < historyRecordingFiles.size(); i++)
         {
@@ -175,13 +180,12 @@ public class HistoryActivity extends AppCompatActivity {
             String absPath = directory + name;
             date = getDateQuick(absPath);
             historyRecordingFiles.get(i).setDateCreated(date);
-            //Log.e(TAG,"Abs path: " + absPath + " | Date: " + df.format(date));
         }
     }
 
     private void getCorrectImportFileDates()
     {
-        DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+        //DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
         Date date;
         for (int i = 0; i < historyImportFiles.size(); i++)
         {
@@ -190,7 +194,6 @@ public class HistoryActivity extends AppCompatActivity {
             String absPath = directory + name;
             date = getDateQuick(absPath);
             historyImportFiles.get(i).setDateCreated(date);
-            //Log.e(TAG,"Abs path: " + absPath + " | Date: " + df.format(date));
         }
     }
 
@@ -327,59 +330,8 @@ public class HistoryActivity extends AppCompatActivity {
         } else if (menuItemIndex == 1) {
 
         }
-        //String listItemName = gpsFiles.get(info.position);
-
-
         return true;
     }
-
-   /* public void renameFile(String menuItem, final int listPosition)
-    {
-        final String selectedName = historyRecordingFiles.get(listPosition).getFileName();
-        final String displayName = historyRecordingFiles.get(listPosition).getDisplayName();
-
-        View view = (LayoutInflater.from(HistoryActivity.this)).inflate(R.layout.popup_rename_file, null);
-        AlertDialog.Builder alert = new AlertDialog.Builder(HistoryActivity.this);
-        alert.setTitle("Rename File");
-        alert.setView(view);
-        final EditText userInput = (EditText) view.findViewById(R.id.userInput);
-        userInput.setText(displayName);
-        alert.setCancelable(true)
-                .setPositiveButton("Confirm", new DialogInterface.OnClickListener(){
-
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int which) {
-                        renameTo = userInput.getText().toString();
-                        String fullRenameTo = ensureGpxExtension(renameTo);
-                        File file = new File(pathRecord + selectedName);
-                        File renamed = new File(pathRecord + fullRenameTo);
-                        Boolean flag = file.renameTo(renamed);
-                        if (flag)
-                        {
-                            Log.e(TAG, selectedName + " has been renamed");
-                            Toast.makeText(getApplicationContext(), selectedName + " renamed to: " + renameTo,Toast.LENGTH_SHORT).show();
-                            HistoryFile historyFile = new HistoryFile(fullRenameTo, renameTo, historyRecordingFiles.get(listPosition).getDateCreated());
-                            historyRecordingFiles.set(listPosition, historyFile);
-                            updateList();
-                        }
-                        else
-                        {
-                            Log.e(TAG,"Error: " + selectedName + " rename to " + renameTo + " failed");
-                        }
-
-
-                    }
-
-    });
-
-        Dialog dialog = alert.create();
-        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
-        dialog.show();
-
-
-        Toast.makeText(getApplicationContext(), "Editing " + selectedName,Toast.LENGTH_SHORT).show();
-    }
-    */
 
     public void renameAFile(String menuItem, final int listPosition, final String list)
     {
@@ -436,13 +388,12 @@ public class HistoryActivity extends AppCompatActivity {
                                 HistoryFile historyFile = new HistoryFile(fullRenameTo, renameTo, historyImportFiles.get(listPosition).getDateCreated());
                                 historyImportFiles.set(listPosition, historyFile);
                             }
-
-                            updateList();
                         }
                         else
                         {
                             Log.e(TAG,"Error: " + selectedName + " rename to " + renameTo + " failed");
                         }
+                        updateList();
                     }
                 });
 
@@ -450,73 +401,8 @@ public class HistoryActivity extends AppCompatActivity {
         dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
         dialog.show();
 
-
         Toast.makeText(getApplicationContext(), "Editing " + selectedName,Toast.LENGTH_SHORT).show();
     }
-
-   /*
-    public void deleteFile(String menuItem, int listPosition)
-
-    {
-        final String selectedName = historyRecordingFiles.get(listPosition).getFileName();
-
-        AlertDialog.Builder alert = new AlertDialog.Builder(HistoryActivity.this);
-        alert.setTitle("Delete Recording");
-        alert.setMessage("Do you want to delete this recording?");
-
-        DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                switch(i)
-                {
-                    case DialogInterface.BUTTON_POSITIVE:
-                        // User selects Yes
-                        // do a thing to cancel recording
-                        Log.e(TAG, "Deleting recording: " + selectedName);
-                        File dir = new File(pathRecord);
-
-                        String fullFileName = selectedName;// + ".gpx";
-                        String fullnamePath = pathRecord + fullFileName;
-                        File recording = new File(dir, fullFileName);
-                        Log.e(TAG,"Full path to remove: " + fullnamePath);
-
-                        recording.delete();
-                        if(recording.exists())
-                        {
-                            getApplicationContext().deleteFile(recording.getName());
-                        }
-                        // To ensure the file is removed on Windows Operating System also
-                        MediaScannerConnection.scanFile(getApplicationContext(), new String[]{fullnamePath}, null, null);
-
-                        for (int j = 0; j < historyRecordingFiles.size(); j++)
-                        {
-                            if (historyRecordingFiles.get(j).getFileName().equals(selectedName))
-                            {
-                                historyRecordingFiles.remove(j);
-                            }
-                        }
-                        updateList();
-                        break;
-
-                    case DialogInterface.BUTTON_NEGATIVE:
-                        // User clicked No
-                        break;
-                }
-            }
-        };
-
-        alert.setPositiveButton("Delete", dialogClickListener);
-        alert.setNegativeButton("Cancel", dialogClickListener);
-
-        AlertDialog dialog = alert.create();
-        // Display the alert
-        dialog.show();
-
-        Toast.makeText(getApplicationContext(), "Deleting " + selectedName,Toast.LENGTH_SHORT).show();
-        //gpsFiles.remove(listPosition);
-    }
-
-    */
 
     public void deleteAFile(String menuItem, int listPosition, final String list)
     {
@@ -609,7 +495,6 @@ public class HistoryActivity extends AppCompatActivity {
         dialog.show();
 
         Toast.makeText(getApplicationContext(), "Deleting " + selectedName,Toast.LENGTH_SHORT).show();
-        //gpsFiles.remove(listPosition);
     }
 
     public void sortListsAlphabetically()
@@ -632,10 +517,6 @@ public class HistoryActivity extends AppCompatActivity {
     {
         ((HistoryAdapter) recordingLv.getAdapter()).notifyDataSetChanged();
         ((HistoryAdapter) importLv.getAdapter()).notifyDataSetChanged();
-
-
-        //setListViewHeightBasedOnChildren(recordingLv);
-        //setListViewHeightBasedOnChildren(importLv);
 
         ListUtils.setDynamicHeight(recordingLv);
         ListUtils.setDynamicHeight(importLv);
@@ -689,22 +570,9 @@ public class HistoryActivity extends AppCompatActivity {
                     Date date = new Date();
                     String path = "/SkiStats/GPS/" + location;
                     String full = path + filename;
-                    /*
-                        Now I just need to loop through each file, get the date of the first track point and set to the date of the file.
-                        takes too long
-                     */
+
                     File file2 = new File(sdDir + full);
-                    //long millisec;
                     DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-                    if(file2.exists())
-                    {
-                        // too slow
-                        //date = getDate(file.getAbsolutePath());
-                    }
-                    else
-                    {
-                        Log.e(TAG,"Error: Cannot find file: " + full);
-                    }
                     Date fileDate = date;
                     String fileDateString = df.format(date).toString();
                     historyFile = new HistoryFile(filename, displayname, fileDate);
@@ -760,7 +628,6 @@ public class HistoryActivity extends AppCompatActivity {
                             Date temp = longdf.parse(time);
                             String tempString = df.format(temp);
                             Date created = df.parse(tempString);
-                            //Log.e(TAG,"File: " + filename + " | time: " + time +  " | Created: " + created.toString());
                             found = true;
                             return created;
                         }
@@ -782,43 +649,8 @@ public class HistoryActivity extends AppCompatActivity {
         return date;
     }
 
-    public Date getDate(String filename) {
-        Gpx parsedGpx = null;
-        GPXParser mParser = new GPXParser();
-        Date date = new Date();
-        LatLng latlng;
-        try {
-            if (filename.charAt(0) == '/')
-            {
-                StringBuilder sb = new StringBuilder(filename);
-                sb.deleteCharAt(0);
-                filename = sb.toString();
-            }
-            //Log.e(TAG,"FilePath: " + filename);
-            File file = new File(filename);
-            InputStream in = new FileInputStream(file);
-            parsedGpx = mParser.parse(in);
-        } catch (IOException | XmlPullParserException e) {
-            e.printStackTrace();
-        }
-
-        if (parsedGpx != null)
-        {
-            // Get first track date
-            List<Track> tracks = parsedGpx.getTracks();
-            Track track = tracks.get(0);
-            List<TrackSegment> segments = track.getTrackSegments();
-            TrackSegment segment = segments.get(0);
-            date = segment.getTrackPoints().get(0).getTime().toDate();
-            //Log.e(TAG,"Date: " + date.toString());
-            return date;
-        }
-        return date;
-    }
-
     public String ensureGpxExtension(String name)
     {
-        String store = name;
         String gpx = ".gpx";
         // Reverse string to make file extension appear first
         String reverse = new StringBuilder(name).reverse().toString();

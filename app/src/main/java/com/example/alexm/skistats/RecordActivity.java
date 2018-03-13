@@ -10,6 +10,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.SystemClock;
+import android.speech.RecognizerResultsIntent;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -39,10 +40,8 @@ import java.util.List;
 
 public class RecordActivity extends AppCompatActivity {
 
-    //private static GoogleApiClient mGoogleApiClient;
 
     private static final int REQUEST_CODE = 1000;
-    FusedLocationProviderClient fusedLocationProviderClient;
     LocationRequest locationRequest;
     LocationCallback locationCallback;
     String TAG = "SkiStats.Log";
@@ -151,18 +150,7 @@ public class RecordActivity extends AppCompatActivity {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_CODE);
         } else {
 
-            /*
-            //Without Google API Client Auto Location Dialog will not work
-            mGoogleApiClient = new GoogleApiClient.Builder(RecordActivity.this)
-                    .addApi(LocationServices.API)
-                    .build();
-            mGoogleApiClient.connect();
-            startService(new Intent(this, MyLocationService.class));
-            */
             // If permission granted
-            buildLocationRequest();
-            buildLocationCallBack();
-
             Intent intent = new Intent(this, MyLocationService.class);
             if (Build.VERSION.SDK_INT < 26) {
                 Log.w(TAG, "This might not work....");
@@ -170,10 +158,6 @@ public class RecordActivity extends AppCompatActivity {
             } else {
                 startForegroundService(intent);
             }
-
-            // Create FusedProviderClient
-            fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
-
             // Set event for button
             recordImageButton.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View view) {
@@ -183,9 +167,9 @@ public class RecordActivity extends AppCompatActivity {
                         ActivityCompat.requestPermissions(RecordActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_CODE);
                         return;
                     }
+
+
                     Log.d(TAG, "GPS Recording Started");
-                    // Original gps location provider
-                    fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.myLooper());
 
                     startTime = SystemClock.uptimeMillis();
                     handler.postDelayed(runnable, 0);
@@ -206,7 +190,7 @@ public class RecordActivity extends AppCompatActivity {
 
                     Toast.makeText(RecordActivity.this, "Paused Recording", Toast.LENGTH_SHORT).show();
 
-                    fusedLocationProviderClient.removeLocationUpdates(locationCallback);
+                    // stop getting gps updates
 
                     // Change state of button
                     recordImageButton.setEnabled(true);
@@ -372,34 +356,6 @@ public class RecordActivity extends AppCompatActivity {
             // TODO Auto-generated catch block
             Log.e("SkiStats.Log.Status", "Error Writting Path",e);
         }
-    }
-
-    private void buildLocationCallBack()
-    {
-        locationCallback = new LocationCallback()
-        {
-            @Override
-            public void onLocationResult(LocationResult locationResult)
-            {
-                for(Location location : locationResult.getLocations())
-                {
-                    Log.d(TAG,"Lat: " + String.valueOf(location.getLatitude()) + " | Lon: " + String.valueOf(location.getLongitude()) + " | Altitude: " + String.valueOf(location.getAltitude()));
-                    if(location.getAccuracy() > 0)
-                    {
-                        locations.add(location);
-                    }
-                }
-            }
-        };
-    }
-
-    private void buildLocationRequest()
-    {
-        locationRequest = new LocationRequest();
-        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        locationRequest.setInterval(1000);
-        locationRequest.setFastestInterval(1000);
-        locationRequest.setSmallestDisplacement(0);
     }
 
     public Runnable runnable = new Runnable() {

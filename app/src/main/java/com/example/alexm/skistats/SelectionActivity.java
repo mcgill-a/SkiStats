@@ -66,6 +66,7 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
     private TextView gpsStartTimeValue;
     private TextView gpsEndTimeValue;
     private TextView speedAverageValue;
+    private TextView speedMaxValue;
 
     private Button buttonShare;
     private Button buttonExport;
@@ -88,6 +89,7 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
         gpsStartTimeValue = (TextView)findViewById(R.id.gpsStartTimeValue);
         gpsEndTimeValue = (TextView)findViewById(R.id.gpsEndTimeValue);
         speedAverageValue = (TextView)findViewById(R.id.speedAverageValue);
+        speedMaxValue = (TextView)findViewById(R.id.speedMaxValue);
 
         buttonShare = (Button)findViewById(R.id.btnShare);
         buttonExport = (Button)findViewById(R.id.btnExport);
@@ -399,7 +401,7 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
                     totalSkiDistance += distance;
                     totalSkiTime += time;
 
-                    if (speed > maxSpeed)
+                    if (speed > maxSpeed && time > 3)
                     {
                         maxSpeed = speed;
                         // only getting avgheight and time to help debugging high max speed errors
@@ -409,16 +411,6 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
                     speedCounter++;
                     averageSpeed += speed;
                 }
-
-                // only get speed info when gps update time is less than 10s. reduces error
-                /*if (time < 10)
-                {
-                    if (speed > maxSpeed && height < 0)
-                    {
-                        maxSpeed = speed;
-                    }
-                    averageSpeed += speed;
-                } */
             }
         }
         averageSpeed = averageSpeed / speedCounter;
@@ -451,6 +443,7 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
         double roundedSkiDistance = (double)Math.round(totalSkiDistance * 100d) / 100d;
         double roundedSkiLiftDistance = (double)Math.round(totalSkiLiftDistance * 100d) / 100d;
 
+        double roundedMaxSpeed = (double)Math.round(maxSpeed * 10d) / 10d;
         double roundedAverageSpeed = (double)Math.round(averageSpeed * 10d) / 10d;
 
         int altMaxInteger = (int) maxAltitude;
@@ -466,6 +459,8 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
         skiTotalTimeValue.setText(totalTimeString);
         gpsStartTimeValue.setText("STARTED: " + fmt.print(gpsStartTime));
         gpsEndTimeValue.setText("FINISHED: " + fmt.print(gpsEndTime));
+
+        speedMaxValue.setText(Double.toString(roundedMaxSpeed) + " KM/H");
         speedAverageValue.setText(Double.toString(roundedAverageSpeed) + " KM/H");
     }
 
