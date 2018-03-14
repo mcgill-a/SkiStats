@@ -51,7 +51,8 @@ public class MainActivity extends AppCompatActivity {
 
         settingsButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
-                startActivity(new Intent(MainActivity.this, SettingsActivity.class));
+                //startActivity(new Intent(MainActivity.this, SettingsActivity.class));
+                startActivity(new Intent(MainActivity.this, PreferencesActivity.class));
             }
         });
 

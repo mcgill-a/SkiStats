@@ -1,0 +1,52 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    android:title="preferences">
+
+    <PreferenceCategory android:title="General">
+
+        <ListPreference
+            android:defaultValue="KM/H"
+            android:entries="@array/unit_options"
+            android:entryValues="@array/unit_options"
+            android:key="unit_of_measurement"
+            android:negativeButtonText="@null"
+            android:positiveButtonText="@null"
+            android:title="@string/measurement_unit_title"
+            android:summary="@string/measurement_unit"/>
+
+    </PreferenceCategory>
+
+
+
+    <PreferenceCategory android:title="Battery">
+
+        <ListPreference
+            android:defaultValue="5"
+            android:entries="@array/list_battery_percentage_titles"
+            android:entryValues="@array/list_battery_percentage_values"
+            android:key="minimum_battery_level"
+            android:negativeButtonText="@null"
+            android:positiveButtonText="@null"
+            android:title="@string/battery_percentage_title"
+            android:summary="@string/battery_percentage_desc"/>
+
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="battery_saver"
+            android:title="Battery Saver Mode"
+            android:summary="Change GPS update interval from 1s to 4s"/>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="Other">
+
+        <Preference android:title="Import Sample Files"
+            android:key="sample_data"
+            android:summary="Load in sample data for demonstration"/>
+
+    </PreferenceCategory>
+
+
+    <!-- NOTE: Hide buttons to simplify the UI. Users can touch outside the dialog to
+         dismiss it. -->
+    <!-- NOTE: ListPreference's summary should be set to its value by the activity code. -->
+</PreferenceScreen>

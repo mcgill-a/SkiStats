@@ -399,7 +399,7 @@ public class RecordActivity extends AppCompatActivity {
     public void onBackPressed() {
         if(!recordImageButton.isEnabled())
         {
-            // ask user to submit or discard
+            // ask user to submit or discard recording
             submitImageButton.performClick();
         }
         else

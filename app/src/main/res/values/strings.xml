@@ -94,7 +94,7 @@
     </string-array>
 
     <string name="measurement_unit_title">Unit of Measurement</string>
-    <string name="use_mph">Enable to use MPH instead of KM/H</string>
+    <string name="measurement_unit">Switch between KM/H and MPH</string>
     <string name="pref_title_ringtone">Ringtone</string>
     <string name="pref_ringtone_silent">Silent</string>
 
