@@ -1,29 +1,19 @@
 package com.example.alexm.skistats;
 
 import android.Manifest;
-import android.app.Notification;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.location.Location;
-import android.os.BatteryManager;
 import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
-import android.os.Looper;
 import android.os.SystemClock;
-import android.preference.PreferenceManager;
-import android.speech.RecognizerResultsIntent;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
@@ -34,12 +24,6 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationCallback;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationResult;
-import com.google.android.gms.location.LocationServices;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -154,7 +138,7 @@ public class RecordActivity extends AppCompatActivity {
 
             LocalBroadcastManager.getInstance(this).registerReceiver(messageReciever, new IntentFilter("backgroundGpsUpdates"));
 
-            final Intent intent = new Intent(RecordActivity.this, MyLocationService.class);
+            final Intent intent = new Intent(RecordActivity.this, ServiceLocation.class);
             // Set event for button
             recordImageButton.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View view) {

@@ -57,7 +57,7 @@
         <activity android:name=".RecordActivity" />
 
         <service
-            android:name=".MyLocationService"
+            android:name=".ServiceLocation"
             android:enabled="true"
             android:stopWithTask="false" />
 

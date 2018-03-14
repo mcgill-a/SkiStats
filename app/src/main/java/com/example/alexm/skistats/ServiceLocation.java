@@ -3,7 +3,6 @@ package com.example.alexm.skistats;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -12,7 +11,6 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationManager;
-import android.os.BatteryManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -26,12 +24,13 @@ import android.util.Log;
  * Created by AlexM on 12/03/2018.
  */
 
-public class MyLocationService extends Service {
+public class ServiceLocation extends Service {
     private static final String TAG = "SkiStats.Log.GPS";
     private LocationManager mLocationManager = null;
-    private static final float LOCATION_DISTANCE = 0f;
-    private static int LOCATION_INTERVAL = 1000;
     private static final int NOTIFICATION_ID = 2000;
+
+    private static final float LOCATION_UPDATE_DISTANCE = 0f;
+    private static int LOCATION_UPDATE_INTERVAL = 1000;
 
     private class LocationListener implements android.location.LocationListener {
         Location mLastLocation;
@@ -44,7 +43,7 @@ public class MyLocationService extends Service {
 
         @Override
         public void onLocationChanged(Location location) {
-            Log.e(TAG, "onLocationChanged: " + location);
+            Log.d(TAG, "onLocationChanged: " + location);
 
             mLastLocation.set(location);
 
@@ -59,7 +58,7 @@ public class MyLocationService extends Service {
             intent.putExtra("longitude", mLastLocation.getLongitude());
             intent.putExtra("altitude",mLastLocation.getAltitude());
             intent.putExtra("time",mLastLocation.getTime());
-            LocalBroadcastManager.getInstance(MyLocationService.this).sendBroadcast(intent);
+            LocalBroadcastManager.getInstance(ServiceLocation.this).sendBroadcast(intent);
         }
 
         @Override
@@ -90,7 +89,7 @@ public class MyLocationService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.e(TAG, "onStartCommand");
+        Log.e(TAG, "onStartCommand called");
         super.onStartCommand(intent, flags, startId);
 
         String text = "GPS - RECORDING";
@@ -129,7 +128,7 @@ public class MyLocationService extends Service {
     @Override
     public void onCreate() {
 
-        Log.e(TAG, "onCreate");
+        Log.e(TAG, "onCreate called");
 
         initializeLocationManager();
 
@@ -137,20 +136,20 @@ public class MyLocationService extends Service {
         try {
             mLocationManager.requestLocationUpdates(
                     LocationManager.GPS_PROVIDER,
-                    LOCATION_INTERVAL,
-                    LOCATION_DISTANCE,
+                    LOCATION_UPDATE_INTERVAL,
+                    LOCATION_UPDATE_DISTANCE,
                     mLocationListeners[0]
             );
         } catch (java.lang.SecurityException ex) {
-            Log.i(TAG, "fail to request location update, ignore", ex);
+            Log.i(TAG, "Failed to submit location request", ex);
         } catch (IllegalArgumentException ex) {
-            Log.d(TAG, "network provider does not exist, " + ex.getMessage());
+            Log.d(TAG, "Failed to find network provider " + ex.getMessage());
         }
     }
 
     @Override
     public void onDestroy() {
-        Log.e(TAG, "onDestroy");
+        Log.e(TAG, "onDestroy called");
         super.onDestroy();
         if (mLocationManager != null) {
             for (int i = 0; i < mLocationListeners.length; i++) {
@@ -160,7 +159,7 @@ public class MyLocationService extends Service {
                     }
                     mLocationManager.removeUpdates(mLocationListeners[i]);
                 } catch (Exception ex) {
-                    Log.i(TAG, "fail to remove location listener, ignore", ex);
+                    Log.i(TAG, "Failed to remove the service location listener", ex);
                 }
             }
         }
@@ -180,14 +179,14 @@ public class MyLocationService extends Service {
         boolean batterySaverEnabled = SP.getBoolean("battery_saver",false);
         if(batterySaverEnabled)
         {
-            LOCATION_INTERVAL = 4000;
+            LOCATION_UPDATE_INTERVAL = 4000;
         }
         else
         {
-            LOCATION_INTERVAL = 1000;
+            LOCATION_UPDATE_INTERVAL = 1000;
         }
 
-        Log.e(TAG, "initializeLocationManager - LOCATION_INTERVAL: "+ LOCATION_INTERVAL + " LOCATION_DISTANCE: " + LOCATION_DISTANCE);
+        Log.e(TAG, "Location Manager Preset - Minimum Interval: "+ LOCATION_UPDATE_INTERVAL + " Minimum Distance: " + LOCATION_UPDATE_DISTANCE);
         if (mLocationManager == null) {
             mLocationManager = (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
         }
