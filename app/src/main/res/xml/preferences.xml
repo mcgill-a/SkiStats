@@ -13,15 +13,6 @@
 
     <PreferenceCategory android:title="Battery">
 
-        <ListPreference
-            android:defaultValue="5"
-            android:entries="@array/list_battery_percentage_titles"
-            android:entryValues="@array/list_battery_percentage_values"
-            android:key="minimum_battery_level"
-            android:negativeButtonText="@null"
-            android:positiveButtonText="@null"
-            android:title="@string/battery_percentage_title"
-            android:summary="@string/battery_percentage_desc"/>
 
         <SwitchPreference
             android:defaultValue="false"
@@ -30,16 +21,6 @@
             android:summary="Change GPS update interval from 1s to 4s"/>
 
     </PreferenceCategory>
-
-    <PreferenceCategory android:title="Other">
-
-        <Preference android:title="Import Sample Files"
-            android:key="sample_data"
-            android:summary="Load in sample data for demonstration"/>
-
-    </PreferenceCategory>
-
-
     <!-- NOTE: Hide buttons to simplify the UI. Users can touch outside the dialog to
          dismiss it. -->
     <!-- NOTE: ListPreference's summary should be set to its value by the activity code. -->

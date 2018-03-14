@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
@@ -18,6 +19,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.SystemClock;
+import android.preference.PreferenceManager;
 import android.speech.RecognizerResultsIntent;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -99,7 +101,6 @@ public class RecordActivity extends AppCompatActivity {
             if (ActivityCompat.shouldShowRequestPermissionRationale(RecordActivity.this,
                     Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
 
-
                 // Show an explanation to the user *asynchronously* -- don't block
                 // this thread waiting for the user's response! After the user
                 // sees the explanation, try again to request the permission.
@@ -152,8 +153,6 @@ public class RecordActivity extends AppCompatActivity {
             // If permission granted
 
             LocalBroadcastManager.getInstance(this).registerReceiver(messageReciever, new IntentFilter("backgroundGpsUpdates"));
-
-
 
             final Intent intent = new Intent(RecordActivity.this, MyLocationService.class);
             // Set event for button
@@ -246,7 +245,6 @@ public class RecordActivity extends AppCompatActivity {
                                     }
                                     String newFileName = "";
 
-
                                     int index = 1;
                                     while(file.exists())
                                     {
@@ -268,8 +266,7 @@ public class RecordActivity extends AppCompatActivity {
                                     String fullnamePath = path + fullFileName;
 
                                     File recording = new File(dir, fullFileName);
-                                    // CHANGE TO HIGHER NUMBER (ONLY LOW FOR TESTING)
-                                    Log.d(TAG,"Trying to save");
+                                    Log.d(TAG,"Attempting to save recording");
                                     if(locations.size() > 3)
                                     {
                                         writePath(recording, filename, locations);
@@ -284,8 +281,6 @@ public class RecordActivity extends AppCompatActivity {
                                         locations.clear();
                                         resetStopwatch();
                                     }
-
-
                                     break;
 
                                 case DialogInterface.BUTTON_NEGATIVE:
@@ -310,55 +305,6 @@ public class RecordActivity extends AppCompatActivity {
         }
     }
 
-    public void lowBatteryNotification()
-    {
-        /*
-            BatteryManager batteryManager = (BatteryManager)getSystemService(BATTERY_SERVICE);
-
-            int batteryLevel;
-            counter++;
-            // Get battery level every 60 seconds
-            if (counter == 60)
-            {
-                batteryLevel = batteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY);
-                if(batteryLevel < 15)
-                {
-                    intent.putExtra("batteryLevel", batteryLevel);
-                    counter = 0;
-                }
-            }
-
-
-         */
-
-        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        String NOTIFICATION_CHANNEL_ID = "my_channel_id_02";
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel notificationChannel = new NotificationChannel(NOTIFICATION_CHANNEL_ID, "My Notifications", NotificationManager.IMPORTANCE_HIGH);
-
-            // Configure the notification channel.
-            notificationChannel.setDescription("Channel description");
-            notificationChannel.enableLights(false);
-            notificationChannel.setLightColor(Color.RED);
-            //notificationChannel.setVibrationPattern(new long[]{0, 1000, 500, 1000});
-            notificationChannel.enableVibration(false);
-            notificationManager.createNotificationChannel(notificationChannel);
-        }
-
-        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID);
-
-        notificationBuilder.setAutoCancel(true)
-                .setDefaults(Notification.DEFAULT_LIGHTS | Notification.DEFAULT_SOUND)
-                .setWhen(System.currentTimeMillis())
-                .setSmallIcon(R.drawable.d_cancel)
-                .setVibrate(new long[] {0L})
-                .setColor(2)
-                .setContentTitle("Ski Stats Recording")
-                .setContentText("Recording has been stopped due to low battery")
-                .setContentInfo("Info");
-    }
-
     private BroadcastReceiver messageReciever = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -367,7 +313,6 @@ public class RecordActivity extends AppCompatActivity {
             Double longitude = intent.getDoubleExtra("longitude", 0);
             Double altitude = intent.getDoubleExtra("altitude", 0);
             Long time = intent.getLongExtra("time",0);
-            int batteryLevel = intent.getIntExtra("batterylevel", 21);
 
             Location location = new Location("");
             location.setLatitude(latitude);
@@ -379,13 +324,6 @@ public class RecordActivity extends AppCompatActivity {
                 if (location.getTime() != locations.get(locations.size()-1).getTime())
                 {
                     locations.add(location);
-                    /*
-                    if(batteryLevel < 21)
-
-                    {
-                        submitImageButton.performClick();
-                    }
-                    */
                 }
             }
             else

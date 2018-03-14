@@ -109,11 +109,6 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
         SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
         useMPH = SP.getBoolean("mph_selected",false);
 
-        if(useMPH)
-        {
-            convertToMPH();
-        }
-
         initialise();
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
@@ -125,7 +120,6 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
         if(getData() != -1)
         {
             statCalculations();
-            setTextVales();
         }
         else
         {
@@ -262,9 +256,10 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
         absoluteFilepath = (String) getIntent().getStringExtra("filename");
     }
 
-    public void convertToMPH()
+    public double convertToMiles(double km)
     {
-        Log.d(TAG,"Converting everything to MPH");
+        double converted = km * 0.621371;
+        return converted;
     }
 
     public int getData() {
@@ -475,6 +470,16 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
         Log.e(TAG, "Max Speed time: " + maxSpeedTime);
         Log.e(TAG, absoluteFilepath + " Average Speed: " + averageSpeed);
 
+
+
+        if(useMPH) {
+            totalDistance = convertToMiles(totalDistance);
+            totalSkiDistance = convertToMiles(totalSkiDistance);
+            totalSkiLiftDistance = convertToMiles(totalSkiLiftDistance);
+            averageSpeed = convertToMiles(averageSpeed);
+
+        }
+
         double roundedTotalDistance = (double)Math.round(totalDistance * 100d) / 100d;
         double roundedSkiDistance = (double)Math.round(totalSkiDistance * 100d) / 100d;
         double roundedSkiLiftDistance = (double)Math.round(totalSkiLiftDistance * 100d) / 100d;
@@ -485,18 +490,29 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
         int altMaxInteger = (int) maxAltitude;
         int altMinInteger = (int) minAltitude;
 
-        distanceTotalValue.setText(Double.toString(roundedTotalDistance) + " KM");
-        distanceSkiValue.setText(Double.toString(roundedSkiDistance) + " KM");
-        distanceSkiLiftValue.setText(Double.toString(roundedSkiLiftDistance) + " KM");
-        altitudeMaxValue.setText(altMaxInteger + "m");
-        altitudeMinValue.setText(altMinInteger + "m");
+        if (useMPH)
+        {
+            distanceTotalValue.setText(Double.toString(roundedTotalDistance) + " mi");
+            distanceSkiValue.setText(Double.toString(roundedSkiDistance) + " mi");
+            distanceSkiLiftValue.setText(Double.toString(roundedSkiLiftDistance) + " mi");
+            speedAverageValue.setText(Double.toString(roundedAverageSpeed) + " MPH");
+        }
+        else
+        {
+            distanceTotalValue.setText(Double.toString(roundedTotalDistance) + " KM");
+            distanceSkiValue.setText(Double.toString(roundedSkiDistance) + " KM");
+            distanceSkiLiftValue.setText(Double.toString(roundedSkiLiftDistance) + " KM");
+            speedAverageValue.setText(Double.toString(roundedAverageSpeed) + " KM/H");
+        }
         skiTimeValue.setText(totalSkiTimeString);
         skiLiftTimeValue.setText(totalSkiLiftTimeString);
         skiTotalTimeValue.setText(totalTimeString);
         gpsStartTimeValue.setText("STARTED: " + fmt.print(gpsStartTime));
         gpsEndTimeValue.setText("FINISHED: " + fmt.print(gpsEndTime));
-        speedAverageValue.setText(Double.toString(roundedAverageSpeed) + " KM/H");
-        //speedMaxValue.setText(Double.toString(roundedMaxSpeed) + " KM/H");
+        altitudeMaxValue.setText(altMaxInteger + "m");
+        altitudeMinValue.setText(altMinInteger + "m");
+
+
     }
 
     public static String splitToComponentTimes(Integer secondsTotal)
@@ -566,12 +582,6 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
                 }
             });
         }
-    }
-
-    public void setTextVales()
-    {
-        // Nothing rn but will eventually pass in all values from calculcate stats and set the text views from here
-        //distanceTotalValue.setText();
     }
 
     @Override
