@@ -88,13 +88,9 @@
 
     <string name="pref_title_new_message_notifications">New message notifications</string>
 
-    <string-array name="unit_options">
-        <item>KM/H</item>
-        <item>MPH</item>
-    </string-array>
 
     <string name="measurement_unit_title">Unit of Measurement</string>
-    <string name="measurement_unit">Switch between KM/H and MPH</string>
+    <string name="measurement_unit">Use MPH instead of KM/H</string>
     <string name="pref_title_ringtone">Ringtone</string>
     <string name="pref_ringtone_silent">Silent</string>
 

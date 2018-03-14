@@ -7,6 +7,7 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
@@ -15,6 +16,7 @@ import android.os.BatteryManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.preference.PreferenceManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.LocalBroadcastManager;
@@ -27,8 +29,8 @@ import android.util.Log;
 public class MyLocationService extends Service {
     private static final String TAG = "SkiStats.Log.GPS";
     private LocationManager mLocationManager = null;
-    private static final int LOCATION_INTERVAL = 1000;
     private static final float LOCATION_DISTANCE = 0f;
+    private static int LOCATION_INTERVAL = 1000;
     private static final int NOTIFICATION_ID = 2000;
 
     private class LocationListener implements android.location.LocationListener {
@@ -131,6 +133,7 @@ public class MyLocationService extends Service {
 
         initializeLocationManager();
 
+
         try {
             mLocationManager.requestLocationUpdates(
                     LocationManager.GPS_PROVIDER,
@@ -172,6 +175,18 @@ public class MyLocationService extends Service {
     }
 
     private void initializeLocationManager() {
+
+        SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+        boolean batterySaverEnabled = SP.getBoolean("battery_saver",false);
+        if(batterySaverEnabled)
+        {
+            LOCATION_INTERVAL = 4000;
+        }
+        else
+        {
+            LOCATION_INTERVAL = 1000;
+        }
+
         Log.e(TAG, "initializeLocationManager - LOCATION_INTERVAL: "+ LOCATION_INTERVAL + " LOCATION_DISTANCE: " + LOCATION_DISTANCE);
         if (mLocationManager == null) {
             mLocationManager = (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);

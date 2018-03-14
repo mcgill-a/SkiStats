@@ -3,19 +3,13 @@
 
     <PreferenceCategory android:title="General">
 
-        <ListPreference
-            android:defaultValue="KM/H"
-            android:entries="@array/unit_options"
-            android:entryValues="@array/unit_options"
-            android:key="unit_of_measurement"
-            android:negativeButtonText="@null"
-            android:positiveButtonText="@null"
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="mph_selected"
             android:title="@string/measurement_unit_title"
             android:summary="@string/measurement_unit"/>
 
     </PreferenceCategory>
-
-
 
     <PreferenceCategory android:title="Battery">
 

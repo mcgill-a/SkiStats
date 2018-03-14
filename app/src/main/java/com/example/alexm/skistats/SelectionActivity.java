@@ -1,6 +1,7 @@
 package com.example.alexm.skistats;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -9,6 +10,7 @@ import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Environment;
 import android.os.StrictMode;
+import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -22,6 +24,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.PolylineOptions;
 
 import org.joda.time.DateTime;
@@ -49,6 +52,7 @@ import io.ticofab.androidgpxparser.parser.domain.TrackSegment;
 public class SelectionActivity extends FragmentActivity implements OnMapReadyCallback, Serializable{
 
     private GoogleMap mMap;
+    private LatLngBounds.Builder mapBounds = new LatLngBounds.Builder();
     private View mView;
     private String absoluteFilepath;
     private String TAG = "SkiStats.Log";
@@ -76,6 +80,8 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
     private DateTimeFormatter fmt = DateTimeFormat.forPattern("HH:mm:ss");
     public List<TrackPoint> tPoints = new ArrayList<>();
 
+    private boolean useMPH = false;
+
     public void initialise()
     {
         distanceTotalValue = (TextView)findViewById(R.id.distanceTotalValue);
@@ -100,13 +106,20 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_selection);
 
+        SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+        useMPH = SP.getBoolean("mph_selected",false);
+
+        if(useMPH)
+        {
+            convertToMPH();
+        }
+
         initialise();
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-
         getFileName();
 
         if(getData() != -1)
@@ -247,6 +260,11 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
     public void getFileName()
     {
         absoluteFilepath = (String) getIntent().getStringExtra("filename");
+    }
+
+    public void convertToMPH()
+    {
+        Log.d(TAG,"Converting everything to MPH");
     }
 
     public int getData() {
@@ -529,16 +547,24 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
         {
             PolylineOptions poption = new PolylineOptions();
             LatLng latlng;
+
             for(int i = 0; i < tPoints.size(); i++)
             {
                 latlng = new LatLng(tPoints.get(i).getLatitude(), tPoints.get(i).getLongitude());
                 poption.add(latlng);
+                mapBounds.include(new LatLng(tPoints.get(i).getLatitude(), tPoints.get(i).getLongitude()));
             }
             poption.width(9).color(Color.BLUE).geodesic(true);
 
             googleMap.addPolyline(poption);
             LatLng firstLatLng = new LatLng(tPoints.get(0).getLatitude(), tPoints.get(0).getLongitude());
-            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(firstLatLng, 14));
+
+            googleMap.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
+                @Override
+                public void onMapLoaded() {
+                    mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(mapBounds.build(), 15));
+                }
+            });
         }
     }
 
@@ -552,9 +578,5 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         processMap(googleMap);
-        // Add a marker in Sydney and move the camera
-       // LatLng sauze = new LatLng(45.0269, 6.8584);
-       // mMap.addMarker(new MarkerOptions().position(sauze).title("Marker in Sauze d'Oulx"));
-        //mMap.moveCamera(CameraUpdateFactory.newLatLng(sauze));
     }
 }
