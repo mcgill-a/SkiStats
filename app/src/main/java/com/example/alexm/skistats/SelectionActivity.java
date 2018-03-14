@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Environment;
@@ -48,6 +49,7 @@ import io.ticofab.androidgpxparser.parser.domain.TrackSegment;
 public class SelectionActivity extends FragmentActivity implements OnMapReadyCallback, Serializable{
 
     private GoogleMap mMap;
+    private View mView;
     private String absoluteFilepath;
     private String TAG = "SkiStats.Log";
     private GPXParser mParser = new GPXParser();
@@ -121,7 +123,7 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
             @Override
             public void onClick(View v)
             {
-                shareSocial();
+                getScreenContent();
             }
         });
 
@@ -144,7 +146,6 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
                 startActivity(i);
             }
         });
-
     }
 
     public void exportFile()
@@ -164,19 +165,35 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
     }
 
 
-    public Bitmap shareScreen(View view)
-    {
-        Bitmap bitmap = Bitmap.createBitmap(view.getWidth(),(view.getHeight()), Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(bitmap);
-        view.draw(canvas);
-        return bitmap;
+    public void getScreenContent() {
+        GoogleMap.SnapshotReadyCallback callback = new GoogleMap.SnapshotReadyCallback() {
+            @Override
+            public void onSnapshotReady(Bitmap snapshot) {
+                try {
+                    mView = getWindow().getDecorView().findViewById(android.R.id.content);
+                    mView.setDrawingCacheEnabled(true);
+                    Bitmap backBitmap = mView.getDrawingCache();
+                    Bitmap bmOverlay = Bitmap.createBitmap(
+                            backBitmap.getWidth(), backBitmap.getHeight(),
+                            backBitmap.getConfig());
+                    Canvas canvas = new Canvas(bmOverlay);
+                    canvas.drawBitmap(snapshot, new Matrix(), null);
+                    canvas.drawBitmap(backBitmap, 0, 0, null);
+                    shareSocial(bmOverlay);
+                    Log.d(TAG,"Share: Image Saved Successfully!");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+        mMap.snapshot(callback);
     }
 
-    public void shareSocial()
+    public void shareSocial(Bitmap icon)
     {
         String folder = Environment.getExternalStorageDirectory() + File.separator + "SkiStats/Share/";
         clearSharedImagesFolder(folder);
-        Bitmap icon = shareScreen((this.getWindow().getDecorView().findViewById(android.R.id.content)));
+        //Bitmap icon = shareScreen((this.getWindow().getDecorView().findViewById(android.R.id.content)));
         Intent share = new Intent(Intent.ACTION_SEND);
         share.setType("image/jpeg");
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();

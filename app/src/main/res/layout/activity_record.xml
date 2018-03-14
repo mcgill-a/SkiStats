@@ -18,7 +18,6 @@
         android:weightSum="5"
         android:background="#013830">
 
-
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -28,6 +27,7 @@
             android:layout_weight="5"
             android:textColor="#fff"
             android:textSize="50dp"
+            android:layout_marginBottom="100dp"
             android:textStyle="bold" />
             />
     </LinearLayout>
