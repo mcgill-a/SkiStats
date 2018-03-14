@@ -328,8 +328,21 @@ public class RecordActivity extends AppCompatActivity {
             location.setLongitude(longitude);
             location.setAltitude(altitude);
             location.setTime(time);
-            locations.add(location);
-            Log.e(TAG,"LOCATION ADDED: " + location.getTime() + " " + location.getLatitude() + " " + location.getLongitude() + " " + location.getAltitude());
+            if  (locations.size() > 1)
+            {
+                if (location.getTime() != locations.get(locations.size()-1).getTime())
+                {
+                    locations.add(location);
+                    Log.e(TAG,"LOCATION ADDED: " + location.getTime() + " " + location.getLatitude() + " " + location.getLongitude() + " " + location.getAltitude());
+                }
+            }
+            else
+            {
+                locations.add(location);
+                Log.e(TAG,"LOCATION ADDED: " + location.getTime() + " " + location.getLatitude() + " " + location.getLongitude() + " " + location.getAltitude());
+            }
+
+
         }
     };
 

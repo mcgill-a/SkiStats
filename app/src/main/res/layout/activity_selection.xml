@@ -326,7 +326,7 @@
         android:weightSum="5"
         android:background="#013830">
 
-        <TextView
+        <!--<TextView
             android:id="@+id/speedMaxTitle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -335,14 +335,14 @@
             android:textColor="#FFF"
             android:textAlignment="center"
             android:textSize="20dp"
-            android:textStyle="bold" />
+            android:textStyle="bold" />-->
 
         <TextView
             android:id="@+id/speedAverageTitle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1.24"
-            android:text="AVG"
+            android:layout_weight="2.48"
+            android:text="AVERAGE"
             android:textColor="#FFF"
             android:textAlignment="center"
             android:textSize="20dp"
@@ -388,7 +388,7 @@
         android:weightSum="5"
         android:background="#ddf4da">
 
-        <TextView
+        <!--<TextView
             android:id="@+id/speedMaxValue"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -396,13 +396,13 @@
             android:text="0 KM/H"
             android:textAlignment="center"
             android:textSize="17dp"
-            android:textStyle="italic" />
+            android:textStyle="italic" /> -->
 
         <TextView
             android:id="@+id/speedAverageValue"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1.24"
+            android:layout_weight="2.48"
             android:text="0 KM/H"
             android:textAlignment="center"
             android:textSize="17dp"

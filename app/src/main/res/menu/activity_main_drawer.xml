@@ -15,20 +15,16 @@
             android:icon="@drawable/d_history"
             android:title="History"/>
 
-        <item
+        <!--<item
             android:id="@+id/nav_gallery"
             android:icon="@drawable/d_gallery"
-            android:title="Gallery" />
+            android:title="Gallery" /> -->
 
         <item
             android:id="@+id/nav_map"
             android:icon="@drawable/d_map"
             android:title="Map" />
 
-        <item
-            android:id="@+id/nav_settings"
-            android:icon="@drawable/d_settings"
-            android:title="Settings" />
     </group>
 
     <item android:title="Tools">
@@ -37,14 +33,11 @@
                 android:id="@+id/nav_import"
                 android:icon="@drawable/d_import"
                 android:title="Import Data" />
-            <!--<item
-                android:id="@+id/nav_export"
-                android:icon="@drawable/d_export"
-                android:title="Export Data" />
+
             <item
-                android:id="@+id/nav_share"
-                android:icon="@drawable/d_share"
-                android:title="Share" /> -->
+                android:id="@+id/nav_settings"
+                android:icon="@drawable/d_settings"
+                android:title="Settings" />
         </menu>
     </item>
 

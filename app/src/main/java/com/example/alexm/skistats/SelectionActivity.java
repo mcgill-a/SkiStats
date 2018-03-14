@@ -66,7 +66,7 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
     private TextView gpsStartTimeValue;
     private TextView gpsEndTimeValue;
     private TextView speedAverageValue;
-    private TextView speedMaxValue;
+    //private TextView speedMaxValue;
 
     private Button buttonShare;
     private Button buttonExport;
@@ -74,7 +74,6 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
 
     private DateTimeFormatter fmt = DateTimeFormat.forPattern("HH:mm:ss");
     public List<TrackPoint> tPoints = new ArrayList<>();
-    //public List<TrackPoint> tPointsFiltered = new ArrayList<>(); // this would be the kalman filtered gps data
 
     public void initialise()
     {
@@ -89,12 +88,11 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
         gpsStartTimeValue = (TextView)findViewById(R.id.gpsStartTimeValue);
         gpsEndTimeValue = (TextView)findViewById(R.id.gpsEndTimeValue);
         speedAverageValue = (TextView)findViewById(R.id.speedAverageValue);
-        speedMaxValue = (TextView)findViewById(R.id.speedMaxValue);
+        //speedMaxValue = (TextView)findViewById(R.id.speedMaxValue);
 
         buttonShare = (Button)findViewById(R.id.btnShare);
         buttonExport = (Button)findViewById(R.id.btnExport);
         buttonAltitude = (Button)findViewById(R.id.btnAltitude);
-
     }
 
     @Override
@@ -311,6 +309,8 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
         double maxspeedAvgHeight = 0;
         int maxSpeedTime = 0;
         int time = 0;
+        int avgCounter = 0;
+        double avgtime = 0;
         double altitude = 0;
         double maxAltitude = 0;
         double minAltitude = Double.MAX_VALUE;
@@ -335,13 +335,15 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
 
             time = seconds.getSeconds();
 
+
             // If the time between the current track point and the next track point is more than 60 seconds,
             // skip to the next one as the gps recording isn't useful
             if (time > 60)
             {
                 continue;
             }
-
+            avgtime += time;
+            avgCounter++;
             // SkiVector object - contains height and distance
             vector = calculateDistanceBetween(current, next);
             distance = vector.getDistance();
@@ -401,7 +403,7 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
                     totalSkiDistance += distance;
                     totalSkiTime += time;
 
-                    if (speed > maxSpeed && time > 3)
+                    if (speed > maxSpeed)
                     {
                         maxSpeed = speed;
                         // only getting avgheight and time to help debugging high max speed errors
@@ -421,8 +423,9 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
 
         maxSpeed = maxSpeed * 3600; // convert from km/s to km/h
         averageSpeed = averageSpeed * 3600; // convert from km/s to km/h
+        avgtime = avgtime / avgCounter;
 
-        Log.e(TAG, "Max Individual Distance: " + maxDistance);
+        Log.e(TAG, "Average Time: " + avgtime);
         Log.e(TAG,"Total Distance: " + totalDistance);
         Log.e(TAG,"Total Ski Distance: " + totalSkiDistance);
         Log.e(TAG,"Total Ski Lift Distance: " + totalSkiLiftDistance);
@@ -459,9 +462,8 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
         skiTotalTimeValue.setText(totalTimeString);
         gpsStartTimeValue.setText("STARTED: " + fmt.print(gpsStartTime));
         gpsEndTimeValue.setText("FINISHED: " + fmt.print(gpsEndTime));
-
-        speedMaxValue.setText(Double.toString(roundedMaxSpeed) + " KM/H");
         speedAverageValue.setText(Double.toString(roundedAverageSpeed) + " KM/H");
+        //speedMaxValue.setText(Double.toString(roundedMaxSpeed) + " KM/H");
     }
 
     public static String splitToComponentTimes(Integer secondsTotal)

@@ -99,8 +99,6 @@ public class MainActivity extends AppCompatActivity
 
             startActivity(new Intent(MainActivity.this, HistoryActivity.class));
 
-        } else if (id == R.id.nav_gallery) {
-
         } else if (id == R.id.nav_map) {
 
             startActivity(new Intent (MainActivity.this, MapsActivity.class));

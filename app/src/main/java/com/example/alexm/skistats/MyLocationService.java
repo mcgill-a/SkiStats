@@ -26,7 +26,7 @@ import android.util.Log;
 public class MyLocationService extends Service {
     private static final String TAG = "SkiStats.Log.GPS";
     private LocationManager mLocationManager = null;
-    private static final int LOCATION_INTERVAL = 2000;
+    private static final int LOCATION_INTERVAL = 1000;
     private static final float LOCATION_DISTANCE = 0f;
     private static final int NOTIFICATION_ID = 2000;
     //private static final String ANDROID_CHANNEL_ID = "SS_NOTIFY";
