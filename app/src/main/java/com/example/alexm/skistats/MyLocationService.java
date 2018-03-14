@@ -11,6 +11,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationManager;
+import android.os.BatteryManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -29,10 +30,10 @@ public class MyLocationService extends Service {
     private static final int LOCATION_INTERVAL = 1000;
     private static final float LOCATION_DISTANCE = 0f;
     private static final int NOTIFICATION_ID = 2000;
-    //private static final String ANDROID_CHANNEL_ID = "SS_NOTIFY";
 
     private class LocationListener implements android.location.LocationListener {
         Location mLastLocation;
+
 
         public LocationListener(String provider) {
             Log.e(TAG, "LocationListener " + provider);
@@ -112,7 +113,7 @@ public class MyLocationService extends Service {
         notificationBuilder.setAutoCancel(true)
                 .setDefaults(Notification.DEFAULT_LIGHTS | Notification.DEFAULT_SOUND)
                 .setWhen(System.currentTimeMillis())
-                .setSmallIcon(R.drawable.ic_gps)
+                .setSmallIcon(R.drawable.d_ski)
                 .setVibrate(new long[] {0L})
                 .setColor(2)
                 .setContentTitle("Ski Stats Recording")

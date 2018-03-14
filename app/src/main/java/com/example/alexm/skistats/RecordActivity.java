@@ -1,13 +1,18 @@
 package com.example.alexm.skistats;
 
 import android.Manifest;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Location;
+import android.os.BatteryManager;
 import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
@@ -16,6 +21,7 @@ import android.os.SystemClock;
 import android.speech.RecognizerResultsIntent;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
@@ -50,7 +56,6 @@ public class RecordActivity extends AppCompatActivity {
     LocationCallback locationCallback;
     String TAG = "SkiStats.Log";
     private List<Location> locations = new ArrayList<Location>();
-
 
     private ImageButton recordImageButton, pauseImageButton, cancelImageButton, submitImageButton;
     private TextView stopwatch;
@@ -144,7 +149,6 @@ public class RecordActivity extends AppCompatActivity {
 
         recordImageButton = (ImageButton) findViewById(R.id.recordImageButton);
         pauseImageButton = (ImageButton) findViewById(R.id.pauseImageButton);
-        //cancelImageButton = (ImageButton) findViewById(R.id.cancelImageButton);
         submitImageButton = (ImageButton) findViewById(R.id.submitImageButton);
         stopwatch = (TextView) findViewById(R.id.stopwatch);
 
@@ -287,6 +291,8 @@ public class RecordActivity extends AppCompatActivity {
                                     {
                                         Log.d(TAG,"Error: Not enough GPS data recorded");
                                         Toast.makeText(getApplicationContext(), "Error: Not enough GPS data recorded",Toast.LENGTH_LONG).show();
+                                        locations.clear();
+                                        resetStopwatch();
                                     }
 
 
@@ -314,6 +320,55 @@ public class RecordActivity extends AppCompatActivity {
         }
     }
 
+    public void lowBatteryNotification()
+    {
+        /*
+            BatteryManager batteryManager = (BatteryManager)getSystemService(BATTERY_SERVICE);
+
+            int batteryLevel;
+            counter++;
+            // Get battery level every 60 seconds
+            if (counter == 60)
+            {
+                batteryLevel = batteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY);
+                if(batteryLevel < 15)
+                {
+                    intent.putExtra("batteryLevel", batteryLevel);
+                    counter = 0;
+                }
+            }
+
+
+         */
+
+        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        String NOTIFICATION_CHANNEL_ID = "my_channel_id_02";
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel notificationChannel = new NotificationChannel(NOTIFICATION_CHANNEL_ID, "My Notifications", NotificationManager.IMPORTANCE_HIGH);
+
+            // Configure the notification channel.
+            notificationChannel.setDescription("Channel description");
+            notificationChannel.enableLights(false);
+            notificationChannel.setLightColor(Color.RED);
+            //notificationChannel.setVibrationPattern(new long[]{0, 1000, 500, 1000});
+            notificationChannel.enableVibration(false);
+            notificationManager.createNotificationChannel(notificationChannel);
+        }
+
+        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID);
+
+        notificationBuilder.setAutoCancel(true)
+                .setDefaults(Notification.DEFAULT_LIGHTS | Notification.DEFAULT_SOUND)
+                .setWhen(System.currentTimeMillis())
+                .setSmallIcon(R.drawable.d_cancel)
+                .setVibrate(new long[] {0L})
+                .setColor(2)
+                .setContentTitle("Ski Stats Recording")
+                .setContentText("Recording has been stopped due to low battery")
+                .setContentInfo("Info");
+    }
+
     private BroadcastReceiver messageReciever = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -322,6 +377,7 @@ public class RecordActivity extends AppCompatActivity {
             Double longitude = intent.getDoubleExtra("longitude", 0);
             Double altitude = intent.getDoubleExtra("altitude", 0);
             Long time = intent.getLongExtra("time",0);
+            int batteryLevel = intent.getIntExtra("batterylevel", 21);
 
             Location location = new Location("");
             location.setLatitude(latitude);
@@ -334,6 +390,12 @@ public class RecordActivity extends AppCompatActivity {
                 {
                     locations.add(location);
                     Log.e(TAG,"LOCATION ADDED: " + location.getTime() + " " + location.getLatitude() + " " + location.getLongitude() + " " + location.getAltitude());
+
+                    if(batteryLevel < 21)
+                    {
+                        submitImageButton.performClick();
+                    }
+
                 }
             }
             else
