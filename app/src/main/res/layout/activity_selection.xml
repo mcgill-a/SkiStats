@@ -8,7 +8,6 @@
     tools:context="com.example.alexm.skistats.SelectionActivity">
 
     <fragment xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:map="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/map"
         android:name="com.google.android.gms.maps.SupportMapFragment"
@@ -116,88 +115,6 @@
             android:textStyle="bold"/>
 
     </LinearLayout>
-
-    <!--
-    <LinearLayout
-        android:id="@+id/speedTitles"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:weightSum="5"
-        android:background="#013830">
-
-        <TextView
-            android:id="@+id/speedMaxTitle"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1.5"
-            android:text="MAX"
-            android:textColor="#FFF"
-            android:textAlignment="center"
-            android:textSize="20dp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/speedSpacerTitle"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="2"
-            android:textAlignment="center"
-            android:textSize="20dp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/speedAverageTitle"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1.5"
-            android:text="AVG"
-            android:textColor="#FFF"
-            android:textAlignment="center"
-            android:textSize="20dp"
-            android:textStyle="bold" />
-
-    </LinearLayout>
-
-
-    <LinearLayout
-        android:id="@+id/speedValues"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:weightSum="5"
-        android:background="#ddf4da">
-
-        <TextView
-            android:id="@+id/speedMaxValue"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1.5"
-            android:text="0 KM/H"
-            android:textAlignment="center"
-            android:textSize="17dp"
-            android:textStyle="italic" />
-
-        <TextView
-            android:id="@+id/speedTitle"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="2"
-            android:text="SKI SPEED"
-            android:textColor="#000"
-            android:textAlignment="center"
-            android:textSize="27dp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/speedAverageValue"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1.5"
-            android:text="0 KM/H"
-            android:textAlignment="center"
-            android:textSize="17dp"
-            android:textStyle="italic" />
-
-    </LinearLayout> -->
 
     <LinearLayout
         android:id="@+id/timeTitles"
