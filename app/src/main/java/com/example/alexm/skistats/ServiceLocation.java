@@ -92,8 +92,6 @@ public class ServiceLocation extends Service {
         Log.e(TAG, "onStartCommand called");
         super.onStartCommand(intent, flags, startId);
 
-        String text = "GPS - RECORDING";
-
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         String NOTIFICATION_CHANNEL_ID = "my_channel_id_01";
 
@@ -110,7 +108,6 @@ public class ServiceLocation extends Service {
         }
 
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID);
-
         notificationBuilder.setAutoCancel(true)
                 .setDefaults(Notification.DEFAULT_LIGHTS | Notification.DEFAULT_SOUND)
                 .setWhen(System.currentTimeMillis())
@@ -127,12 +124,8 @@ public class ServiceLocation extends Service {
 
     @Override
     public void onCreate() {
-
         Log.e(TAG, "onCreate called");
-
         initializeLocationManager();
-
-
         try {
             mLocationManager.requestLocationUpdates(
                     LocationManager.GPS_PROVIDER,
