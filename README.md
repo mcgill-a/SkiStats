@@ -2,4 +2,4 @@
 Mobile Applications Development
 
 
-SkiStats is a Ski Tracker Mobile App
+SkiStats is mobile application ski tracker and analysis tool
