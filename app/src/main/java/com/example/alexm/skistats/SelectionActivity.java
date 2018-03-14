@@ -66,7 +66,6 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
     private TextView gpsStartTimeValue;
     private TextView gpsEndTimeValue;
     private TextView speedAverageValue;
-    //private TextView speedMaxValue;
 
     private Button buttonShare;
     private Button buttonExport;
@@ -88,7 +87,6 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
         gpsStartTimeValue = (TextView)findViewById(R.id.gpsStartTimeValue);
         gpsEndTimeValue = (TextView)findViewById(R.id.gpsEndTimeValue);
         speedAverageValue = (TextView)findViewById(R.id.speedAverageValue);
-        //speedMaxValue = (TextView)findViewById(R.id.speedMaxValue);
 
         buttonShare = (Button)findViewById(R.id.btnShare);
         buttonExport = (Button)findViewById(R.id.btnExport);
