@@ -326,11 +326,6 @@ public class HistoryActivity extends AppCompatActivity {
                 deleteAFile(menuItemName, info.position, "Imports");
                 break;
         }
-        if (menuItemIndex == 0) {
-
-        } else if (menuItemIndex == 1) {
-
-        }
         return true;
     }
 
@@ -394,6 +389,7 @@ public class HistoryActivity extends AppCompatActivity {
                         {
                             Log.e(TAG,"Error: " + selectedName + " rename to " + renameTo + " failed");
                         }
+                        sortListsAlphabetically();
                         updateList();
                     }
                 });

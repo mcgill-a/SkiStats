@@ -33,9 +33,10 @@
 
         <!-- Need to set this also to style create folder dialog -->
         <item name="alertDialogTheme">@style/FilePickerAlertDialogTheme</item>
+    </style>
 
-        <!-- If you want to set a specific toolbar theme, do it here -->
-        <!-- <item name="nnf_toolbarTheme">@style/ThemeOverlay.AppCompat.Dark.ActionBar</item> -->
+    <style name="splashScreenTheme" parent="@style/AppTheme.NoActionBar">
+        <item name="android:windowBackground">@mipmap/bg_1_ski_hut</item>
     </style>
 
     <style name="FilePickerAlertDialogTheme" parent="Theme.AppCompat.Dialog.Alert">

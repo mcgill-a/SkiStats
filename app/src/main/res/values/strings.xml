@@ -60,10 +60,23 @@
         <item>Entry 3</item>
     </string-array>
 
-    <string-array name="list_preference_entry_values">
-        <item>1</item>
-        <item>2</item>
-        <item>3</item>
+    <string name="battery_percentage_title">Minimum Battery Level</string>
+    <string name="battery_percentage_desc">Battery percentage where GPS stops recording</string>
+
+    <string-array name="list_battery_percentage_titles">
+        <item>40%</item>
+        <item>30%</item>
+        <item>20%</item>
+        <item>10%</item>
+        <item>5%</item>
+    </string-array>
+
+    <string-array name="list_battery_percentage_values">
+        <item>40</item>
+        <item>30</item>
+        <item>20</item>
+        <item>10</item>
+        <item>5</item>
     </string-array>
 
     <string-array name="multi_select_list_preference_default_value" />

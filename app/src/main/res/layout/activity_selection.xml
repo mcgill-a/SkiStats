@@ -486,13 +486,14 @@
         android:id="@+id/buttons"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:weightSum="4.5"
         android:background="#000"
+        android:weightSum="4.5"
+        android:paddingTop="2dp"
         android:layout_gravity="center_vertical">
 
         <Button
             android:id="@+id/btnShare"
-            android:backgroundTint="#013830"
+            android:backgroundTint="#269b89"
             android:textColor="#FFF"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -504,7 +505,7 @@
 
         <Button
             android:id="@+id/btnExport"
-            android:backgroundTint="#013830"
+            android:backgroundTint="#269b89"
             android:textColor="#FFF"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -516,7 +517,7 @@
 
         <Button
             android:id="@+id/btnAltitude"
-            android:backgroundTint="#013830"
+            android:backgroundTint="#269b89"
             android:textColor="#FFF"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

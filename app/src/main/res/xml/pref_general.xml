@@ -8,18 +8,15 @@
         android:negativeButtonText="@null"
         android:positiveButtonText="@null"
         android:title="@string/measurement_unit_title" />
-
-    <!-- NOTE: EditTextPreference accepts EditText attributes. -->
-    <!-- NOTE: EditTextPreference's summary should be set to its value by the activity code. -->
-    <EditTextPreference
-        android:capitalize="words"
-        android:defaultValue="@string/pref_default_display_name"
-        android:inputType="textCapWords"
-        android:key="example_text"
-        android:maxLines="1"
-        android:selectAllOnFocus="true"
-        android:singleLine="true"
-        android:title="@string/pref_title_display_name" />
+    <ListPreference
+        android:defaultValue="5"
+        android:entries="@array/list_battery_percentage_titles"
+        android:entryValues="@array/list_battery_percentage_values"
+        android:key="minimum_battery_level"
+        android:negativeButtonText="@null"
+        android:positiveButtonText="@null"
+        android:title="@string/battery_percentage_title"
+        android:summary="@string/battery_percentage_desc"/>
 
     <!-- NOTE: Hide buttons to simplify the UI. Users can touch outside the dialog to
          dismiss it. -->
