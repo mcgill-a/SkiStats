@@ -50,10 +50,7 @@ import java.util.List;
 
 public class RecordActivity extends AppCompatActivity {
 
-
     private static final int REQUEST_CODE = 1000;
-    LocationRequest locationRequest;
-    LocationCallback locationCallback;
     String TAG = "SkiStats.Log";
     private List<Location> locations = new ArrayList<Location>();
 
@@ -65,8 +62,6 @@ public class RecordActivity extends AppCompatActivity {
 
     private static final int REQUEST_WRITE_EXTERNAL_STORAGE = 2000;
 
-
-
     @Override
     protected void onStart() {
         super.onStart();
@@ -75,7 +70,6 @@ public class RecordActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        //locationTracker.stopLocationService(this);
     }
 
     @Override
@@ -117,12 +111,7 @@ public class RecordActivity extends AppCompatActivity {
                 ActivityCompat.requestPermissions(RecordActivity.this,
                         new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
                         REQUEST_WRITE_EXTERNAL_STORAGE);
-
-                // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
-                // app-defined int constant. The callback method gets the
-                // result of the request.
             }
-
         }
         else
         {
@@ -133,6 +122,7 @@ public class RecordActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        setTheme(R.style.AppTheme_NoActionBar);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_record);
 
@@ -389,22 +379,19 @@ public class RecordActivity extends AppCompatActivity {
                 if (location.getTime() != locations.get(locations.size()-1).getTime())
                 {
                     locations.add(location);
-                    Log.e(TAG,"LOCATION ADDED: " + location.getTime() + " " + location.getLatitude() + " " + location.getLongitude() + " " + location.getAltitude());
-
+                    /*
                     if(batteryLevel < 21)
+
                     {
                         submitImageButton.performClick();
                     }
-
+                    */
                 }
             }
             else
             {
                 locations.add(location);
-                Log.e(TAG,"LOCATION ADDED: " + location.getTime() + " " + location.getLatitude() + " " + location.getLongitude() + " " + location.getAltitude());
             }
-
-
         }
     };
 

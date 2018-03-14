@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Typeface;
 import android.icu.text.AlphabeticIndex;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.view.View;
@@ -15,20 +16,81 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import net.danlew.android.joda.JodaTimeAndroid;
 
 import org.w3c.dom.Text;
 
-public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends AppCompatActivity {
+
+    private ImageButton recordButton;
+    private ImageButton historyButton;
+    private ImageButton mapsButton;
+    private ImageButton importButton;
+    private ImageButton settingsButton;
+    private ImageButton exitButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         JodaTimeAndroid.init(this);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_main_tile);
+        initButtons();
+
+        recordButton.setOnClickListener(new View.OnClickListener(){
+            public void onClick(View view) {
+                startActivity(new Intent(MainActivity.this, RecordActivity.class));
+            }
+        });
+
+        historyButton.setOnClickListener(new View.OnClickListener(){
+            public void onClick(View view) {
+                startActivity(new Intent(MainActivity.this, HistoryActivity.class));
+            }
+        });
+
+        mapsButton.setOnClickListener(new View.OnClickListener(){
+            public void onClick(View view) {
+                startActivity(new Intent(MainActivity.this, MapsActivity.class));
+            }
+        });
+
+        importButton.setOnClickListener(new View.OnClickListener(){
+            public void onClick(View view) {
+                startActivity(new Intent(MainActivity.this, ImportActivity.class));
+            }
+        });
+
+        settingsButton.setOnClickListener(new View.OnClickListener(){
+            public void onClick(View view) {
+                startActivity(new Intent(MainActivity.this, SettingsActivity.class));
+            }
+        });
+
+        exitButton.setOnClickListener(new View.OnClickListener(){
+            public void onClick(View view) {
+                finish();
+            }
+        });
+    }
+
+    public void initButtons()
+    {
+        recordButton = (ImageButton)findViewById(R.id.img_btn_record);
+        historyButton = (ImageButton)findViewById(R.id.img_btn_history);
+        mapsButton = (ImageButton)findViewById(R.id.img_btn_maps);
+        importButton = (ImageButton)findViewById(R.id.img_btn_import);
+        settingsButton = (ImageButton)findViewById(R.id.img_btn_settings);
+        exitButton = (ImageButton)findViewById(R.id.img_btn_exit);
+    }
+
+
+}
+
+
+/*
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -114,5 +176,4 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
-    }
-}
+        }*/

@@ -52,6 +52,7 @@ public class ImportActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        setTheme(R.style.AppTheme_NoActionBar);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_import);
         importButton = (ImageButton)findViewById(R.id.importImage);
@@ -68,6 +69,7 @@ public class ImportActivity extends AppCompatActivity {
     public void filterFiles()
     {
         int failCount = 0;
+        int success = 0;
         for (int i = 0; i < imports.size(); i++)
         {
             if (checkGpxExtension(imports.get(i).getName()))
@@ -77,6 +79,7 @@ public class ImportActivity extends AppCompatActivity {
                 if(importFile(imports.get(i).getAbsolutePath(), path))
                 {
                     Log.e(TAG,"Successfully imported file: " + imports.get(i).getName());
+                    success++;
                 }
                 else
                 {
@@ -98,7 +101,10 @@ public class ImportActivity extends AppCompatActivity {
         }
         else
         {
-            Toast.makeText(getApplicationContext(), "All files were successfuly imported",Toast.LENGTH_SHORT).show();
+            if(success == imports.size() && success > 0)
+            {
+                Toast.makeText(getApplicationContext(), "All files were successfuly imported",Toast.LENGTH_SHORT).show();
+            }
         }
         imports.clear();
     }

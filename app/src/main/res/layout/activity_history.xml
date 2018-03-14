@@ -17,10 +17,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
-            android:textSize="28sp"
+            android:textSize="34sp"
             android:textStyle="bold"
             android:textColor="#fff"
-            android:text="RECORDINGS" />
+            android:fontFamily="@font/averia_sans_libre"
+            android:text="RECORDINGS"
+            android:paddingTop="5dp"/>
 
         <ListView
             android:id="@+id/HistoryRecordingListView"
@@ -36,10 +38,12 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dip"
             android:gravity="center_vertical"
-            android:textSize="28sp"
+            android:textSize="34sp"
             android:textStyle="bold"
             android:textColor="#fff"
-            android:text="IMPORTS" />
+            android:fontFamily="@font/averia_sans_libre"
+            android:text="IMPORTS"
+            android:paddingTop="5dp"/>
 
         <ListView
             android:id="@+id/HistoryImportListView"

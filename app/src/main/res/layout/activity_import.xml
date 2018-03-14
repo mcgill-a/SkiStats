@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:orientation="vertical"
     android:layout_height="match_parent"
-    android:background="#ddf4da"
+    android:background="#013830"
     tools:context="com.example.alexm.skistats.ImportActivity">
 
     <LinearLayout
@@ -24,6 +24,7 @@
             android:layout_weight="10"
             android:layout_centerHorizontal="true"
             android:textSize="45sp"
+            android:fontFamily="@font/averia_sans_libre"
             android:text="Import GPX Files"
             android:textStyle="bold"/>
 
@@ -59,10 +60,12 @@
             android:layout_width="fill_parent"
             android:textAlignment="center"
             android:layout_height="wrap_content"
-            android:textSize="23dp"
-            android:textColor="#000"
+            android:textSize="40dp"
+            android:textColor="#fff"
             android:layout_alignParentBottom="true"
-            android:text="Tap on the folder to select your files!" />
+            android:fontFamily="@font/averia_sans_libre"
+            android:text="Tap on the folder to select your files!"
+            android:layout_marginBottom="20dp"/>
     </RelativeLayout>
 
 

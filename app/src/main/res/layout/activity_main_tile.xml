@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="15dp"
+    android:paddingRight="15dp"
+    android:paddingBottom="15dp"
+    android:background="#013830"
+    android:orientation="vertical"
+    android:fitsSystemWindows="true">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/averia_sans_libre"
+        android:text="SKI STATS"
+        android:textAlignment="center"
+        android:textColor="#fff"
+        android:textSize="50dp"
+        android:textStyle="bold" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dip"
+        android:orientation="horizontal"
+        android:layout_weight="1" >
+
+        <ImageButton
+            android:id="@+id/img_btn_record"
+            android:layout_width="0dip"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:src="@drawable/d_ski"
+            android:layout_margin="10dp"
+            android:background="@drawable/imgbutton_round_corners"
+            android:backgroundTint="#015448"
+            android:adjustViewBounds="true"
+            android:scaleType="centerInside"
+            />
+
+        <ImageButton
+            android:id="@+id/img_btn_history"
+            android:layout_width="0dip"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:src="@drawable/d_history"
+            android:layout_margin="10dp"
+            android:background="@drawable/imgbutton_round_corners"
+            android:backgroundTint="#015448"
+            android:adjustViewBounds="true"
+            android:scaleType="centerInside"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dip"
+        android:orientation="horizontal"
+        android:layout_weight="1" >
+
+        <ImageButton
+            android:id="@+id/img_btn_maps"
+            android:layout_width="0dip"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:src="@drawable/d_map"
+            android:layout_margin="10dp"
+            android:background="@drawable/imgbutton_round_corners"
+            android:backgroundTint="#015448"
+            android:adjustViewBounds="true"
+            android:scaleType="centerInside"
+            />
+
+        <ImageButton
+            android:id="@+id/img_btn_import"
+            android:layout_width="0dip"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:src="@drawable/d_import"
+            android:layout_margin="10dp"
+            android:background="@drawable/imgbutton_round_corners"
+            android:backgroundTint="#015448"
+            android:adjustViewBounds="true"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dip"
+        android:orientation="horizontal"
+        android:layout_weight="1" >
+
+        <ImageButton
+            android:id="@+id/img_btn_settings"
+            android:layout_width="0dip"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:src="@drawable/d_settings"
+            android:layout_margin="10dp"
+            android:background="@drawable/imgbutton_round_corners"
+            android:backgroundTint="#015448"
+            android:adjustViewBounds="true"
+            android:scaleType="centerInside"/>
+
+        <ImageButton
+            android:id="@+id/img_btn_exit"
+            android:layout_width="0dip"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:src="@drawable/d_cancel"
+            android:layout_margin="10dp"
+            android:background="@drawable/imgbutton_round_corners"
+            android:backgroundTint="#015448"
+            android:adjustViewBounds="true"
+            android:scaleType="centerInside"/>
+    </LinearLayout>
+</LinearLayout>
