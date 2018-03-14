@@ -369,28 +369,35 @@ public class HistoryActivity extends AppCompatActivity {
                             file = new File(pathImport + selectedName);
                             renamed = new File(pathImport + fullRenameTo);
                         }
-                        Boolean flag = file.renameTo(renamed);
-                        if (flag)
+                        if(renamed.exists())
                         {
-                            Log.e(TAG, selectedName + " has been renamed");
-                            Toast.makeText(getApplicationContext(), selectedName + " renamed to: " + renameTo,Toast.LENGTH_SHORT).show();
-                            if (list.equals("Recordings"))
-                            {
-                                HistoryFile historyFile = new HistoryFile(fullRenameTo, renameTo, historyRecordingFiles.get(listPosition).getDateCreated());
-                                historyRecordingFiles.set(listPosition, historyFile);
-                            }
-                            else
-                            {
-                                HistoryFile historyFile = new HistoryFile(fullRenameTo, renameTo, historyImportFiles.get(listPosition).getDateCreated());
-                                historyImportFiles.set(listPosition, historyFile);
-                            }
+                            Toast.makeText(getApplicationContext(),"A file with that name already exists",Toast.LENGTH_SHORT).show();
                         }
                         else
                         {
-                            Log.e(TAG,"Error: " + selectedName + " rename to " + renameTo + " failed");
+                            Boolean flag = file.renameTo(renamed);
+                            if (flag)
+                            {
+                                Log.e(TAG, selectedName + " has been renamed");
+                                Toast.makeText(getApplicationContext(), selectedName + " renamed to: " + renameTo,Toast.LENGTH_SHORT).show();
+                                if (list.equals("Recordings"))
+                                {
+                                    HistoryFile historyFile = new HistoryFile(fullRenameTo, renameTo, historyRecordingFiles.get(listPosition).getDateCreated());
+                                    historyRecordingFiles.set(listPosition, historyFile);
+                                }
+                                else
+                                {
+                                    HistoryFile historyFile = new HistoryFile(fullRenameTo, renameTo, historyImportFiles.get(listPosition).getDateCreated());
+                                    historyImportFiles.set(listPosition, historyFile);
+                                }
+                            }
+                            else
+                            {
+                                Log.e(TAG,"Error: " + selectedName + " rename to " + renameTo + " failed");
+                            }
+                            sortListsAlphabetically();
+                            updateList();
                         }
-                        sortListsAlphabetically();
-                        updateList();
                     }
                 });
 
