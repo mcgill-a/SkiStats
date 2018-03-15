@@ -457,7 +457,7 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
         Log.d(TAG,"Max Altitude: " + maxAltitude);
         Log.d(TAG,"Min Altitude: " + minAltitude);
 
-        Log.d(TAG, absoluteFilepath + " Average Speed: " + averageSpeed);
+        Log.d(TAG, "Average Speed: " + averageSpeed);
 
 
 
