@@ -414,7 +414,7 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
                     {
                         avgheight = 1; // set avg to 1 (positive height increase, so not on ski lift) - just a flag, value doesn't matter.
                     }
-
+                // the height value is the distance travelled down. For example a height 2.0m would be 2.0m below the previous reading
                 if(avgheight < 0)
                 {
                     // user is on a ski lift
