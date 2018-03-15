@@ -53,7 +53,7 @@ public class HistoryAdapter extends ArrayAdapter<HistoryFile> {
             holder = new HistoryFileHolder();
             holder.displayname = (TextView) row.findViewById(R.id.name);
             holder.date = (TextView) row.findViewById(R.id.date);
-
+            // Set the row item to the current History File details
             row.setTag(holder);
         }
         else

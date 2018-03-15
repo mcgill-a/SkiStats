@@ -9,7 +9,6 @@ import android.content.pm.PackageManager;
 import android.media.MediaScannerConnection;
 import android.os.Build;
 import android.os.Environment;
-import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -28,17 +27,11 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.google.android.gms.maps.model.LatLng;
-
-import org.xmlpull.v1.XmlPullParserException;
-
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -47,13 +40,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
-import java.util.TimeZone;
-
-import io.ticofab.androidgpxparser.parser.GPXParser;
-import io.ticofab.androidgpxparser.parser.domain.Gpx;
-import io.ticofab.androidgpxparser.parser.domain.Track;
-import io.ticofab.androidgpxparser.parser.domain.TrackPoint;
-import io.ticofab.androidgpxparser.parser.domain.TrackSegment;
 
 public class HistoryActivity extends AppCompatActivity {
 
@@ -85,9 +71,10 @@ public class HistoryActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_history);
 
+        // Make sure correct permissions are granted
         if (!checkPermissionForReadExtertalStorage())
         {
-            requestPermissionForReadExtertalStorage();
+            requestPermissionForReadExternalStorage();
         }
         if (!checkPermissionForReadExtertalStorage())
         {
@@ -109,14 +96,17 @@ public class HistoryActivity extends AppCompatActivity {
             sortListsAlphabetically();
 
         }
+        // Custom History Adapter for displaying custom list view row and the displayname from the arraylist
         HistoryAdapter recordingAdapter = new HistoryAdapter(this, R.layout.history_list_row, historyRecordingFiles);
         HistoryAdapter importAdapter = new HistoryAdapter(this, R.layout.history_list_row, historyImportFiles);
         recordingLv.setAdapter(recordingAdapter);
         importLv.setAdapter(importAdapter);
 
+        // Set the height of the listview relative to the amount of list items
         ListUtils.setDynamicHeight(recordingLv);
         ListUtils.setDynamicHeight(importLv);
 
+        // Add on hold for recording history list
         registerForContextMenu(recordingLv);
 
         updateList();
@@ -127,6 +117,7 @@ public class HistoryActivity extends AppCompatActivity {
                 Intent appInfo = new Intent(HistoryActivity.this, SelectionActivity.class);
                 String path = Environment.getExternalStorageDirectory() + "/" +  "SkiStats/GPS/Recordings/";
                 String full = path + filename;
+                // Add the selected filename to the intent and start the activity
                 appInfo.putExtra("filename", full);
                 startActivity(appInfo);
             }
@@ -152,6 +143,7 @@ public class HistoryActivity extends AppCompatActivity {
                 return false;
             }
         });
+        // Add on hold for import history list
         registerForContextMenu(importLv);
         importLv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -160,6 +152,7 @@ public class HistoryActivity extends AppCompatActivity {
                 Intent appInfo = new Intent(HistoryActivity.this, SelectionActivity.class);
                 String path = Environment.getExternalStorageDirectory() + "/" +  "SkiStats/GPS/Imports/";
                 String full = path + filename;
+                // Add the selected filename to the intent and start the activity
                 appInfo.putExtra("filename", full);
                 startActivity(appInfo);
             }
@@ -169,30 +162,31 @@ public class HistoryActivity extends AppCompatActivity {
         updateList();
     }
 
-
+    // Get the date using the <time> value stored in each .gpx file
     private void getCorrectRecordingFileDates()
     {
-        //DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
         Date date;
         for (int i = 0; i < historyRecordingFiles.size(); i++)
         {
             String name = historyRecordingFiles.get(i).getFileName();
             String directory = sdDir + "/" +  "SkiStats/GPS/Recordings/";
             String absPath = directory + name;
+            // Once the <time> value is found stop reading the file (that's why it's quick)
             date = getDateQuick(absPath);
             historyRecordingFiles.get(i).setDateCreated(date);
         }
     }
 
+    // Get the date using the <time> value stored in each .gpx file
     private void getCorrectImportFileDates()
     {
-        //DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
         Date date;
         for (int i = 0; i < historyImportFiles.size(); i++)
         {
             String name = historyImportFiles.get(i).getFileName();
             String directory = sdDir + "/" +  "SkiStats/GPS/Imports/";
             String absPath = directory + name;
+            // Once the <time> value is found stop reading the file (that's why it's quick)
             date = getDateQuick(absPath);
             historyImportFiles.get(i).setDateCreated(date);
         }
@@ -206,7 +200,7 @@ public class HistoryActivity extends AppCompatActivity {
         return false;
     }
 
-    public void requestPermissionForReadExtertalStorage() {
+    public void requestPermissionForReadExternalStorage() {
         try {
             ActivityCompat.requestPermissions((Activity) HistoryActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
                     READ_STORAGE_PERMISSION_REQUEST_CODE);
@@ -216,6 +210,7 @@ public class HistoryActivity extends AppCompatActivity {
         }
     }
 
+    // Calculate what the height should be for the list view depending on how many items there are and the custom row line height
     public static class ListUtils {
         public static void setDynamicHeight(ListView mListView) {
             HistoryAdapter mListAdapter = (HistoryAdapter) mListView.getAdapter();
@@ -231,51 +226,40 @@ public class HistoryActivity extends AppCompatActivity {
                 height += listItem.getMeasuredHeight();
             }
             ViewGroup.LayoutParams params = mListView.getLayoutParams();
+            // Adding extra 100 onto height to ensure that list is always visible, regardless if empty.
+            // Also fits the screen better when populated
             params.height = height + 100 + (mListView.getDividerHeight() * (mListAdapter.getCount()-1));
             mListView.setLayoutParams(params);
             mListView.requestLayout();
         }
     }
 
-    public String convertStringToUnderscore(String input)
-    {
-        String converted = input.replaceAll(" ", "_");
-        return converted;
-    }
-
+    // Convert any underscores in a string to a space. Used for display name so lists look nicer
     public String convertStringToSpaces(String input)
     {
         String converted = input;
         converted = converted.replaceAll("_", " ");
-
         return converted;
     }
 
-    public List<String> convertListToUnderscore(List<String> input)
-    {
-        String converted = "";
-        List<String> list = new ArrayList<>();
-        for (int i = 0; i < input.size(); i++)
-        {
-            converted = input.get(i);
-            list.add(converted.replaceAll(" ", "_"));
-        }
-        return list;
-    }
-
+    // Remove the .gpx extension from the end of a filename (ex. test.gpx = test)
     public String removeGpxExtension(String input)
     {
-            String reversed = new StringBuilder(input).reverse().toString();
+        // Reverse string it is definitely at the end of the string
+        String reversed = new StringBuilder(input).reverse().toString();
             StringBuilder sb = new StringBuilder(reversed);
             int j = 0;
+            // Until it reaches the . (start of extension) remove the character
             while (sb.charAt(j) != '.')
             {
                 sb.deleteCharAt(j);
             }
+            // When it gets to the . then also delete the .
             if(sb.charAt(j) == '.')
             {
                 sb.deleteCharAt(j);
             }
+            // Reverse the string again back to its normal form
             String normal = new StringBuilder(sb.toString()).reverse().toString();
         return normal;
     }
@@ -287,6 +271,7 @@ public class HistoryActivity extends AppCompatActivity {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
         switch(v.getId())
         {
+            // On hold context menus for each history list
             case R.id.HistoryRecordingListView:
                 menu.setHeaderTitle(historyRecordingFiles.get(info.position).getDisplayName());
                 menu.add(Menu.NONE, REC_RENAME, 0, "Rename");
@@ -309,6 +294,7 @@ public class HistoryActivity extends AppCompatActivity {
         String menuItemName = "";
         switch (menuItemIndex)
         {
+            // Call either the rename or delete method, passing in the Recording or Import flag so it knows what logic to use
             case REC_RENAME:
                 menuItemName = "Rename";
                 renameAFile(menuItemName, info.position, "Recordings");
@@ -343,7 +329,7 @@ public class HistoryActivity extends AppCompatActivity {
             selectedName = historyImportFiles.get(listPosition).getFileName();
             displayName = historyImportFiles.get(listPosition).getDisplayName();
         }
-
+        // Create a view to show the popup window for renaming a file
         View view = (LayoutInflater.from(HistoryActivity.this)).inflate(R.layout.popup_rename_file, null);
         AlertDialog.Builder alert = new AlertDialog.Builder(HistoryActivity.this);
         alert.setTitle("Rename File");
@@ -356,6 +342,7 @@ public class HistoryActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int which) {
                         renameTo = userInput.getText().toString();
+                        // Ensure it remains a .gpx file by adding the .gpx extension if not present
                         String fullRenameTo = ensureGpxExtension(renameTo);
                         File file;
                         File renamed;
@@ -400,7 +387,7 @@ public class HistoryActivity extends AppCompatActivity {
                         }
                     }
                 });
-
+        // Set the keyboard to open automatically, show the dialog
         Dialog dialog = alert.create();
         dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
         dialog.show();
@@ -432,10 +419,9 @@ public class HistoryActivity extends AppCompatActivity {
                 {
                     case DialogInterface.BUTTON_POSITIVE:
                         // User selects Yes
-                        // do a thing to cancel recording
                         Log.e(TAG, "Deleting recording: " + selectedName);
                         File dir;
-                        String fullFileName = selectedName;// + ".gpx";
+                        String fullFileName = selectedName;
                         String fullnamePath;
                         if (list.equals("Recordings"))
                         {
@@ -501,6 +487,7 @@ public class HistoryActivity extends AppCompatActivity {
         Toast.makeText(getApplicationContext(), "Deleting " + selectedName,Toast.LENGTH_SHORT).show();
     }
 
+    // Sort each history list alphabetically using their display names (what people see on the list views)
     public void sortListsAlphabetically()
     {
         Collections.sort(historyRecordingFiles, new Comparator<HistoryFile>() {
@@ -517,11 +504,13 @@ public class HistoryActivity extends AppCompatActivity {
         });
     }
 
+    // Tell the HistoryAdapter that the data set has changed - refreshes the listviews
     public void updateList()
     {
         ((HistoryAdapter) recordingLv.getAdapter()).notifyDataSetChanged();
         ((HistoryAdapter) importLv.getAdapter()).notifyDataSetChanged();
 
+        // Set the height again to fit with current data set (possibly less/more than before)
         ListUtils.setDynamicHeight(recordingLv);
         ListUtils.setDynamicHeight(importLv);
     }
@@ -532,7 +521,7 @@ public class HistoryActivity extends AppCompatActivity {
         String path = Environment.getExternalStorageDirectory() + "/" +  "SkiStats/GPS/Recordings/";
         File[] files = new File(path).listFiles();
 
-        showFiles(files, "Recordings/");
+        addGpxFiles(files, "Recordings/");
     }
 
     public void getAllImportNames()
@@ -541,21 +530,25 @@ public class HistoryActivity extends AppCompatActivity {
         String path = Environment.getExternalStorageDirectory() + "/" +  "SkiStats/GPS/Imports/";
         File[] files = new File(path).listFiles();
 
-        showFiles(files, "Imports/");
+        addGpxFiles(files, "Imports/");
     }
-    public void showFiles(File[] files, String location)
+
+    // Add each of the GPX files returned in the recordings folder and import folder
+    public void addGpxFiles(File[] files, String location)
     {
         for (File file : files)
         {
+            // Recursion :) Get all files in the sub-directory using the same method
             if(file.isDirectory())
             {
-                showFiles(file.listFiles(), location);
+                addGpxFiles(file.listFiles(), location);
             }
             else
             {
                 // Reverse string to make file extension appear first
                 String reverse = new StringBuilder(file.getName()).reverse().toString();
                 String extension = "";
+                // Only 4 characters because it should be .gpx which is (length 4)
                 for (int i = 0; i < 4; i++)
                 {
                     extension += reverse.charAt(i);
@@ -564,21 +557,13 @@ public class HistoryActivity extends AppCompatActivity {
                 extension = new StringBuilder(extension).reverse().toString();
                 if (extension.equals(".gpx"));
                 {
-                    //gpsFiles.add(file.getName());
-                    HistoryFile hs;
                     HistoryFile historyFile;
                     String filename = file.getName();
                     String displayname = convertStringToSpaces(filename);
                     displayname = removeGpxExtension(displayname);
 
                     Date date = new Date();
-                    String path = "/SkiStats/GPS/" + location;
-                    String full = path + filename;
-
-                    File file2 = new File(sdDir + full);
-                    DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
                     Date fileDate = date;
-                    String fileDateString = df.format(date).toString();
                     historyFile = new HistoryFile(filename, displayname, fileDate);
                     if (location.equals("Recordings/"))
                     {
@@ -592,7 +577,8 @@ public class HistoryActivity extends AppCompatActivity {
             }
         }
     }
-
+    // It's called quick because the alternative method read the entire gpx file - not just until it found the 2nd <time> flag
+    // and its v quick
     public Date getDateQuick(String filename) {
         DateFormat longdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
@@ -600,12 +586,14 @@ public class HistoryActivity extends AppCompatActivity {
         boolean found = false;
         String time = "";
         try {
+            // If a / was carried over accidently in the filepath, remove it
             if (filename.charAt(0) == '/')
             {
                 StringBuilder sb = new StringBuilder(filename);
                 sb.deleteCharAt(0);
                 filename = sb.toString();
             }
+            // Read the file line by line
             BufferedReader br=new BufferedReader(
                     new FileReader(new File(filename)));
             String line;
@@ -617,18 +605,25 @@ public class HistoryActivity extends AppCompatActivity {
                 {
                     if(line.contains("<time>"))
                     {
+                        // If it is the 2nd occurrence of <time> being found
                         if (count == 1)
                         {
                             String cropped = line;
                             StringBuilder croppedSb = new StringBuilder(line);
+                            // <time> is on the line somewhere - delete the characters until starts with <time>
                             while(!cropped.startsWith("<time>"))
                             {
                                 croppedSb.deleteCharAt(0);
                                 cropped = croppedSb.toString();
                             }
+                            // Split the string each time there is a >
                             String[] splits = cropped.split(">");
+                            // Get the 2nd value from the split string (ex. <time>FROM HERE ONWARDS</time>
                             String[] cut = splits[1].split("<");
+                            // Split the string each time there is a <
+                            // Set time equal to the first split anything before the closing tag <time> starts
                             time = cut[0];
+                            // Convert
                             Date temp = longdf.parse(time);
                             String tempString = df.format(temp);
                             Date created = df.parse(tempString);
@@ -638,7 +633,6 @@ public class HistoryActivity extends AppCompatActivity {
                         count++;
                     }
                 }
-                //System.out.println(text);
             } catch (IOException e)
             {
                 e.printStackTrace();
@@ -653,6 +647,7 @@ public class HistoryActivity extends AppCompatActivity {
         return date;
     }
 
+    // If doesn't already have gpx extension, add one
     public String ensureGpxExtension(String name)
     {
         String gpx = ".gpx";

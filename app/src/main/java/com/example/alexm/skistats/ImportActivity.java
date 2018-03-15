@@ -66,6 +66,7 @@ public class ImportActivity extends AppCompatActivity {
         });
     }
 
+    // Filter out any files that aren't of type .GPX
     public void filterFiles()
     {
         int failCount = 0;
@@ -109,6 +110,7 @@ public class ImportActivity extends AppCompatActivity {
         imports.clear();
     }
 
+    // Copy the file from it's original location to the import sub directory within SkiStats
     public boolean importFile(String original, String target)
     {
         try {
@@ -122,6 +124,7 @@ public class ImportActivity extends AppCompatActivity {
                 File source = new File(str1, str2);
                 File destination= new File(target, str2);
                 destination.getParentFile().mkdirs();
+                // If a file already exists in the directory with the same name, increment index until it doesn't exit
                 if (source.exists())
                 {
                     int index = 1;
@@ -145,11 +148,6 @@ public class ImportActivity extends AppCompatActivity {
         }
     }
 
-    public String addGpxExtension(String input)
-    {
-        return (input += ".gpx");
-    }
-
     public String removeGpxExtension(String input)
     {
         String store = input;
@@ -163,6 +161,7 @@ public class ImportActivity extends AppCompatActivity {
         {
             extension += reverse.charAt(i);
         }
+        extension.toLowerCase();
         // Reverse file extension back
         extension = new StringBuilder(extension).reverse().toString();
         if (extension.equals(".gpx"))
@@ -191,6 +190,7 @@ public class ImportActivity extends AppCompatActivity {
         {
             extension += reverse.charAt(i);
         }
+        extension.toLowerCase();
         // Reverse file extension back
         extension = new StringBuilder(extension).reverse().toString();
         if (extension.equals(".gpx"))
@@ -203,7 +203,7 @@ public class ImportActivity extends AppCompatActivity {
         }
 
     }
-
+    // Load file browser external library
     public void startFilePicker()
     {
         Intent i = new Intent(getApplicationContext(), FilePickerActivity.class);
@@ -229,6 +229,7 @@ public class ImportActivity extends AppCompatActivity {
                 Log.e(TAG, file.getAbsolutePath());
             }
         }
+        // Only import .gpx files
         filterFiles();
     }
 

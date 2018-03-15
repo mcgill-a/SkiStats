@@ -40,7 +40,7 @@ public class RecordActivity extends AppCompatActivity {
     String TAG = "SkiStats.Log";
     private List<Location> locations = new ArrayList<Location>();
 
-    private ImageButton recordImageButton, pauseImageButton, cancelImageButton, submitImageButton;
+    private ImageButton recordImageButton, pauseImageButton, submitImageButton;
     private TextView stopwatch;
     long millisecondTime, startTime, timeBuff, updateTime = 0L;
     int hours, seconds, minutes, milliseconds;
@@ -136,6 +136,7 @@ public class RecordActivity extends AppCompatActivity {
 
             // If permission granted
 
+            // Background service gps location updates
             LocalBroadcastManager.getInstance(this).registerReceiver(messageReciever, new IntentFilter("backgroundGpsUpdates"));
 
             final Intent intent = new Intent(RecordActivity.this, ServiceLocation.class);
@@ -148,16 +149,18 @@ public class RecordActivity extends AppCompatActivity {
                         ActivityCompat.requestPermissions(RecordActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_CODE);
                         return;
                     }
-
+                    // Start location service
                     if (Build.VERSION.SDK_INT < 26) {
                         startService(intent);
                     } else {
+                        // Foreground service and notification required for SDK 26+
                         startForegroundService(intent);
                     }
 
                     Log.d(TAG, "GPS Recording Started");
 
                     startTime = SystemClock.uptimeMillis();
+                    // start/resume the stopwatch
                     handler.postDelayed(runnable, 0);
 
                     Toast.makeText(RecordActivity.this, "Recording Started", Toast.LENGTH_SHORT).show();
@@ -171,7 +174,7 @@ public class RecordActivity extends AppCompatActivity {
                 public void onClick(View view) {
                     Log.d(TAG, "GPS Recording Paused");
                     timeBuff += millisecondTime;
-                    //locationTracker.stopLocationService(RecordActivity.this);
+                    // Pause the stopwatch
                     handler.removeCallbacks(runnable);
 
                     Toast.makeText(RecordActivity.this, "Paused Recording", Toast.LENGTH_SHORT).show();
@@ -210,7 +213,6 @@ public class RecordActivity extends AppCompatActivity {
                                     // Prompt user for filename
                                     String filename = "Ski Activity 1";
                                     String extension = ".gpx";
-                                    //String filename = "SS_" + df.format(new Date(locations.get(0).getTime()));
 
                                     String path = Environment.getExternalStorageDirectory() + "/" +  "SkiStats/GPS/Recordings/";
                                     // add loop to increment file name if it exists
@@ -246,8 +248,6 @@ public class RecordActivity extends AppCompatActivity {
                                     {
                                         fullFileName = filename + extension;
                                     }
-
-                                    String fullnamePath = path + fullFileName;
 
                                     File recording = new File(dir, fullFileName);
                                     Log.d(TAG,"Attempting to save recording");
@@ -289,6 +289,7 @@ public class RecordActivity extends AppCompatActivity {
         }
     }
 
+    // Broadcast reciever for Location Service - Essential
     private BroadcastReceiver messageReciever = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -305,6 +306,7 @@ public class RecordActivity extends AppCompatActivity {
             location.setTime(time);
             if  (locations.size() > 1)
             {
+                // Make sure the current location time isn't the exact same as the one just added - avoids duplicate readings
                 if (location.getTime() != locations.get(locations.size()-1).getTime())
                 {
                     locations.add(location);
@@ -344,8 +346,10 @@ public class RecordActivity extends AppCompatActivity {
         stopwatch.setText("0:00:00");
     }
 
+    // Write recording to .GPX file
     public static void writePath(File file, String n, List<Location> points)
     {
+        // GPX REQUIRED TAGS
         String header = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\" ?><gpx xmlns=\"http://www.topografix.com/GPX/1/1\" creator=\"SkiStats\">\n<trk>\n";
         String name = "<name>" + n + "</name>\n<trkseg>\n";
 

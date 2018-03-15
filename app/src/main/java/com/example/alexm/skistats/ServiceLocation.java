@@ -102,7 +102,6 @@ public class ServiceLocation extends Service {
             notificationChannel.setDescription("Channel description");
             notificationChannel.enableLights(false);
             notificationChannel.setLightColor(Color.RED);
-            //notificationChannel.setVibrationPattern(new long[]{0, 1000, 500, 1000});
             notificationChannel.enableVibration(false);
             notificationManager.createNotificationChannel(notificationChannel);
         }
@@ -117,7 +116,7 @@ public class ServiceLocation extends Service {
                 .setContentTitle("Ski Stats Recording")
                 .setContentText("Currently Tracking GPS Location")
                 .setContentInfo("Info");
-
+        // Start the foreground service with the custom notification
         startForeground(NOTIFICATION_ID, notificationBuilder.build());
         return START_STICKY;
     }

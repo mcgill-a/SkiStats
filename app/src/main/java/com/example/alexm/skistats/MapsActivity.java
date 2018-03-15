@@ -123,7 +123,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
     }
-
+    // Display the location selected onto the Map and update the camera
     public void locate()
     {
         String search = mSearchText.getText().toString();
@@ -138,6 +138,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             Log.e(TAG,"Error: (Locate): " + e.getMessage());
         }
 
+        // If any addresses are returned from the geocoder, get the first one (max is 1 anyways)
         if(addresses.size() > 0)
         {
             Address address = addresses.get(0);
@@ -148,6 +149,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
+    // Get current location for blue self icon on map
     public void currentLocation() {
 
 
@@ -167,6 +169,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         } else {
                             Location current = (Location) task.getResult();
                             LatLng latLng = new LatLng(current.getLatitude(), current.getLongitude());
+                            // Update camera to your current position on the map
                             updateCameraPosition(latLng, ZOOM_DEFAULT);
                             hideKeyboard();
                         }

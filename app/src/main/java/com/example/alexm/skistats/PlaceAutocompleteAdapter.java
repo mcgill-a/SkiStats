@@ -59,7 +59,7 @@ import java.util.concurrent.TimeUnit;
 public class PlaceAutocompleteAdapter
         extends ArrayAdapter<AutocompletePrediction> implements Filterable {
 
-    private static final String TAG = "PlaceAutoComplete";
+    private static final String TAG = "SkiStats.PLACE_AC";
     private static final CharacterStyle STYLE_BOLD = new StyleSpan(Typeface.BOLD);
     /**
      * Current results returned by this adapter.

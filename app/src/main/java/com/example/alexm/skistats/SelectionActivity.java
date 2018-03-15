@@ -106,17 +106,21 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_selection);
 
+        // Get the preference from the settings options to determine whether or not to display in MPH
         SharedPreferences SP = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
         useMPH = SP.getBoolean("mph_selected",false);
 
+        // Initialise textviews etc. there's a lot of them..
         initialise();
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-        getFileName();
 
+        // Get the filename passed into this intent when it was started
+        getFileName();
+        // If data exists and is readable / valid
         if(getData() != -1)
         {
             statCalculations();
@@ -154,7 +158,7 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
             }
         });
     }
-
+    // Get the current file and export it using the built in android share feature
     public void exportFile()
     {
         Intent share = new Intent(Intent.ACTION_SEND);
@@ -171,7 +175,7 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
         }
     }
 
-
+    // Get the map fragment and the layout and merge them into one bitmap image
     public void getScreenContent() {
         GoogleMap.SnapshotReadyCallback callback = new GoogleMap.SnapshotReadyCallback() {
             @Override
@@ -186,6 +190,7 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
                     Canvas canvas = new Canvas(bmOverlay);
                     canvas.drawBitmap(snapshot, new Matrix(), null);
                     canvas.drawBitmap(backBitmap, 0, 0, null);
+                    // Pass the image to the share method
                     shareSocial(bmOverlay);
                     Log.d(TAG,"Share: Image Saved Successfully!");
                 } catch (Exception e) {
@@ -196,11 +201,12 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
         mMap.snapshot(callback);
     }
 
+    // Store an image then share it using androids built in share feature
     public void shareSocial(Bitmap icon)
     {
         String folder = Environment.getExternalStorageDirectory() + File.separator + "SkiStats/Share/";
+        // Delete any previously stored images in this folder - it is temporary storage for the current image
         clearSharedImagesFolder(folder);
-        //Bitmap icon = shareScreen((this.getWindow().getDecorView().findViewById(android.R.id.content)));
         Intent share = new Intent(Intent.ACTION_SEND);
         share.setType("image/jpeg");
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
@@ -230,6 +236,7 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
         startActivity(Intent.createChooser(share, "Share Your Stats"));
     }
 
+    // Delete any files in the Share directory
     public void clearSharedImagesFolder(String directory)
     {
         File dir = new File(directory);
@@ -262,10 +269,9 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
         return converted;
     }
 
+    // Read the specified GPX file using the GPX Parser Library
     public int getData() {
         Gpx parsedGpx = null;
-
-        LatLng latlng;
         try {
             if (absoluteFilepath.charAt(0) == '/')
             {
@@ -282,15 +288,12 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
         }
 
         if (parsedGpx != null) {
-            //Integer count = 0;
             List<Track> tracks = parsedGpx.getTracks();
             for (int i = 0; i < tracks.size(); i++) {
                 Track track = tracks.get(i);
-                //Log.e(TAG, "track " + i + ":");
                 List<TrackSegment> segments = track.getTrackSegments();
                 for (int j = 0; j < segments.size(); j++) {
                     TrackSegment segment = segments.get(i);
-                    //Log.e(TAG, " segment " + j + ":");
                     for (TrackPoint trackPoint : segment.getTrackPoints()) {
                         tPoints.add(trackPoint);
                     }
@@ -307,6 +310,7 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
         Toast.makeText(getApplicationContext(), "GPX File Read Failed", Toast.LENGTH_SHORT).show();
     }
 
+    // Calculate all of the statistics values
     public void statCalculations()
     {
         double totalDistance = 0;
@@ -317,7 +321,6 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
         int totalSkiLiftTime = 0;
         int totalTime = 0;
 
-
         DateTime gpsStartTime;
         DateTime gpsEndTime;
 
@@ -327,18 +330,14 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
         int count = 0;
 
         SkiVector vector;
-
         TrackPoint current;
         TrackPoint next;
 
         double averageSpeed = 0;
         double speed = 0;
         double maxSpeed = 0;
-        double maxspeedAvgHeight = 0;
-        int maxSpeedTime = 0;
+
         int time = 0;
-        int avgCounter = 0;
-        double avgtime = 0;
         double altitude = 0;
         double maxAltitude = 0;
         double minAltitude = Double.MAX_VALUE;
@@ -370,8 +369,6 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
             {
                 continue;
             }
-            avgtime += time;
-            avgCounter++;
             // SkiVector object - contains height and distance
             vector = calculateDistanceBetween(current, next);
             distance = vector.getDistance();
@@ -434,9 +431,6 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
                     if (speed > maxSpeed)
                     {
                         maxSpeed = speed;
-                        // only getting avgheight and time to help debugging high max speed errors
-                        maxspeedAvgHeight = avgheight;
-                        maxSpeedTime = time;
                     }
                     speedCounter++;
                     averageSpeed += speed;
@@ -451,24 +445,19 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
 
         maxSpeed = maxSpeed * 3600; // convert from km/s to km/h
         averageSpeed = averageSpeed * 3600; // convert from km/s to km/h
-        avgtime = avgtime / avgCounter;
 
-        Log.e(TAG, "Average Time: " + avgtime);
-        Log.e(TAG,"Total Distance: " + totalDistance);
-        Log.e(TAG,"Total Ski Distance: " + totalSkiDistance);
-        Log.e(TAG,"Total Ski Lift Distance: " + totalSkiLiftDistance);
+        Log.d(TAG,"Total Distance: " + totalDistance);
+        Log.d(TAG,"Total Ski Distance: " + totalSkiDistance);
+        Log.d(TAG,"Total Ski Lift Distance: " + totalSkiLiftDistance);
 
-        Log.e(TAG,"Total Ski Time: " + totalSkiTimeString);
-        Log.e(TAG,"Total Ski Lift Time: " + totalSkiLiftTimeString);
-        Log.e(TAG,"Total Time: " + totalTimeString) ;
+        Log.d(TAG,"Total Ski Time: " + totalSkiTimeString);
+        Log.d(TAG,"Total Ski Lift Time: " + totalSkiLiftTimeString);
+        Log.d(TAG,"Total Time: " + totalTimeString) ;
 
-        Log.e(TAG,"Max Altitude: " + maxAltitude);
-        Log.e(TAG,"Min Altitude: " + minAltitude);
+        Log.d(TAG,"Max Altitude: " + maxAltitude);
+        Log.d(TAG,"Min Altitude: " + minAltitude);
 
-        Log.e(TAG, "Max Speed: " + maxSpeed);
-        Log.e(TAG, "Max Speed avgheight: " + maxspeedAvgHeight);
-        Log.e(TAG, "Max Speed time: " + maxSpeedTime);
-        Log.e(TAG, absoluteFilepath + " Average Speed: " + averageSpeed);
+        Log.d(TAG, absoluteFilepath + " Average Speed: " + averageSpeed);
 
 
 
@@ -573,8 +562,8 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
             poption.width(9).color(Color.BLUE).geodesic(true);
 
             googleMap.addPolyline(poption);
-            LatLng firstLatLng = new LatLng(tPoints.get(0).getLatitude(), tPoints.get(0).getLongitude());
 
+            // When map has loaded - set the map bounds
             googleMap.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
                 @Override
                 public void onMapLoaded() {
