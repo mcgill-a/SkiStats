@@ -29,7 +29,7 @@ public class ServiceLocation extends Service {
     private LocationManager mLocationManager = null;
     private static final int NOTIFICATION_ID = 2000;
 
-    private static final float LOCATION_UPDATE_DISTANCE = 0f;
+    private static final float LOCATION_UPDATE_DISTANCE = 5;
     private static int LOCATION_UPDATE_INTERVAL = 1000;
 
     private class LocationListener implements android.location.LocationListener {
