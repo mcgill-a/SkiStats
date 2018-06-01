@@ -30,7 +30,7 @@ public class PreferencesActivity extends PreferenceActivity {
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
-            Log.d(TAG,"Location Fragment: onCreate");
+            //Log.d(TAG,"Location Fragment: onCreate");
             addPreferencesFromResource(R.xml.preferences);
         }
     }

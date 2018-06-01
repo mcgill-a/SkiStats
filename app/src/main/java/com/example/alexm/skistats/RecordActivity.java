@@ -157,7 +157,7 @@ public class RecordActivity extends AppCompatActivity {
                         startForegroundService(intent);
                     }
 
-                    Log.d(TAG, "GPS Recording Started");
+                    //Log.d(TAG, "GPS Recording Started");
 
                     startTime = SystemClock.uptimeMillis();
                     // start/resume the stopwatch
@@ -172,7 +172,7 @@ public class RecordActivity extends AppCompatActivity {
 
             pauseImageButton.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View view) {
-                    Log.d(TAG, "GPS Recording Paused");
+                    //Log.d(TAG, "GPS Recording Paused");
                     timeBuff += millisecondTime;
                     // Pause the stopwatch
                     handler.removeCallbacks(runnable);
@@ -208,7 +208,7 @@ public class RecordActivity extends AppCompatActivity {
                                 case DialogInterface.BUTTON_POSITIVE:
                                     // User selects Yes
                                     // do a thing to cancel recording
-                                    Log.d(TAG, "GPS Recording - Saving in progress..");
+                                    //Log.d(TAG, "GPS Recording - Saving in progress..");
                                     DateFormat df = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
                                     // Prompt user for filename
                                     String filename = "Ski Activity 1";
@@ -250,7 +250,7 @@ public class RecordActivity extends AppCompatActivity {
                                     }
 
                                     File recording = new File(dir, fullFileName);
-                                    Log.d(TAG,"Attempting to save recording");
+                                    //Log.d(TAG,"Attempting to save recording");
                                     if(locations.size() > 3)
                                     {
                                         writePath(recording, filename, locations);
@@ -260,7 +260,7 @@ public class RecordActivity extends AppCompatActivity {
                                     }
                                     else
                                     {
-                                        Log.d(TAG,"Error: Not enough GPS data recorded");
+                                        //Log.d(TAG,"Error: Not enough GPS data recorded");
                                         Toast.makeText(getApplicationContext(), "Error: Not enough GPS data recorded",Toast.LENGTH_LONG).show();
                                         locations.clear();
                                         resetStopwatch();
@@ -269,7 +269,7 @@ public class RecordActivity extends AppCompatActivity {
 
                                 case DialogInterface.BUTTON_NEGATIVE:
                                     // User clicked No
-                                    Log.d(TAG,"GPS Recording - Discarded");
+                                    //Log.d(TAG,"GPS Recording - Discarded");
                                     resetStopwatch();
                                     locations.clear();
                                     break;
@@ -369,10 +369,10 @@ public class RecordActivity extends AppCompatActivity {
             writer.append(footer);
             writer.flush();
             writer.close();
-            Log.d("SkiStats.Log.Status", "Saved " + points.size() + " points.");
+            //Log.d("SkiStats.Log.Status", "Saved " + points.size() + " points.");
         } catch (IOException e) {
             // TODO Auto-generated catch block
-            Log.e("SkiStats.Log.Status", "Error Writting Path",e);
+            //Log.e("SkiStats.Log.Status", "Error Writting Path",e);
         }
     }
 

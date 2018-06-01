@@ -37,13 +37,13 @@ public class ServiceLocation extends Service {
 
 
         public LocationListener(String provider) {
-            Log.e(TAG, "LocationListener " + provider);
+            //Log.e(TAG, "LocationListener " + provider);
             mLastLocation = new Location(provider);
         }
 
         @Override
         public void onLocationChanged(Location location) {
-            Log.d(TAG, "onLocationChanged: " + location);
+            //Log.d(TAG, "onLocationChanged: " + location);
 
             mLastLocation.set(location);
 
@@ -63,17 +63,17 @@ public class ServiceLocation extends Service {
 
         @Override
         public void onProviderDisabled(String provider) {
-            Log.e(TAG, "onProviderDisabled: " + provider);
+            //Log.e(TAG, "onProviderDisabled: " + provider);
         }
 
         @Override
         public void onProviderEnabled(String provider) {
-            Log.e(TAG, "onProviderEnabled: " + provider);
+            //Log.e(TAG, "onProviderEnabled: " + provider);
         }
 
         @Override
         public void onStatusChanged(String provider, int status, Bundle extras) {
-            Log.e(TAG, "onStatusChanged: " + provider);
+            //Log.e(TAG, "onStatusChanged: " + provider);
         }
     }
 
@@ -89,7 +89,7 @@ public class ServiceLocation extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.e(TAG, "onStartCommand called");
+        //Log.e(TAG, "onStartCommand called");
         super.onStartCommand(intent, flags, startId);
 
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
@@ -123,7 +123,7 @@ public class ServiceLocation extends Service {
 
     @Override
     public void onCreate() {
-        Log.e(TAG, "onCreate called");
+        //Log.e(TAG, "onCreate called");
         initializeLocationManager();
         try {
             mLocationManager.requestLocationUpdates(
@@ -133,15 +133,15 @@ public class ServiceLocation extends Service {
                     mLocationListeners[0]
             );
         } catch (java.lang.SecurityException ex) {
-            Log.i(TAG, "Failed to submit location request", ex);
+            //Log.i(TAG, "Failed to submit location request", ex);
         } catch (IllegalArgumentException ex) {
-            Log.d(TAG, "Failed to find network provider " + ex.getMessage());
+            //Log.d(TAG, "Failed to find network provider " + ex.getMessage());
         }
     }
 
     @Override
     public void onDestroy() {
-        Log.e(TAG, "onDestroy called");
+        //Log.e(TAG, "onDestroy called");
         super.onDestroy();
         if (mLocationManager != null) {
             for (int i = 0; i < mLocationListeners.length; i++) {
@@ -151,7 +151,7 @@ public class ServiceLocation extends Service {
                     }
                     mLocationManager.removeUpdates(mLocationListeners[i]);
                 } catch (Exception ex) {
-                    Log.i(TAG, "Failed to remove the service location listener", ex);
+                    //Log.i(TAG, "Failed to remove the service location listener", ex);
                 }
             }
         }
@@ -160,8 +160,7 @@ public class ServiceLocation extends Service {
     @Override
     public void onTaskRemoved(Intent rootIntent)
     {
-        Log.e(TAG,"onTaskRemoved");
-
+        //Log.e(TAG,"onTaskRemoved");
         stopSelf();
     }
 
@@ -178,7 +177,7 @@ public class ServiceLocation extends Service {
             LOCATION_UPDATE_INTERVAL = 1000;
         }
 
-        Log.e(TAG, "Location Manager Preset - Minimum Interval: "+ LOCATION_UPDATE_INTERVAL + " Minimum Distance: " + LOCATION_UPDATE_DISTANCE);
+        //Log.e(TAG, "Location Manager Preset - Minimum Interval: "+ LOCATION_UPDATE_INTERVAL + " Minimum Distance: " + LOCATION_UPDATE_DISTANCE);
         if (mLocationManager == null) {
             mLocationManager = (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
         }

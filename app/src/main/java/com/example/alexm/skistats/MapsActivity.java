@@ -121,8 +121,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 currentLocation();
             }
         });
-
-
     }
 
     @Override
@@ -141,14 +139,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             addresses = geocoder.getFromLocationName(search, 1);
         } catch (IOException e)
         {
-            Log.e(TAG,"Error: (Locate): " + e.getMessage());
+            //Log.e(TAG,"Error: (Locate): " + e.getMessage());
         }
 
         // If any addresses are returned from the geocoder, get the first one (max is 1 anyways)
         if(addresses.size() > 0)
         {
             Address address = addresses.get(0);
-            Log.e(TAG,address.toString());
+            //Log.e(TAG,address.toString());
             LatLng latlng = new LatLng(address.getLatitude(), address.getLongitude());
             updateCameraWithTitle(latlng, ZOOM_DEFAULT, address.getAddressLine(0));
             hideKeyboard();
@@ -171,7 +169,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     @Override
                     public void onComplete(@NonNull Task task) {
                         if (!task.isSuccessful()) {
-                            Log.e(TAG, "Error: Unable to access current location");
+                            //Log.e(TAG, "Error: Unable to access current location");
                         } else {
                             Location current = (Location) task.getResult();
                             LatLng latLng = new LatLng(current.getLatitude(), current.getLongitude());
@@ -183,7 +181,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 });
             }
         } catch (SecurityException e) {
-            Log.e(TAG, "Security Exception: " + e.getMessage());
+            //Log.e(TAG, "Security Exception: " + e.getMessage());
         }
     }
 

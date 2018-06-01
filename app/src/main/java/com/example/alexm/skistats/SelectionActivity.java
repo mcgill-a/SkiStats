@@ -192,7 +192,7 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
                     canvas.drawBitmap(backBitmap, 0, 0, null);
                     // Pass the image to the share method
                     shareSocial(bmOverlay);
-                    Log.d(TAG,"Share: Image Saved Successfully!");
+                    //Log.d(TAG,"Share: Image Saved Successfully!");
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -226,7 +226,7 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
             fo.write(bytes.toByteArray());
         } catch (IOException e) {
             e.printStackTrace();
-            Log.e(TAG,"Error: " + e.getMessage());
+            //Log.e(TAG,"Error: " + e.getMessage());
         }
         String path = f.getAbsolutePath();
         share.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
@@ -279,7 +279,7 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
                 sb.deleteCharAt(0);
                 absoluteFilepath = sb.toString();
             }
-            Log.e(TAG,"FilePath: " + absoluteFilepath);
+            //Log.e(TAG,"FilePath: " + absoluteFilepath);
             File file = new File(absoluteFilepath);
             InputStream in = new FileInputStream(file);
             parsedGpx = mParser.parse(in);
@@ -306,7 +306,7 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
 
     public void gpxReadFailed()
     {
-        Log.e(TAG, "Error parsing gpx file");
+        //Log.e(TAG, "Error parsing gpx file");
         Toast.makeText(getApplicationContext(), "GPX File Read Failed", Toast.LENGTH_SHORT).show();
     }
 
@@ -446,18 +446,18 @@ public class SelectionActivity extends FragmentActivity implements OnMapReadyCal
         maxSpeed = maxSpeed * 3600; // convert from km/s to km/h
         averageSpeed = averageSpeed * 3600; // convert from km/s to km/h
 
-        Log.d(TAG,"Total Distance: " + totalDistance);
-        Log.d(TAG,"Total Ski Distance: " + totalSkiDistance);
-        Log.d(TAG,"Total Ski Lift Distance: " + totalSkiLiftDistance);
+        //Log.d(TAG,"Total Distance: " + totalDistance);
+        //Log.d(TAG,"Total Ski Distance: " + totalSkiDistance);
+        //Log.d(TAG,"Total Ski Lift Distance: " + totalSkiLiftDistance);
 
-        Log.d(TAG,"Total Ski Time: " + totalSkiTimeString);
-        Log.d(TAG,"Total Ski Lift Time: " + totalSkiLiftTimeString);
-        Log.d(TAG,"Total Time: " + totalTimeString) ;
+        //Log.d(TAG,"Total Ski Time: " + totalSkiTimeString);
+        //Log.d(TAG,"Total Ski Lift Time: " + totalSkiLiftTimeString);
+        //Log.d(TAG,"Total Time: " + totalTimeString) ;
 
-        Log.d(TAG,"Max Altitude: " + maxAltitude);
-        Log.d(TAG,"Min Altitude: " + minAltitude);
+        //Log.d(TAG,"Max Altitude: " + maxAltitude);
+        //Log.d(TAG,"Min Altitude: " + minAltitude);
 
-        Log.d(TAG, "Average Speed: " + averageSpeed);
+        //Log.d(TAG, "Average Speed: " + averageSpeed);
 
 
 

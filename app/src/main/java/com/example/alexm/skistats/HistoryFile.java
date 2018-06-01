@@ -25,16 +25,6 @@ public class HistoryFile {
         this._dateCreated = dateCreated;
     }
 
-    public void setFileName(String input)
-    {
-        _filename = input;
-    }
-
-    public void setDisplayName(String input)
-    {
-        _displayName = input;
-    }
-
     public void setDateCreated(Date input)
     {
         _dateCreated = input;

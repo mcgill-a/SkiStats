@@ -75,16 +75,16 @@ public class ImportActivity extends AppCompatActivity {
         {
             if (checkGpxExtension(imports.get(i).getName()))
             {
-                Log.e(TAG,"Importing file: " + imports.get(i).getName());
+                //Log.e(TAG,"Importing file: " + imports.get(i).getName());
 
                 if(importFile(imports.get(i).getAbsolutePath(), path))
                 {
-                    Log.e(TAG,"Successfully imported file: " + imports.get(i).getName());
+                    //Log.e(TAG,"Successfully imported file: " + imports.get(i).getName());
                     success++;
                 }
                 else
                 {
-                    Log.e(TAG,"Error: Failed to import file: " + imports.get(i).getName());
+                    //Log.e(TAG,"Error: Failed to import file: " + imports.get(i).getName());
                 }
             }
             else
@@ -120,7 +120,7 @@ public class ImportActivity extends AppCompatActivity {
                 int end = original.toString().lastIndexOf("/");
                 String str1 = original.toString().substring(0, end);
                 String str2 = original.toString().substring(end+1, original.length());
-                Log.e(TAG,"filename: " + original + " | str1 = " + str1 + "| str2 = " + str2);
+                //Log.e(TAG,"filename: " + original + " | str1 = " + str1 + "| str2 = " + str2);
                 File source = new File(str1, str2);
                 File destination= new File(target, str2);
                 destination.getParentFile().mkdirs();
@@ -226,7 +226,7 @@ public class ImportActivity extends AppCompatActivity {
             {
                 File file = Utils.getFileForUri(uri);
                 imports.add(file);
-                Log.e(TAG, file.getAbsolutePath());
+                //Log.e(TAG, file.getAbsolutePath());
             }
         }
         // Only import .gpx files

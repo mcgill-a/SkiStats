@@ -61,7 +61,7 @@ public class HistoryActivity extends AppCompatActivity {
 
     public void gpxReadFailed()
     {
-        Log.e(TAG, "Error parsing gpx file");
+        //Log.e(TAG, "Error parsing gpx file");
         Toast.makeText(getApplicationContext(), "GPX File Read Failed", Toast.LENGTH_SHORT).show();
     }
 
@@ -363,7 +363,7 @@ public class HistoryActivity extends AppCompatActivity {
                             Boolean flag = file.renameTo(renamed);
                             if (flag)
                             {
-                                Log.e(TAG, selectedName + " has been renamed");
+                                //Log.e(TAG, selectedName + " has been renamed");
                                 Toast.makeText(getApplicationContext(), selectedName + " renamed to: " + renameTo,Toast.LENGTH_SHORT).show();
                                 if (list.equals("Recordings"))
                                 {
@@ -378,7 +378,7 @@ public class HistoryActivity extends AppCompatActivity {
                             }
                             else
                             {
-                                Log.e(TAG,"Error: " + selectedName + " rename to " + renameTo + " failed");
+                                //Log.e(TAG,"Error: " + selectedName + " rename to " + renameTo + " failed");
                             }
                             sortListsAlphabetically();
                             updateList();
@@ -417,7 +417,7 @@ public class HistoryActivity extends AppCompatActivity {
                 {
                     case DialogInterface.BUTTON_POSITIVE:
                         // User selects Yes
-                        Log.e(TAG, "Deleting recording: " + selectedName);
+                        //Log.e(TAG, "Deleting recording: " + selectedName);
                         File dir;
                         String fullFileName = selectedName;
                         String fullnamePath;
@@ -433,7 +433,7 @@ public class HistoryActivity extends AppCompatActivity {
                         }
 
                         File recording = new File(dir, fullFileName);
-                        Log.e(TAG,"Full path to remove: " + fullnamePath);
+                        //Log.e(TAG,"Full path to remove: " + fullnamePath);
 
                         recording.delete();
                         if(recording.exists())
@@ -633,7 +633,7 @@ public class HistoryActivity extends AppCompatActivity {
                 e.printStackTrace();
             } catch (ParseException e) {
                 e.printStackTrace();
-                Log.e(TAG,"Error: Parsing date failed for: " + filename);
+                //Log.e(TAG,"Error: Parsing date failed for: " + filename);
             }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
