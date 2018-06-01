@@ -53,7 +53,7 @@ public class HistoryActivity extends AppCompatActivity {
     private String TAG = "SkiStats.Log";
     private String renameTo = "";
 
-    private static final int READ_STORAGE_PERMISSION_REQUEST_CODE = 1001;
+    private static final int READ_STORAGE_PERMISSION_REQUEST_CODE = 2001;
     private final int REC_RENAME = 0;
     private final int REC_DELETE = 1;
     private final int IMP_RENAME = 2;
@@ -72,11 +72,11 @@ public class HistoryActivity extends AppCompatActivity {
         setContentView(R.layout.activity_history);
 
         // Make sure correct permissions are granted
-        if (!checkPermissionForReadExtertalStorage())
+        if (!checkPermissionReadExternalStorage())
         {
-            requestPermissionForReadExternalStorage();
+            requestPermissionReadExternalStorage();
         }
-        if (!checkPermissionForReadExtertalStorage())
+        if (!checkPermissionReadExternalStorage())
         {
             finish();
         }
@@ -89,8 +89,6 @@ public class HistoryActivity extends AppCompatActivity {
         } else {
 
             // If permission granted
-
-
             getAllRecordingNames();
             getAllImportNames();
             sortListsAlphabetically();
@@ -172,7 +170,7 @@ public class HistoryActivity extends AppCompatActivity {
             String directory = sdDir + "/" +  "SkiStats/GPS/Recordings/";
             String absPath = directory + name;
             // Once the <time> value is found stop reading the file (that's why it's quick)
-            date = getDateQuick(absPath);
+            date = getDate(absPath);
             historyRecordingFiles.get(i).setDateCreated(date);
         }
     }
@@ -187,12 +185,12 @@ public class HistoryActivity extends AppCompatActivity {
             String directory = sdDir + "/" +  "SkiStats/GPS/Imports/";
             String absPath = directory + name;
             // Once the <time> value is found stop reading the file (that's why it's quick)
-            date = getDateQuick(absPath);
+            date = getDate(absPath);
             historyImportFiles.get(i).setDateCreated(date);
         }
     }
 
-    public boolean checkPermissionForReadExtertalStorage() {
+    public boolean checkPermissionReadExternalStorage() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             int result = getApplicationContext().checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE);
             return result == PackageManager.PERMISSION_GRANTED;
@@ -200,7 +198,7 @@ public class HistoryActivity extends AppCompatActivity {
         return false;
     }
 
-    public void requestPermissionForReadExternalStorage() {
+    public void requestPermissionReadExternalStorage() {
         try {
             ActivityCompat.requestPermissions((Activity) HistoryActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
                     READ_STORAGE_PERMISSION_REQUEST_CODE);
@@ -434,8 +432,6 @@ public class HistoryActivity extends AppCompatActivity {
                             fullnamePath = pathImport + fullFileName;
                         }
 
-
-
                         File recording = new File(dir, fullFileName);
                         Log.e(TAG,"Full path to remove: " + fullnamePath);
 
@@ -577,9 +573,8 @@ public class HistoryActivity extends AppCompatActivity {
             }
         }
     }
-    // It's called quick because the alternative method read the entire gpx file - not just until it found the 2nd <time> flag
-    // and its v quick
-    public Date getDateQuick(String filename) {
+
+    public Date getDate(String filename) {
         DateFormat longdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
         Date date = new Date();
