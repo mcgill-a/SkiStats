@@ -36,8 +36,8 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:2.2.2'
-    compile 'net.danlew:android.joda:2.9.9.2'
-    compile 'io.ticofab.androidgpxparser:parser:1.1.0'
-    compile "com.androidplot:androidplot-core:1.5.4"
-    compile 'com.nononsenseapps:filepicker:4.1.0'
+    implementation 'net.danlew:android.joda:2.9.9.2'
+    implementation 'io.ticofab.androidgpxparser:parser:1.1.0'
+    implementation "com.androidplot:androidplot-core:1.5.4"
+    implementation 'com.nononsenseapps:filepicker:4.1.0'
 }
