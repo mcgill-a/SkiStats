@@ -121,10 +121,14 @@ public class MainActivity extends AppCompatActivity {
 
         recordButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
-
-                if(ensurePermissionLocation() && ensurePermissionWrite())
+                // Nested if statement to make sure it doesn't show both toasts if location permission is denied
+                if(ensurePermissionLocation())
                 {
-                    startActivity(new Intent(MainActivity.this, RecordActivity.class));
+                    if(ensurePermissionWrite())
+                    {
+                        // Only start activity if both permissions are granted
+                        startActivity(new Intent(MainActivity.this, RecordActivity.class));
+                    }
                 }
             }
         });
